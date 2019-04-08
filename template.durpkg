@@ -1,10 +1,17 @@
 #!/bin/bash
 set -e
 
-name="example"
+# Meta Information
+src="example"
+version="0"
 description="example description"
-srctype="http"
-src="https://example.org/example.tar.xz"
+srcurl="https://example.org/example.tar.xz"
+license="Expat/MIT"
+section="utils"
+stdver="4.3.0"
+compat="11"
+maintainers="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
+builddepends=""
 
 # get upstream source and delete unwanted files
 do_source () {
@@ -16,6 +23,18 @@ do_source () {
 # unfold the debian scripts
 do_unfold () {
 	pushd example
+	sed -i \
+		-e "s/@DUPR_SOURCE@/$src/g" \
+		-e "s/@DUPR_VERSION@/$version/g" \
+		-e "s/@DUPR_SECTION@/$section/g" \
+		-e "s/@DUPR_STDVER@/$stdver/g" \
+		-e "s/@DUPR_COMPAT@/$compat/g" \
+		-e "s/@DUPR_UPLOADERS@/$maintainers/g" \
+		-e "s/@DUPR_BD@/$builddepends/g" \
+		-e "s/@DUPR_COPYRIGHT@/$license/g" \
+		-e "s/@DUPR_DESC@/$description/g" \
+		-e "s/@DUPR_DATE@/$(date -R)/g" \
+		../${0%.sh}.f822
 	unfold -f ../${0%.sh}.f822
 	popd
 }
@@ -36,32 +55,43 @@ do_source
 do_unfold
 do_trigger_build
 do_clean
+^############################################################## SPLIT LINE ####
 ^ debian/changelog
-example (0) experimental; urgency=medium
+@DUPR_SOURCE@ (@DUPR_VERSION@) experimental; urgency=low
 
-  * DUPR Release.
+  * Unofficial D**ian User Repo Release.
 
- -- Anonymous <anonymous@example.org>  Fri, 05 Apr 2019 04:38:24 +0000
+ -- Anonymous <anonymous@example.org>  @DUPR_DATE@
+^############################################################## SPLIT LINE ####
 ^ debian/control
-Source: example
-Section: utils
+Source: @DUPR_SOURCE@
+Section: @DUPR_SECTION@
 Priority: optional
-Standards-Version: 4.3.0
-Maintainer: Anonymous <anonymous@example.org>
-Build-Depends: debhelper-compat (= 11),
+Standards-Version: @DUPR_STDVER@
+Maintainer: D**ian User Repo Contributors
+Uploaders: @DUPR_UPLOADERS@
+Build-Depends: debhelper-compat (= @DUPR_COMPAT@), @DUPR_BD@
 
-Package: example
+Package: @DUPR_SOURCE@
 Architecture: any
+^# Sometimes you may need to update the following Depends field.
 Depends: ${misc:Depends}, ${shlibs:Depends},
-Description: example description
- example description
+Description: @DUPR_DESC@
+ @DUPR_DESC@
+^############################################################## SPLIT LINE ####
 ^ debian/copyright
-Expat/MIT
+@DUPR_COPYRIGHT@
+^############################################################## SPLIT LINE ####
+^# Sometimes the following file is not needed
 ^ debian/example.install
 example  usr/bin/
+^############################################################## SPLIT LINE ####
+^# This is the mininal rules.
 ^ debian/rules
 #!/usr/bin/make -f
 %:
 	dh $@
+^############################################################## SPLIT LINE ####
+^# It is recommended to use the "3.0 (native)" format.
 ^ debian/source/format
 3.0 (native)
