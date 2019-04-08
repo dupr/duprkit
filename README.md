@@ -1,5 +1,7 @@
-Debian User Package Repository Toolkit
+Unofficial Debian User Package Repository Toolkit
 ===
+
+DISCLAINMER: Everything here is totoally unrelated to the Debian Project. Take your own risk using anything here, and please review all the code before execution.
 
 Usage
 
