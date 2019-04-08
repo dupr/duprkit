@@ -5,14 +5,16 @@ THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
 # LEGAL NOTICE
 
-Everything here is totoally unrelated to the Debian Project.
+```
 
-Debian Project is not responsible for any consequence resulted
-by utilization of the D\*\*ian User Package Repository Toolkit
-or any related collections and .durpkg files. Any .durpkg creator
-is not responsible for possible consequences as well.
+Everything included in this repository is totoally unrelated to the Debian
+Project, or any OFFICIAL Debian development. Debian Project is not responsible
+for any consequence resulted by utilization of the D**ian User Package
+Repository Toolkit or any related .durpkg collections or single .durpkg files.
+Please Take your own risk utilizing the toolkit, and please review every line
+of code before execution.
 
-Take your own risk using the toolkit, and please review every line of code before execution.
+```
 
 # Usage
 
@@ -35,4 +37,3 @@ Take your own risk using the toolkit, and please review every line of code befor
 # LICENSE
 
 MIT/Expat
-
