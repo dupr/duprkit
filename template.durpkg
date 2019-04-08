@@ -16,13 +16,13 @@ builddepends=""
 # get upstream source and delete unwanted files
 do_source () {
 	wget -c $srcurl
-	mkdir example
-	tar Jxvf example.tar.xz -C example/
+	mkdir $src
+	tar Jxvf example.tar.xz -C $src/
 }
 
 # unfold the debian scripts
 do_unfold () {
-	pushd example
+	pushd $src
 	sed -i \
 		-e "s/@DUPR_SOURCE@/$src/g" \
 		-e "s/@DUPR_VERSION@/$version/g" \
@@ -41,14 +41,14 @@ do_unfold () {
 
 # trigger the build process
 do_trigger_build () {
-	pushd example
+	pushd $src
 	debuild -j4
 	popd
 }
 
 # cleanup
 do_clean () {
-	rm -rf example
+	rm -rf $src
 }
 
 do_source
