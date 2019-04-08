@@ -3,7 +3,7 @@ D**ian User Package Repository Toolkit
 
 THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
-# LEGAL NOTICE
+# DISCLAIMER
 
 ```
 
