@@ -1,14 +1,17 @@
-Unofficial Debian User Package Repository Toolkit
+D**ian User Package Repository Toolkit
 ===
+
+THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
 # LEGAL NOTICE
 
-THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 Everything here is totoally unrelated to the Debian Project.
+
 Debian Project is not responsible for any consequence resulted
 by utilization of the D\*\*ian User Package Repository Toolkit
 or any related collections and .durpkg files. Any .durpkg creator
 is not responsible for possible consequences as well.
+
 Take your own risk using the toolkit, and please review every line of code before execution.
 
 # Usage
