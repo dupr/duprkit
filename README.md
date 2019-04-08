@@ -50,8 +50,8 @@ request for membership by openning an issue.
 * Why is this project hosted on GitHub instead of Debian's Salsa server?
 
 Only 1000~2000 people on this earth have salsa account. More than a million
-people have their Github accounts. Hosting this project makes access and
-contributing easy.
+people have their Github accounts. Hosting this project on github makes access
+and contributing easy.
 
 # LICENSE
 
