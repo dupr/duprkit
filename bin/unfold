@@ -32,7 +32,7 @@ def unfoldf822(f822: List[str], *, fp=None):
 
     an f822 file, is a filename-content loop, where the filename line has a
     special format "^ FILENAME". For example, "^ debian/rules", "^ any-other-
-    file".
+    file". Comment lines starts with "^#".
 
                             f822 example
 
@@ -56,7 +56,9 @@ def unfoldf822(f822: List[str], *, fp=None):
         return
     else:
         curline = f822[0]
-        if curline.startswith('^'):
+        if curline.startswith('^#'):
+            unfoldf822(f822[1:], fp=fp)
+        elif curline.startswith('^'):
             if fp is not None: fp.close()
             path = curline.split('^')[-1].strip()
             if os.path.exists(path):
