@@ -1,9 +1,17 @@
 Unofficial Debian User Package Repository Toolkit
 ===
 
-DISCLAINMER: Everything here is totoally unrelated to the Debian Project. Take your own risk using anything here, and please review all the code before execution.
+# LEGAL NOTICE
 
-Usage
+THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
+Everything here is totoally unrelated to the Debian Project.
+Debian Project is not responsible for any consequence resulted
+by utilization of the D\*\*ian User Package Repository Toolkit
+or any related collections and .durpkg files. Any .durpkg creator
+is not responsible for possible consequences as well.
+Take your own risk using the toolkit, and please review every line of code before execution.
+
+# Usage
 
 * fetch the DUR Default collection `./bin/fetch-collections`.
 
@@ -20,3 +28,8 @@ Usage
 * FYI, the shell script `./bin/fold` can fold any existing debian directory into plain text file.
 
 * FYI, the file format specification of .f822 and .durpkg can be found in `./bin/unfold`.
+
+# LICENSE
+
+MIT/Expat
+
