@@ -45,6 +45,14 @@ are still experimental projects. If you can fully understand what's going on
 here and be willing to participate, please feel free to submit a PR or
 request for membership by openning an issue.
 
+# FAQ
+
+* Why is this project hosted on GitHub instead of Debian's Salsa server?
+
+Only 1000~2000 people on this earth have salsa account. More than a million
+people have their Github accounts. Hosting this project makes access and
+contributing easy.
+
 # LICENSE
 
 MIT/Expat
