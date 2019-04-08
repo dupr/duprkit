@@ -1,5 +1,5 @@
 #!/bin/sh
-for file in $(find $1 -type f); do
-	echo "% $file"
+for file in $(find $1 -type f | sort); do
+	echo "^ $file"
 	cat $file
 done

@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+usage () {
+	echo "usage: ..."
+}
+
+case "$1" in
+	fetch)
+		fetch-collections ;;
+	search)
+		grep -ri $1 ;;
+	build)
+		shift
+		unfold -f $1
+		bash $1.sh
+		;;
+	*)
+		usage;;
+esac

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''
-File Folder / Unfolder
+Debian User Package Repository: File Folder / Unfolder
+Copyright (C) 2019 M. Zhou <lumin@debian.org>
 '''
 import argparse
 import sys
@@ -21,41 +22,103 @@ def mkdir_p(dirname: str):
         os.mkdir(dirname)
 
 
-def unfold(f822: List[str], *, fp=None):
+def unfoldf822(f822: List[str], *, fp=None):
     '''
     Unfold an f822 file.
-    f822 protocol: FIXME
+
+                  Folded Deb822 (f822) specification
+
+    an f822 file, is a filename-content loop, where the filename line has a
+    special format "^ FILENAME". For example, "^ debian/rules", "^ any-other-
+    file".
+
+                            f822 example
+
+    begin{verbatim}
+
+    ^ debian/control
+    Source: blah
+    ...
+
+    Package: blah
+    ...
+    ^ debian/source/format
+    3.0 (native)
+    ^ debian/rules
+    ...
+
+    end{verbatim}
     '''
     if len(f822) == 0:
         if fp is not None: fp.close()
         return
     else:
         curline = f822[0]
-        if curline.startswith('%'):
+        if curline.startswith('^'):
             if fp is not None: fp.close()
-            path = curline.split('%')[-1].strip()
+            path = curline.split('^')[-1].strip()
             if os.path.exists(path):
                 raise Exception(f'{path} already exists!')
             dirname = os.path.dirname(path)
             mkdir_p(dirname)
             fp = open(path, 'w')
-            unfold(f822[1:], fp=fp)
+            unfoldf822(f822[1:], fp=fp)
         else:
             if fp is None:
                 raise SyntaxError(f'Doesnt know where to write {f822}')
             fp.write(f822[0])
-            unfold(f822[1:], fp=fp)
+            unfoldf822(f822[1:], fp=fp)
+
+
+def unfolddurpkg(path: str):
+    '''
+    Unfold a .durpkg into a shell script and a f822 file
+
+                      DURPKG Specification
+
+    DURPKG file is a shell script, concatenated with an f822 file.
+    Specifically, DURPKG must have a shell shebang.
+
+                         DURPKG example
+
+    begin{verbatim}
+
+    #!/bin/sh
+    echo "hello world"
+    ^ debian/compat
+    11
+    ^ debian/control
+    ...
+
+    end{verbatim}
+    '''
+    durpkg = open(path).readlines()
+    if len(durpkg) == 0:
+        return
+    if not durpkg[0].startswith('#!'):
+        SyntaxError("It must have a shebang!")
+    fp_shell = open(path + '.sh', 'w')
+    fp_f822 = open(path + '.f822', 'w')
+
+    fp = fp_shell
+    for line in durpkg:
+        if line.startswith('^'):
+            fp = fp_f822
+        fp.write(line)
 
 
 if __name__ == '__main__':
     ag = argparse.ArgumentParser()
-    ag.add_argument('-f', '--folded', help='folded file', type=str, default='')
+    ag.add_argument('-f', '--folded', help='folded file', type=str, default='', required=True)
     ag = ag.parse_args()
 
     if ag.folded:
-        f822 = open(ag.folded, 'r').readlines()
+        if ag.folded.endswith('.f822'):
+            f822 = open(ag.folded, 'r').readlines()
+            unfoldf822(f822)
+        elif ag.folded.endswith('.durpkg'):
+            unfolddurpkg(ag.folded)
+        else:
+            raise Exception(f"unsupported {ag.folded}")
     else:
-        if not os.path.exists('debian.f822'):
-            raise FileNotFoundError('./debian.f822 not found!')
-        f822 = open('debian.f822').readlines()
-    unfold(f822)
+        raise FileNotFoundError
