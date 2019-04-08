@@ -9,6 +9,8 @@ import os
 import re
 from typing import *
 
+__VERSION__ = '0'
+
 
 def mkdir_p(dirname: str):
     b, d = os.path.basename(dirname), os.path.dirname(dirname)
@@ -109,7 +111,13 @@ def unfolddurpkg(path: str):
 
 if __name__ == '__main__':
     ag = argparse.ArgumentParser()
-    ag.add_argument('-f', '--folded', help='folded file', type=str, default='', required=True)
+    ag.add_argument(
+        '-f',
+        '--folded',
+        help='folded file',
+        type=str,
+        default='',
+        required=True)
     ag = ag.parse_args()
 
     if ag.folded:
