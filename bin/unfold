@@ -1,0 +1,61 @@
+#!/usr/bin/python3
+'''
+File Folder / Unfolder
+'''
+import argparse
+import sys
+import os
+import re
+from typing import *
+
+
+def mkdir_p(dirname: str):
+    b, d = os.path.basename(dirname), os.path.dirname(dirname)
+    if os.path.exists(dirname):
+        return
+    if (d == '') or os.path.exists(d):
+        os.mkdir(dirname)
+        return
+    else:
+        mkdir_p(d)
+        os.mkdir(dirname)
+
+
+def unfold(f822: List[str], *, fp=None):
+    '''
+    Unfold an f822 file.
+    f822 protocol: FIXME
+    '''
+    if len(f822) == 0:
+        if fp is not None: fp.close()
+        return
+    else:
+        curline = f822[0]
+        if curline.startswith('%'):
+            if fp is not None: fp.close()
+            path = curline.split('%')[-1].strip()
+            if os.path.exists(path):
+                raise Exception(f'{path} already exists!')
+            dirname = os.path.dirname(path)
+            mkdir_p(dirname)
+            fp = open(path, 'w')
+            unfold(f822[1:], fp=fp)
+        else:
+            if fp is None:
+                raise SyntaxError(f'Doesnt know where to write {f822}')
+            fp.write(f822[0])
+            unfold(f822[1:], fp=fp)
+
+
+if __name__ == '__main__':
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-f', '--folded', help='folded file', type=str, default='')
+    ag = ag.parse_args()
+
+    if ag.folded:
+        f822 = open(ag.folded, 'r').readlines()
+    else:
+        if not os.path.exists('debian.f822'):
+            raise FileNotFoundError('./debian.f822 not found!')
+        f822 = open('debian.f822').readlines()
+    unfold(f822)
