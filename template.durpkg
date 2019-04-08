@@ -15,7 +15,7 @@ builddepends=""
 
 # get upstream source and delete unwanted files
 do_source () {
-	wget -c $src
+	wget -c $srcurl
 	mkdir example
 	tar Jxvf example.tar.xz -C example/
 }
