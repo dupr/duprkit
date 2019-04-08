@@ -3,6 +3,8 @@ D**ian User Package Repository Toolkit
 
 THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
+D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian".
+
 # DISCLAIMER
 
 ```
