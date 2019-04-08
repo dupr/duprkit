@@ -9,6 +9,7 @@ case "$1" in
 	fetch)
 		fetch-collections ;;
 	search)
+		shift
 		grep -ri $1 ;;
 	build)
 		shift
