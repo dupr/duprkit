@@ -32,6 +32,8 @@ it should be valuable to think about it for Debian.
 
 # What kind of packages does the project target to?
 
+GENERAL PACKAGING. However this project is very glad to accept the following special cases:
+
 * Packages that are extremely hard to made compliant to Debian Policy. For
 example, bazel the build system of TensorFlow. Or something that doesn't
 worth the effort to be made so.
