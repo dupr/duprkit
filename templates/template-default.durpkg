@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 . /usr/share/duprkit/duprkit || (echo "Error: duprkit installation is incorrect."; exit 1)
+export DK_VERBOSE=1
 
 # XXX: The default, minimal format is recommended to everyone.
 #      Some files are automatically generated from the shell variables.
@@ -20,6 +21,7 @@ stdver="4.3.0"
 compat="11"
 maintainers="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
 build_depends=""
+depends=""
 
 # Get and Pre-Process Source
 if ! test -r example.tar.xz; then wget -c $srcurl; fi
