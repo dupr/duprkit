@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# XXX: The normal template is generally recommended to everyone.
+#      Many fields in debian/control will be automatically filled
+#      by the shell variables. If you don't like the shell variable
+#      replacement, please use the template-minimal.durpkg
+
 # Meta Information
 src="example"
 version="0"
@@ -31,8 +36,8 @@ sed -i \
 	-e "s/@DUPR_COPYRIGHT@/$license/g" \
 	-e "s/@DUPR_DESC@/$description/g" \
 	-e "s/@DUPR_DATE@/$(date -R)/g" \
-	../${0%.sh}.f822
-unfold -f ../${0%.sh}.f822
+	../${0%.sh}.hft
+hft -u ../${0%.sh}.hft
 
 # trigger the build process
 debuild -j4
