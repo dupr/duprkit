@@ -36,7 +36,7 @@ of code before execution.
 
 * FYI, the file format specification of .f822 and .durpkg can be found in `./bin/unfold`.
 
-* FYI, the template/example of .durpkg file is [here](./template.durpkg)
+* FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
 
 # Contributing
 

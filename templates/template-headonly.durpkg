@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+# XXX: the -headonly style means that this .durpkg only contains the
+#      shell script header. You can use this style if you don't like
+#      to "fold" the debian/ directory into the .durpkg file. This
+#      style can also be used if you only want to change some contents
+#      in the official debian/ package. Anyway, the design of .durpkg
+#      doesn't stop you from doing anything.
+
+# get upstream source and delete unwanted files
+apt source $src
+ln -s example-0 example
+
+pushd example
+# modify debian scripts
+export DEB_CUSTOM_BUILD="blah"
+sed -i -e "..." debian/rules
+
+# trigger the build process
+debuild -j4
+popd
