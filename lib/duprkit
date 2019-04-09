@@ -3,7 +3,6 @@ set -e
 
 __version__="0.0c"
 
-
 dkGen_debian_copyright () {
 	if ! test -r $1/debian/copyright; then
 		if test -n "$license"; then echo "DK: Please define 'license'"; false; fi

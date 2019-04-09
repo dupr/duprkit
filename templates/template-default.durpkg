@@ -22,9 +22,8 @@ maintainers="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
 build_depends=""
 
 # Get and Pre-Process Source
-dkGet $srcurl  # if ! test -r example.tar.xz; then wget -c $srcurl; fi
-mkdir $src
-tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
+if ! test -r example.tar.xz; then wget -c $srcurl; fi
+mkdir $src; tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 
 # Unfold the HFT part (if any) into the dir. Then Generate missing files.
 # XXX: If you don't like HFT just write no HFT. DUPRKIT shall never complain.
