@@ -46,15 +46,9 @@ do_trigger_build () {
 	popd
 }
 
-# cleanup
-do_clean () {
-	rm -rf $src
-}
-
 do_source
 do_unfold
 do_trigger_build
-do_clean
 ^############################################################## SPLIT LINE ####
 ^ debian/changelog
 @DUPR_SOURCE@ (@DUPR_VERSION@) experimental; urgency=low
