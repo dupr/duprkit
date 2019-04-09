@@ -23,6 +23,7 @@ dkGen_debian_changelog () {
 		if test -n "$src"; then echo "DK: Please define 'src'"; false; fi
 		if test -n "$version"; then echo "DK: Please define 'version'"; false; fi
 		if test -n "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
+		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/changelog"; fi
 		mkdir -p $1/debian
 		cat > $1/debian/changelog <<EOF
 $src ($version) experimental; urgency=low
@@ -37,6 +38,7 @@ EOF
 
 dkGen_debian_rules () {
 	if ! test -r $1/debian/rules; then
+		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/rules"; fi
 		mkdir -p $1/debian
 		cat > $1/debian/rules <<EOF
 #!/usr/bin/make -f
@@ -47,16 +49,49 @@ EOF
 	fi
 }
 
+dkGen_debian_control () {
+	if ! test -r $1/debian/control; then
+		if test -n "$src"; then echo "DK: Please define 'src'"; false; fi
+		if test -n "$section"; then echo "DK: Please define 'section'"; false; fi
+		if test -n "$stdver"; then echo "DK: Please define 'stdver'"; false; fi
+		if test -n "$compat"; then echo "DK: Please define 'compat'"; false; fi
+		if test -n "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
+		if test -n "$description"; then echo "DK: Please define 'description'"; false; fi
+		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/control"; fi
+		mkdir -p $1/debian
+		cat > $1/debian/control <<EOF
+Source: $src
+Section: $section
+Priority: optional
+Standards-Version: $stdver
+Maintainer: D**ian User Repo Contributors
+Uploaders: $maintainer
+Build-Depends: debhelper-compat (= $compat), $build_depends
+
+Package: $src
+Architecture: any
+Depends: \${misc:Depends}, \${shlibs:Depends}, \${python3:Depends}, $depends
+Description: $description
+ $description
+EOF
+	fi
+}
+
 dkGen_SANITY_CHECK () {
 	# make sure the fundamental files are present
-	true
+	test -r $1/debian/changelog
+	test -r $1/debian/control
+	test -r $1/debian/copyright
+	test -r $1/debian/rules
+	test -r $1/debian/source/format
 }
 
 dkGenenerate () {
 	test -n "$1" || (echo "missing dest dir"; false)
-	dkGen_debian_copyright $1
-	dkGen_debian_source_format $1
 	dkGen_debian_changelog $1
+	dkGen_debian_control $1
+	dkGen_debian_copyright $1
 	dkGen_debian_rules $1
+	dkGen_debian_source_format $1
 	dkGen_SANITY_CHECK $1
 }
