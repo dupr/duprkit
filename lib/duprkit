@@ -86,7 +86,7 @@ dkGen_SANITY_CHECK () {
 	test -r $1/debian/source/format
 }
 
-dkGenenerate () {
+dkGenerate () {
 	test -n "$1" || (echo "missing dest dir"; false)
 	dkGen_debian_changelog $1
 	dkGen_debian_control $1
