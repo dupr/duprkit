@@ -3,26 +3,11 @@ set -e
 
 __version__="0.0c"
 
-dkGen_debian_copyright () {
-	if ! test -r $1/debian/copyright; then
-		if test -n "$license"; then echo "DK: Please define 'license'"; false; fi
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/copyright"; fi
-		mkdir -p $1/debian; echo "$license" > $1/debian/copyright
-	fi
-}
-
-dkGen_debian_source_format () {
-	if ! test -r $1/debian/source/format; then
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/source/format"; fi
-		mkdir -p $1/debian/source; echo "3.0 (quilt)" > $1/debian/source/format
-	fi
-}
-
 dkGen_debian_changelog () {
 	if ! test -r $1/debian/changelog; then
-		if test -n "$src"; then echo "DK: Please define 'src'"; false; fi
-		if test -n "$version"; then echo "DK: Please define 'version'"; false; fi
-		if test -n "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
+		if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
+		if test -z "$version"; then echo "DK: Please define 'version'"; false; fi
+		if test -z "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/changelog"; fi
 		mkdir -p $1/debian
 		cat > $1/debian/changelog <<EOF
@@ -36,27 +21,14 @@ EOF
 	fi
 }
 
-dkGen_debian_rules () {
-	if ! test -r $1/debian/rules; then
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/rules"; fi
-		mkdir -p $1/debian
-		cat > $1/debian/rules <<EOF
-#!/usr/bin/make -f
-%:
-	dh $@
-EOF
-		chmod +x $1/debian/rules
-	fi
-}
-
 dkGen_debian_control () {
 	if ! test -r $1/debian/control; then
-		if test -n "$src"; then echo "DK: Please define 'src'"; false; fi
-		if test -n "$section"; then echo "DK: Please define 'section'"; false; fi
-		if test -n "$stdver"; then echo "DK: Please define 'stdver'"; false; fi
-		if test -n "$compat"; then echo "DK: Please define 'compat'"; false; fi
-		if test -n "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
-		if test -n "$description"; then echo "DK: Please define 'description'"; false; fi
+		if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
+		if test -z "$section"; then echo "DK: Please define 'section'"; false; fi
+		if test -z "$stdver"; then echo "DK: Please define 'stdver'"; false; fi
+		if test -z "$compat"; then echo "DK: Please define 'compat'"; false; fi
+		if test -z "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
+		if test -z "$description"; then echo "DK: Please define 'description'"; false; fi
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/control"; fi
 		mkdir -p $1/debian
 		cat > $1/debian/control <<EOF
@@ -76,6 +48,35 @@ Description: $description
 EOF
 	fi
 }
+
+dkGen_debian_copyright () {
+	if ! test -r $1/debian/copyright; then
+		if test -z "$license"; then echo "DK: Please define 'license'"; false; fi
+		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/copyright"; fi
+		mkdir -p $1/debian; echo "$license" > $1/debian/copyright
+	fi
+}
+
+dkGen_debian_rules () {
+	if ! test -r $1/debian/rules; then
+		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/rules"; fi
+		mkdir -p $1/debian
+		cat > $1/debian/rules <<EOF
+#!/usr/bin/make -f
+%:
+	dh \$@
+EOF
+		chmod +x $1/debian/rules
+	fi
+}
+
+dkGen_debian_source_format () {
+	if ! test -r $1/debian/source/format; then
+		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/source/format"; fi
+		mkdir -p $1/debian/source; echo "3.0 (quilt)" > $1/debian/source/format
+	fi
+}
+
 
 dkGen_SANITY_CHECK () {
 	# make sure the fundamental files are present
