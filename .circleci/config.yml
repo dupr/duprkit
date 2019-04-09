@@ -33,7 +33,7 @@ jobs:
               apt update -y
               apt upgrade -y
               apt autoremove -y
-              apt build-dep .
+              apt install debhelper devscripts -y
               dpkg-buildpackage -us -uc
       - run:
           name: Print the Current Time
