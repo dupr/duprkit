@@ -43,19 +43,23 @@ worth the effort to be made so.
 * Dirty but useful non-free blobs, such as nvidia's cuDNN (CUDA Deep
 Neural Network) library, that doesn't make sense to be made policy-compliant.
 
+* Packages that doesn't allow (re)distribution. For example, it's illegal
+to redistribute the pre-built binaries for the CUDA version of ffmpeg.
+However, this problem can be bypassed by only providing the build script.
+
 * Repackging upstream pre-built binary tarballs into .deb format.
 
 * Data or pre-trained neural networks with obscure licensing. In this
 repository one doesn't need to carefully examine the underlying license.
 
-* Packages with dirty hacks, or targeted on testing the water.
+* Packages with dirty hacks, more experimental than Debian/experimental,
+or targeted on testing the water.
 
-* Packages that are more experimental than Debian/experimental.
-
-* Packages that utilizes SIMD instructions heavily. Due to the hardware
-compatibility reason, Debian doesn't distribute pre-built binaries with any
-higher ISA baseline than the generic one.  (So this work actually
-suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIMDebian)).
+* Packages that utilizes SIMD instructions heavily and needs local build for
+the optimal performance. Due to the hardware compatibility reason, Debian
+doesn't distribute pre-built binaries with any higher ISA baseline than the
+generic one.  (So this work actually suppresses and replaces the [SIMDebian
+project](https://github.com/SIMDebian/SIMDebian)).
 
 # Instructions
 
