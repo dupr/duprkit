@@ -14,7 +14,7 @@ case "$1" in
 	search)
 		shift
 		grep -ri $1 ;;
-	build)
+	b|build)
 		shift
 		echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into shell script and debian/ directory ...\033[0m"
 		unfold -f $1
