@@ -69,10 +69,6 @@ suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIM
 
 * The way to install resulting .deb packages is omitted. I assume you know that.
 
-* FYI, the shell script `./bin/fold` can fold any existing debian directory into plain text file.
-
-* FYI, the file format specification of .f822 and .durpkg can be found in `./bin/unfold`.
-
 * FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
 
 # Specifications
@@ -83,7 +79,7 @@ See https://github.com/dupr/duprkit/blob/master/bin/hft
 
 ## DURPKG Specification
 
-see bin/unfold
+See https://github.com/dupr/duprkit/blob/master/bin/dunfold
 
 ## Collection Directory Hierarchy Specification
 
@@ -105,7 +101,7 @@ A-Certain-Collection/
         app-bar.durpkg
         0000-fix-blah-blah.patch
     app-xyz/
-        app-xyz.durpkg  # This file contains an empty f822 part
+        app-xyz.durpkg  # This file contains an empty HFT part
         debian/*
 ```
 
