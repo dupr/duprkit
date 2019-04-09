@@ -7,8 +7,6 @@ export DK_VERBOSE=1
 #      Some files are automatically generated from the shell variables.
 #      For explicitness please check the -explict template.
 
-#FIXME: THIS IS A WIP TEMPLATE
-
 # Meta Information
 src="example"
 srcurl=""
@@ -19,7 +17,7 @@ license="Expat/MIT"
 section="utils"
 stdver="4.3.0"
 compat="11"
-maintainers="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
+maintainer="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
 build_depends=""
 depends=""
 
@@ -36,7 +34,7 @@ dkGenerate $src
 dkStartBuild $src
 
 ^############################################################## SPLIT LINE ####
-^# For example, when this is only thing that need to overriden
+^# The only file that diverges from the default template
 ^ debian/README.Debian
 README.Debian
 ---
