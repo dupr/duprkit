@@ -14,7 +14,7 @@ jobs:
               apt-get update -y
               apt-get upgrade -y
               apt-get install eatmydata -y
-              eatmydata -- apt-get install debhelper -y
+              eatmydata -- apt-get install debhelper python3 -y
       - run:
           name: build package
           command: |
