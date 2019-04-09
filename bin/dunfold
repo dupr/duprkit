@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+'''
+D**ian User Package Repository: DURPKG Unfolder
+Copyright (C) 2019 M. Zhou <lumin@debian.org>
+'''
+import argparse
+import sys, os, re, stat
+from typing import *
+
+__VERSION__ = '0.0b'
+
+__DURPKG_SPEC__ = '''
+DURPKG Specification
+--------------------
+
+A .durpkg file is a concatenation of a shell script and an HFT file.
+The shell script must start with a shebang.
+
+DURPKG Example
+--------------
+
+::
+    #!/bin/sh
+    echo "hello world"
+    ^ debian/compat
+    11
+    ^ debian/source/format
+    3.0 (native)
+'''
+
+
+def durpkg_unfold(path: str):
+    '''
+    Unfold a .durpkg into a shell script and a HFT file
+    '''
+    durpkg = open(path).readlines()
+    if len(durpkg) == 0:
+        return
+    if not durpkg[0].startswith('#!'):
+        SyntaxError("It must have a shebang!")
+    fp_shell = open(path + '.sh', 'w')
+    fp_hft = open(path + '.hft', 'w')
+
+    fp = fp_shell
+    for line in durpkg:
+        if line.startswith('^'):
+            fp = fp_hft
+        fp.write(line)
+
+
+if __name__ == '__main__':
+    ag = argparse.ArgumentParser()
+    ag.add_argument('durpkg', type=str)
+    ag = ag.parse_args()
+
+    if ag.durpkg:
+        if ag.durpkg.endswith('.durpkg'):
+            durpkg_unfold(ag.durpkg)
+        else:
+            raise Exception(f"Unsupported {ag.folded}")
