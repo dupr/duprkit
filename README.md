@@ -57,7 +57,7 @@ suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIM
 
 # Instructions
 
-## Use Existing Recipe
+### Use Existing Recipe
 
 * Install with `make install`. Or simply copy `/bin/*` to your `$PATH`.
 
@@ -71,7 +71,7 @@ suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIM
 
 * The way to install resulting .deb packages is omitted. I assume you know that.
 
-# Create New Recipe
+### Create New Recipe
 
 * Install, same as above.
 
@@ -80,6 +80,10 @@ suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIM
 * Make sure `dupr b mypackage.durpkg` works fine.
 
 * Optionally submit the `.durpkg` to your favorite collection.
+
+# List of Known Collections
+
+* https://github.com/dupr/DefaultCollection
 
 # Specifications
 
