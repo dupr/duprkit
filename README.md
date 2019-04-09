@@ -55,21 +55,31 @@ compatibility reason, Debian doesn't distribute pre-built binaries with any
 higher ISA baseline than the generic one.  (So this work actually
 suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIMDebian)).
 
-# Demo
+# Instructions
 
-* fetch the DUR Default collection `./bin/fetch-collections`.
+## Use Existing Recipe
 
-* install the python script `./bin/unfold` and shell script `./bin/dupr` to your PATH.
+* Install with `make install`. Or simply copy `/bin/*` to your `$PATH`.
 
-* search for your keywords in the collections `./bin/dupr search gotop`.
+* Fetch your favorite recipe collection to any directory, e.g. `git clone https://github.com/dupr/DefaultCollection'.
 
-* change directory to, e.g. `cd ./DefaultCollection/gotop/`.
+* Browse or search in the collection, find your target `.durpkg` file.
 
-* build the gotop package, `dupr build gotop.durpkg`.
+* Review the .durpkg file to make sure it's safe.
+
+* Start the build: `dupr build foobar.durpkg` or `dupr b foobar.durpkg`.
 
 * The way to install resulting .deb packages is omitted. I assume you know that.
 
-* FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
+# Create New Recipe
+
+* Install, same as above.
+
+* Choose a [template](./templates), copy it to somewhere and modify it.
+
+* Make sure `dupr b mypackage.durpkg` works fine.
+
+* Optionally submit the `.durpkg` to your favorite collection.
 
 # Specifications
 
