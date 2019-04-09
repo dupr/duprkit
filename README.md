@@ -55,7 +55,8 @@ it should be valuable to think about it for Debian.
 # What kind of packages are the project targeted to?
 
 * Packages that are extremely hard to made compliant to Debian Policy. For
-example, bazel the build system of TensorFlow.
+example, bazel the build system of TensorFlow. Or something that doesn't
+worth the effort to be made so.
 
 * Dirty but useful non-free blobs, such as nvidia's cuDNN (CUDA Deep
 Neural Network) library, that doesn't make sense to be made policy-compliant.
