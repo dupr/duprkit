@@ -3,11 +3,7 @@ D**ian User Package Repository Toolkit
 
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
 
-THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
-
-THIS TOOLKIT DOES NIT AIM AT SIMPLIFYING DEBIAN PACKAGING.
-
-THIS TOOLKIT IS STILL AN EXPERIMENT AND IT WILL BE VOLATILE.
+THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE. EVERYTHING IS VOLATILE.
 
 D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a better name here](https://github.com/dupr/duprkit/issues/2))
 
@@ -92,12 +88,9 @@ or targeted on testing the water.
 
 * Choose a [template](./templates), copy it to somewhere and modify it. Or you
 just create `.durpkg` header and a `debian/` directory. **HFT Format is not
-mandatory.** Nobody prevents you from rejecting the `HFT` file specification
-and using the traditional `debian/` directory layout, I don't accept any
-argument on personal preference at this point. The `HFT` format and `debian/`
-directory can be bi-directionally transformed with `bin/hft`, e.g. `hft -f
-debian -o debian.hft` for folding the texts, `hft -u debian.hft -d .` for
-unfolding the `HFT` file.
+mandatory.** The `HFT` format and `debian/` directory can be bi-directionally
+transformed with `bin/hft`, e.g. `hft -f debian -o debian.hft` for folding the
+texts, `hft -u debian.hft -d .` for unfolding the `HFT` file.
 
 * Make sure `dupr b mypackage.durpkg` works fine.
 
@@ -139,7 +132,7 @@ A-Certain-Collection/
         app-bar.durpkg
         0000-fix-blah-blah.patch
     app-xyz/
-        app-xyz.durpkg  # This file contains an empty HFT part
+        app-xyz.durpkg
         debian/*
 ```
 
@@ -158,12 +151,10 @@ Only 1000~2000 people on this earth have salsa account. More than a million
 people have their Github accounts. Hosting this project on github makes access
 and contributing easy.
 
-* I think the HFT format is totally rubbish. It looks more complex than the traditional `debian/`.
+* I think the HFT format is totally rubbish.
 
-Don't use it if you don't like it, HFT is not mandatory. Please use the
-traditional `debian/` layout instead, see `templates/template-headonly.durpkg`
-for an example.  Simplifying Debian packaging is not a motivation of this
-project, and I don't comment on personal preference.
+Don't use it if you don't like it, HFT is not mandatory. Please carefully
+read the templates.
 
 * Where can I submit my `.durpkg` file?
 
@@ -171,8 +162,9 @@ Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own col
 
 * Why is "D\*\*ian" ?
 
-This implementation and packaging recipes are ugly. Some people think such
-creation taints the name of Debian. [propose a better name here](https://github.com/dupr/duprkit/issues/2)
+This implementation and packaging recipes are ugly, and non-DFSG stuff are
+allowed here. Some people think such creation taints the name of Debian.
+[propose a better name here](https://github.com/dupr/duprkit/issues/2)
 
 # LICENSE
 
