@@ -29,7 +29,7 @@ jobs:
           name: update and install dependencies
           command: |
               echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
-              echo "deb-src http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
+              echo "deb-src http://deb.debian.org/debian unstable main" >> /etc/apt/sources.list
               apt-get update -y
               apt-get upgrade -y
               apt-get install debhelper devscripts -y
