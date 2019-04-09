@@ -75,6 +75,40 @@ compatibility reason, Debian doesn't distribute pre-built binaries with any
 higher ISA baseline than the generic one.  (So this work actually
 suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIMDebian)).
 
+# Specifications
+
+## F822 Specification
+
+see bin/unfold
+
+## DURPKG Specification
+
+see bin/unfold
+
+## Collection Directory Hierarchy Specification
+
+See https://github.com/dupr/DefaultCollection for a real example.
+
+```
+A collection, stored in a git repository or plain directory, gathers only
+packaging files, e.g. .durpkg, stored in subdirectories named by the source
+name. Plus, no one prevents you from submitting a debian directory.
+
+For example:
+
+A-Certain-Collection/  # For example, this git repository.
+    library-foo/
+        library-foo.durpkg
+        library-foo-ubuntu.durpkg
+        library-foo-avx512.durpkg
+    app-bar/
+        app-bar.durpkg
+        0000-fix-blah-blah.patch
+    app-xyz/
+        app-xyz.durpkg  # This file contains an empty f822 part
+        debian/*
+```
+
 # Contributing
 
 This Toolkit and the [DefaultCollection](https://github.com/dupr/DefaultCollection)
