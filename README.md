@@ -47,19 +47,24 @@ Neural Network) library, that doesn't make sense to be made policy-compliant.
 to redistribute the pre-built binaries for the CUDA version of ffmpeg.
 However, this problem can be bypassed by only providing the build script.
 
-* Repackging upstream pre-built binary tarballs into .deb format.
+* Repackging upstream pre-built binary tarballs into .deb format. For example,
+the VisualStudio-Code upstream tarball. It costs you enourmous amount of
+time and energy to build and put it to the official Debian archive. Why not
+just repack and use it?
 
 * Data or pre-trained neural networks with obscure licensing. In this
 repository one doesn't need to carefully examine the underlying license.
+See [Deep Learning and Free Software](https://lwn.net/Articles/760142/).
+
+* Packages that utilizes SIMD instructions heavily and needs local build for
+the optimal performance. For example the reverse dependencies of the Eigen
+library. Due to the hardware compatibility reason, Debian doesn't distribute
+pre-built binaries with any higher ISA baseline than the generic one.  (So this
+work actually suppresses and replaces the [SIMDebian
+project](https://github.com/SIMDebian/SIMDebian)).
 
 * Packages with dirty hacks, more experimental than Debian/experimental,
 or targeted on testing the water.
-
-* Packages that utilizes SIMD instructions heavily and needs local build for
-the optimal performance. Due to the hardware compatibility reason, Debian
-doesn't distribute pre-built binaries with any higher ISA baseline than the
-generic one.  (So this work actually suppresses and replaces the [SIMDebian
-project](https://github.com/SIMDebian/SIMDebian)).
 
 # Instructions
 
