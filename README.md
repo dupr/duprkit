@@ -5,7 +5,7 @@ THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 THIS TOOLKIT DOES NIT AIM AT SIMPLIFYING DEBIAN PACKAGING.
 THIS TOOLKIT IS STILL AN EXPERIMENT AND IT WILL BE VOLATILE.
 
-D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". (Although ugly. [Put your suggestion here.](https://github.com/dupr/duprkit/issues/2))
+D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a better name here](https://github.com/dupr/duprkit/issues/2))
 
 # DISCLAIMER
 
@@ -153,6 +153,11 @@ project, and I don't comment on personal preference.
 * Where can I submit my `.durpkg` file?
 
 Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own collection.
+
+* Why is "D\*\*ian" ?
+
+This implementation and packaging recipes are ugly. Some people think such
+creation taints the name of Debian. [propose a better name here](https://github.com/dupr/duprkit/issues/2)
 
 # LICENSE
 
