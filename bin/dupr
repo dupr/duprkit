@@ -2,7 +2,7 @@
 set -e
 
 usage () {
-	echo "-- Dasteriskian User Package Repo Kit --"
+	echo "\033[1;38;5;162m-- Dasteriskian User Package Repo Kit --\033[0m"
 	echo "Usage: $0 action [args]"
 	echo ""
 	echo "Actions"
@@ -11,15 +11,16 @@ usage () {
 }
 
 case "$1" in
-	fetch)
-		fetch-collections ;;
 	search)
 		shift
 		grep -ri $1 ;;
 	build)
 		shift
+		echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into shell script and debian/ directory ...\033[0m"
 		unfold -f $1
+		echo "\033[1;38;5;162m→ Triggering build for \033[1;36m$1\033[1;38;5;162m ...\033[0m"
 		bash $1.sh
+		echo "\033[1;38;5;162m→ Complete: \033[1;36m$1\033[1;38;5;162m\033[0m"
 		;;
 	*)
 		usage;;
