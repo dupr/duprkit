@@ -96,3 +96,7 @@ dkGenerate () {
 	dkGen_debian_source_format $1
 	dkGen_SANITY_CHECK $1
 }
+
+dkStartBuild () {
+	dpkg-buildpackage -us -uc
+}
