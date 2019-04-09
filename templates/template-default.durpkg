@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
+. /usr/share/duprkit/duprkit || (echo "Error: duprkit installation is incorrect."; exit 1)
 
 # XXX: The default, minimal format is recommended to everyone.
 #      The traiditional Debian packaging experience could be partially retained.
 #      Some files are automatically generated from the shell variables.
 #      For explicitness please check the -explict template.
-#      For explicitness+autogen please check the -bloated template.
 
 #FIXME: THIS IS A WIP TEMPLATE
 
