@@ -3,7 +3,6 @@ set -e
 . /usr/share/duprkit/duprkit || (echo "Error: duprkit installation is incorrect."; exit 1)
 
 # XXX: The default, minimal format is recommended to everyone.
-#      The traiditional Debian packaging experience could be partially retained.
 #      Some files are automatically generated from the shell variables.
 #      For explicitness please check the -explict template.
 
@@ -20,23 +19,24 @@ section="utils"
 stdver="4.3.0"
 compat="11"
 maintainers="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
-builddepends=""
+build_depends=""
 
 # Get and Pre-Process Source
 dkGet $srcurl  # if ! test -r example.tar.xz; then wget -c $srcurl; fi
 mkdir $src
 tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 
-# Generate debian/ directory and override some of them with HFT file
+# Unfold the HFT part (if any) into the dir. Then Generate missing files.
 # XXX: If you don't like HFT just write no HFT. DUPRKIT shall never complain.
+hft -u ../${0%.sh}.hft -d $src/
 dkGenerate $src
-hft -u ../${0%.sh}.hft -d $src/ -F
 
 # Trigger the build process
 dkStartBuild $src
 
 ^############################################################## SPLIT LINE ####
 ^# For example, when this is only thing that need to overriden
-^ debian/example.examples
-examples/*
-^# THE REST FILES ARE AUTOMATICALLY GENENERATED FROM META INFO
+^ debian/README.Debian
+README.Debian
+---
+blah blah blah
