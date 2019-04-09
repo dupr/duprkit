@@ -1,55 +1,42 @@
 #!/bin/bash
 set -e
 
-# XXX: The minimal format is recommended to everyone. So that the traiditional
-#      Debian packaging experience could be retained, losslessly.
+# XXX: The default, minimal format is recommended to everyone.
+#      The traiditional Debian packaging experience could be partially retained.
+#      Some files are automatically generated from the shell variables.
+#      For explicitness please check the -explict template.
+#      For explicitness+autogen please check the -bloated template.
 
-# get upstream source and delete unwanted files
-if ! test -r example.tar.xz; then wget -c $srcurl; fi
+#FIXME: THIS IS A WIP TEMPLATE
+
+# Meta Information
+src="example"
+srcurl=""
+version="0"
+description="example description"
+srcurl="https://example.org/example.tar.xz"
+license="Expat/MIT"
+section="utils"
+stdver="4.3.0"
+compat="11"
+maintainers="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
+builddepends=""
+
+# Get and Pre-Process Source
+dkGet $srcurl  # if ! test -r example.tar.xz; then wget -c $srcurl; fi
 mkdir $src
-tar Jxvf example.tar.xz -C $src/
+tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 
-pushd $src
-# unfold the debian scripts
-sed -i -e "s/@DUPR_DATE@/$(date -R)/g" ../${0%.sh}.hft
-hft -u ../${0%.sh}.hft
+# Generate debian/ directory and override some of them with HFT file
+# XXX: If you don't like HFT just write no HFT. DUPRKIT shall never complain.
+dkGenerate $src
+hft -u ../${0%.sh}.hft -d $src/ -F
 
-# trigger the build process
-debuild -j4
-popd
-^############################################################## SPLIT LINE ####
-^ debian/changelog
-example (0) experimental; urgency=low
+# Trigger the build process
+dkStartBuild $src
 
-  * Unofficial D**ian User Repo Release.
-
- -- Anonymous <anonymous@example.org>  @DUPR_DATE@
 ^############################################################## SPLIT LINE ####
-^ debian/control
-Source: example
-Section: utils
-Priority: optional
-Standards-Version: 4.3.0
-Maintainer: D**ian User Repo Contributors
-Uploaders: Anonymous <anonymous@example.org>
-Build-Depends: debhelper-compat (= 11),
-
-Package: example
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends},
-Description: example description
- example long description
-^############################################################## SPLIT LINE ####
-^ debian/copyright
-Expat/MIT
-^############################################################## SPLIT LINE ####
-^ debian/example.install
-example  usr/bin/
-^############################################################## SPLIT LINE ####
-^ debian/rules
-#!/usr/bin/make -f
-%:
-	dh $@
-^############################################################## SPLIT LINE ####
-^ debian/source/format
-3.0 (native)
+^# For example, when this is only thing that need to overriden
+^ debian/example.examples
+examples/*
+^# THE REST FILES ARE AUTOMATICALLY GENENERATED FROM META INFO
