@@ -32,6 +32,8 @@ it should be valuable to think about it for Debian.
 
 # What kind of packages does the project target to?
 
+ANY PACKAGE. However this project is very glad to accept the following special cases:
+
 * Packages that are extremely hard to made compliant to Debian Policy. For
 example, bazel the build system of TensorFlow. Or something that doesn't
 worth the effort to be made so.
@@ -94,7 +96,7 @@ name. Plus, no one prevents you from submitting a debian directory.
 
 For example:
 
-A-Certain-Collection/  # For example, this git repository.
+A-Certain-Collection/
     library-foo/
         library-foo.durpkg
         library-foo-ubuntu.durpkg
