@@ -98,5 +98,7 @@ dkGenerate () {
 }
 
 dkStartBuild () {
+	pushd $1
 	dpkg-buildpackage -us -uc
+	popd
 }
