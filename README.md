@@ -1,6 +1,8 @@
 D**ian User Package Repository Toolkit
 ===
 
+[![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
+
 THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
 THIS TOOLKIT DOES NIT AIM AT SIMPLIFYING DEBIAN PACKAGING.
