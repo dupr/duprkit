@@ -2,7 +2,9 @@ D**ian User Package Repository Toolkit
 ===
 
 THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
+
 THIS TOOLKIT DOES NIT AIM AT SIMPLIFYING DEBIAN PACKAGING.
+
 THIS TOOLKIT IS STILL AN EXPERIMENT AND IT WILL BE VOLATILE.
 
 D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a better name here](https://github.com/dupr/duprkit/issues/2))
