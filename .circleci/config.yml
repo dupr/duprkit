@@ -1,16 +1,40 @@
 version: 2
 jobs:
+
+  sanity:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
+      - run:
+          name: hft-sanity
+          command: |
+              python3 bin/hft --version
+              python3 bin/hft --help
+      - run:
+          name: dunfold-sanity
+          command: |
+              python3 bin/dunfold --help
+      - run:
+          name: dupr-sanity-version
+          command: |
+              ./bin/dupr help
+
   build:
     docker:
       - image: debian:unstable
-
     steps:
       - checkout
-
       - run:
-          name: Greeting
-          command: echo Hello, world.
-
+          name: update and install dependencies
+          command: |
+              echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
+              echo "deb-src http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
+              sudo apt update -y
+              sudo apt upgrade -y
+              sudo apt autoremove -y
+              sudo apt build-dep .
+              dpkg-buildpackage -us -uc
       - run:
           name: Print the Current Time
           command: date
