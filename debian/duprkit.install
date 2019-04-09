@@ -1,2 +1,3 @@
 bin/unfold  usr/bin/
-bin/dupr  usr/bin/
+bin/dupr    usr/bin/
+bin/hft     usr/bin/
