@@ -101,6 +101,8 @@ unfolding the `HFT` file.
 
 * Optionally submit the `.durpkg` to your favorite collection.
 
+* The example `.durpkg` for this toolkit can be found in the `examples` directory after `cd examples; make`.
+
 # List of Known Collections
 
 * https://github.com/dupr/DefaultCollection
