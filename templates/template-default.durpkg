@@ -27,7 +27,7 @@ mkdir $src; tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 
 # Unfold the HFT part (if any) into the dir. Then Generate missing files.
 # XXX: If you don't like HFT just write no HFT. DUPRKIT shall never complain.
-hft -u ../${0%.sh}.hft -d $src/
+hft -u ${0%.sh}.hft -d $src/ -v
 dkGenerate $src
 
 # Trigger the build process
