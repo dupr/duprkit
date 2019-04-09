@@ -7,7 +7,7 @@ import argparse
 import sys, os, re, stat
 from typing import *
 
-__VERSION__ = '0.0b'
+__VERSION__ = '0.0c'
 
 __HFT_SPEC__ = '''
 Hatless Folded Text (HFT) Specification
