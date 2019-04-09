@@ -1,12 +1,24 @@
 # ref: https://circleci.com/docs/2.0/getting-started
 version: 2
 jobs:
-
-  sanity:
+  build:
     docker:
-      - image: circleci/python:3.6.1
+      - image: debian:unstable
     steps:
       - checkout
+      - run:
+          name: update and install dependencies
+          command: |
+              echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
+              echo "deb-src http://deb.debian.org/debian unstable main" >> /etc/apt/sources.list
+              apt-get update -y
+              apt-get upgrade -y
+              apt-get install eatmydata -y
+              eatmydata -- apt-get install debhelper -y
+      - run:
+          name: build package
+          command: |
+              dpkg-buildpackage -us -uc
       - run:
           name: hft-sanity
           command: |
@@ -20,21 +32,3 @@ jobs:
           name: dupr-sanity-version
           command: |
               ./bin/dupr help
-
-  build:
-    docker:
-      - image: debian:unstable
-    steps:
-      - checkout
-      - run:
-          name: update and install dependencies
-          command: |
-              echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
-              echo "deb-src http://deb.debian.org/debian unstable main" >> /etc/apt/sources.list
-              apt-get update -y
-              apt-get upgrade -y
-              apt-get install debhelper -y
-      - run:
-          name: build package
-          command: |
-              dpkg-buildpackage -us -uc
