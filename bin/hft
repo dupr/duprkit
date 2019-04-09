@@ -49,7 +49,7 @@ def hft_fold(dir: str) -> List[str]:
     raise NotImplementedError
 
 
-def hft_unfold(hft: List[str], *, fp=None) -> None:
+def hft_unfold(hft: List[str], destdir='', *, fp=None, verbose=False) -> None:
     '''
     Unfold an FHT file.
     '''
@@ -61,26 +61,30 @@ def hft_unfold(hft: List[str], *, fp=None) -> None:
             os.chmod(fp.name, mode=stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
 
     # FIXME: the pattern matching could be improved
-    if len(hft) == 0:
+    if len(hft) == 0:  # Recursion boundary
         if fp is not None: fpclose(fp)
         return
     else:
-        curline = hft[0]
+        curline, restlines = hft[0], hft[1:]
         if curline.startswith('^#'):
-            hft_unfold(hft[1:], fp=fp)
+            hft_unfold(restlines, destdir, fp=fp, verbose=verbose)
         elif curline.startswith('^'):
             if fp is not None: fpclose(fp)
             path = curline.split('^')[-1].strip()
+            path = os.path.join(destdir, path)
             if os.path.exists(path):
                 raise Exception(f'{path} already exists!')
-            os.makedirs(os.path.dirname(path))
+            if not os.path.exists(os.path.dirname(path)):
+                os.makedirs(os.path.dirname(path))
             fp = open(path, 'w')
-            hft_unfold(hft[1:], fp=fp)
+            if verbose:
+                print(path)
+            hft_unfold(restlines, destdir, fp=fp, verbose=verbose)
         else:
             if fp is None:
                 raise SyntaxError(f'Doesnt know where to write {hft}')
-            fp.write(hft[0])
-            hft_unfold(hft[1:], fp=fp)
+            fp.write(curline)
+            hft_unfold(restlines, destdir, fp=fp, verbose=verbose)
 
 
 if __name__ == '__main__':
@@ -118,8 +122,5 @@ if __name__ == '__main__':
     elif ag.fold:
         raise NotImplementedError()
     elif ag.unfold:
-        if not ag.unfold.endswith('.hft'):
-            hft = open(ag.unfold, 'r').readlines()
-            hft_unfold(hft)
-        else:
-            raise Exception(f"Is {ag.unfold} really an HFT file?")
+        hft = open(ag.unfold, 'r').readlines()
+        hft_unfold(hft, ag.destdir, verbose=ag.verbose)
