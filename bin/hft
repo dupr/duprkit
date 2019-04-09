@@ -67,7 +67,10 @@ def hft_fold(path: str) -> List[str]:
                     raise TypeError(f"Unsupported File Type: {p}!")
                 hft.append(f'^ {p}\n')
                 with open(p, 'r') as f:
-                    hft.extend(f.readlines())
+                    lines = f.readlines()
+                    if any([x.startswith('^') for x in lines]):
+                        raise SyntaxError("Hat (^) is not allowed in file content!")
+                    hft.extend()
         return hft
     else:
         raise TypeError(f"Unsupported {path}!")
