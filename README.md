@@ -5,6 +5,17 @@ THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
 D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". (Although ugly. [Put your suggestion here.](https://github.com/dupr/duprkit/issues/2))
 
+# DISCLAIMER
+
+```
+Everything included in this repository is totoally unrelated to the Debian
+Project, or any OFFICIAL Debian development. Debian Project is not responsible
+for any consequence resulted by utilization of the D**ian User Package
+Repository Toolkit or any related .durpkg collections or single .durpkg files.
+Please Take your own risk utilizing the toolkit, and please review every line
+of code before execution.
+```
+
 # Insight & Motivation
 
 ```
@@ -19,41 +30,7 @@ demonstrated successful by the Archlinux User Repository (AUR). Hence,
 it should be valuable to think about it for Debian.
 ```
 
-# DISCLAIMER
-
-```
-
-Everything included in this repository is totoally unrelated to the Debian
-Project, or any OFFICIAL Debian development. Debian Project is not responsible
-for any consequence resulted by utilization of the D**ian User Package
-Repository Toolkit or any related .durpkg collections or single .durpkg files.
-Please Take your own risk utilizing the toolkit, and please review every line
-of code before execution.
-
-```
-
-# Demo
-
-* fetch the DUR Default collection `./bin/fetch-collections`.
-
-* install the python script `./bin/unfold` and shell script `./bin/dupr` to your PATH.
-
-* search for your keywords in the collections `./bin/dupr search gotop`.
-
-* change directory to, e.g. `cd ./DefaultCollection/gotop/`.
-
-* build the gotop package, `dupr build gotop.durpkg`.
-
-* The way to install resulting .deb packages is omitted. I assume you know that.
-
-* FYI, the shell script `./bin/fold` can fold any existing debian directory into plain text file.
-
-* FYI, the file format specification of .f822 and .durpkg can be found in `./bin/unfold`.
-
-* FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
-
-
-# What kind of packages are the project targeted to?
+# What kind of packages does the project target to?
 
 * Packages that are extremely hard to made compliant to Debian Policy. For
 example, bazel the build system of TensorFlow. Or something that doesn't
@@ -75,6 +52,26 @@ repository one doesn't need to carefully examine the underlying license.
 compatibility reason, Debian doesn't distribute pre-built binaries with any
 higher ISA baseline than the generic one.  (So this work actually
 suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIMDebian)).
+
+# Demo
+
+* fetch the DUR Default collection `./bin/fetch-collections`.
+
+* install the python script `./bin/unfold` and shell script `./bin/dupr` to your PATH.
+
+* search for your keywords in the collections `./bin/dupr search gotop`.
+
+* change directory to, e.g. `cd ./DefaultCollection/gotop/`.
+
+* build the gotop package, `dupr build gotop.durpkg`.
+
+* The way to install resulting .deb packages is omitted. I assume you know that.
+
+* FYI, the shell script `./bin/fold` can fold any existing debian directory into plain text file.
+
+* FYI, the file format specification of .f822 and .durpkg can be found in `./bin/unfold`.
+
+* FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
 
 # Specifications
 
