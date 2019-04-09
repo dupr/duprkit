@@ -25,3 +25,10 @@ test -x debian/rules
 
 dkGen_debian_source_format .
 test -r debian/source/format
+
+dkGenerate foobar
+test -r foobar/debian/changelog
+test -r debian/control
+test -r debian/copyright 
+test -x debian/rules
+test -r debian/source/format
