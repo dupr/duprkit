@@ -77,9 +77,9 @@ suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIM
 
 # Specifications
 
-## F822 Specification
+## Hatless Folded Text (HFT) Specification
 
-see bin/unfold
+See https://github.com/dupr/duprkit/blob/master/bin/hft
 
 ## DURPKG Specification
 
