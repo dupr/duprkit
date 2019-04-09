@@ -5,6 +5,20 @@ THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
 
 D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". (Although ugly. [Put your suggestion here.](https://github.com/dupr/duprkit/issues/2))
 
+# Insight & Motivation
+
+```
+The absense of a centralized, informal Debian package repository where
+trusted users could upload their own packaging scripts has been
+long-forgotten. As an inevitable result, many user packaging scripts
+exist in the wild, scattered like stars in the sky, with varied
+packaging quality. Their existence reflects our users' demand,
+especially the experienced ones', that has not been satisfied by the
+Debian archive. Such idea about informal packaging repository has been
+demonstrated successful by the Archlinux User Repository (AUR). Hence,
+it should be valuable to think about it for Debian.
+```
+
 # DISCLAIMER
 
 ```
@@ -18,7 +32,7 @@ of code before execution.
 
 ```
 
-# Usage
+# Demo
 
 * fetch the DUR Default collection `./bin/fetch-collections`.
 
@@ -38,19 +52,6 @@ of code before execution.
 
 * FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
 
-# Motivation
-
-```
-The absense of a centralized, informal Debian package repository where
-trusted users could upload their own packaging scripts has been
-long-forgotten. As an inevitable result, many user packaging scripts
-exist in the wild, scattered like stars in the sky, with varied
-packaging quality. Their existence reflects our users' demand,
-especially the experienced ones', that has not been satisfied by the
-Debian archive. Such idea about informal packaging repository has been
-demonstrated successful by the Archlinux User Repository (AUR). Hence,
-it should be valuable to think about it for Debian.
-```
 
 # What kind of packages are the project targeted to?
 
