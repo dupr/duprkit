@@ -10,12 +10,12 @@ if ! test -r example.tar.xz; then wget -c $srcurl; fi
 mkdir $src
 tar Jxvf example.tar.xz -C $src/
 
-pushd $src
 # unfold the debian scripts
-sed -i -e "s/@DUPR_DATE@/$(date -R)/g" ../${0%.sh}.hft
-hft -u ../${0%.sh}.hft
+sed -i -e "s/@DUPR_DATE@/$(date -R)/g" ${0%.sh}.hft
+hft -u ${0%.sh}.hft -d $src -v
 
 # trigger the build process
+pushd $src
 debuild -j4
 popd
 ^############################################################## SPLIT LINE ####
