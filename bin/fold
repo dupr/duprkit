@@ -1,5 +1,0 @@
-#!/bin/sh
-for file in $(find $1 -type f | sort); do
-	echo "^ $file"
-	cat $file
-done

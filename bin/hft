@@ -46,6 +46,13 @@ HFT Example
 
 
 def hft_fold(dir: str) -> List[str]:
+    '''
+    #!/bin/sh
+    for file in $(find $1 -type f | sort); do
+        echo "^ $file"
+        cat $file
+    done
+    '''
     raise NotImplementedError
 
 
