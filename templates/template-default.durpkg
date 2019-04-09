@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# XXX: The minimal format is recommended to packaging experts, or those
-#      who want to retain the traditional Debian packaging experience.
+# XXX: The minimal format is recommended to everyone. So that the traiditional
+#      Debian packaging experience could be retained, losslessly.
 
 # get upstream source and delete unwanted files
 if ! test -r example.tar.xz; then wget -c $srcurl; fi

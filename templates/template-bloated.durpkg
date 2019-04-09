@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-# XXX: The normal template is generally recommended to everyone.
+# XXX: The bloated template is only recommended to those who like it.
 #      Many fields in debian/control will be automatically filled
 #      by the shell variables. If you don't like the shell variable
-#      replacement, please use the template-minimal.durpkg
+#      replacement, please use the template-default.durpkg
 
 # Meta Information
 src="example"
