@@ -2,7 +2,7 @@ DESTDIR ?=
 PREFIX  ?= /usr/local
 BINDIR  ?= $(PREFIX)/bin/
 
-main:
+install:
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/dunfold $(DESTDIR)/$(BINDIR)/dunfold
 	install -Dm0755 bin/dupr $(DESTDIR)/$(BINDIR)/dupr

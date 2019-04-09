@@ -1,3 +1,5 @@
 #!/usr/bin/make -f
+export DESTDIR=$(shell pwd)/debian/duprkit/
+export PREFIX=/usr
 %:
 	dh $@

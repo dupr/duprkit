@@ -5,7 +5,7 @@ Priority: optional
 Standards-Version: 4.3.0
 Vcs-Git: https://github.com/dupr/duprkit.git
 Vcs-Browser: https://github.com/dupr/duprkit
-Maintainer: Mo Zhou <lumin@debian.org>
+Maintainer: Mo Zhou <cdluminate@gmail.com>
 Build-Depends: debhelper-compat (= 11),
 
 Package: duprkit

@@ -1,0 +1,4 @@
+duprkit: binary-package-depends-on-toolchain-package depends: debhelper
+duprkit: binary-without-manpage usr/bin/dunfold
+duprkit: binary-without-manpage usr/bin/dupr
+duprkit: binary-without-manpage usr/bin/hft
