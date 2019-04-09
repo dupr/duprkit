@@ -30,10 +30,10 @@ jobs:
           command: |
               echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
               echo "deb-src http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
-              sudo apt update -y
-              sudo apt upgrade -y
-              sudo apt autoremove -y
-              sudo apt build-dep .
+              apt update -y
+              apt upgrade -y
+              apt autoremove -y
+              apt build-dep .
               dpkg-buildpackage -us -uc
       - run:
           name: Print the Current Time
