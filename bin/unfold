@@ -4,9 +4,7 @@ D**ian User Package Repository: File Folder / Unfolder
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
 '''
 import argparse
-import sys
-import os
-import re
+import sys, os, re, stat
 from typing import *
 
 __VERSION__ = '0'
@@ -51,15 +49,19 @@ def unfoldf822(f822: List[str], *, fp=None):
 
     end{verbatim}
     '''
+    def fpclose(fp):
+        fp.close()
+        if fp.name.endswith('debian/rules'):
+            os.chmod(fp.name, mode=stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
     if len(f822) == 0:
-        if fp is not None: fp.close()
+        if fp is not None: fpclose(fp)
         return
     else:
         curline = f822[0]
         if curline.startswith('^#'):
             unfoldf822(f822[1:], fp=fp)
         elif curline.startswith('^'):
-            if fp is not None: fp.close()
+            if fp is not None: fpclose(fp)
             path = curline.split('^')[-1].strip()
             if os.path.exists(path):
                 raise Exception(f'{path} already exists!')
