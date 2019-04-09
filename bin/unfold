@@ -49,10 +49,12 @@ def unfoldf822(f822: List[str], *, fp=None):
 
     end{verbatim}
     '''
+
     def fpclose(fp):
         fp.close()
         if fp.name.endswith('debian/rules'):
             os.chmod(fp.name, mode=stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
+
     if len(f822) == 0:
         if fp is not None: fpclose(fp)
         return
