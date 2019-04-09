@@ -13,7 +13,7 @@ __HFT_SPEC__ = '''
 Hatless Folded Text (HFT) Specification
 ---------------------------------------
 
-Hatless Folded Text is basically sort of plaintext 'tar'. An FHT file,
+Hatless Folded Text is basically sort of plaintext 'tar'. An HFT file,
 is a series of (filepath,content) plain texts, where the filepath line
 has a special format "^ FILENAME". For example, "^ debian/rules",
 "^ /tmp/foobar". The content can be any plain text except for a line
@@ -75,7 +75,7 @@ def hft_fold(path: str) -> List[str]:
 
 def hft_unfold(hft: List[str], destdir='', *, fp=None, verbose=False) -> None:
     '''
-    Unfold an FHT file.
+    Unfold an HFT file.
     '''
 
     def fpclose(fp):

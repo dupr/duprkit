@@ -156,9 +156,9 @@ Only 1000~2000 people on this earth have salsa account. More than a million
 people have their Github accounts. Hosting this project on github makes access
 and contributing easy.
 
-* I think the FHT format is totally rubbish. It looks more complex than the traditional `debian/`.
+* I think the HFT format is totally rubbish. It looks more complex than the traditional `debian/`.
 
-Don't use it if you don't like it, FHT is not mandatory. Please use the
+Don't use it if you don't like it, HFT is not mandatory. Please use the
 traditional `debian/` layout instead, see `templates/template-headonly.durpkg`
 for an example.  Simplifying Debian packaging is not a motivation of this
 project, and I don't comment on personal preference.
