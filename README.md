@@ -2,6 +2,8 @@ D**ian User Package Repository Toolkit
 ===
 
 THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE.
+THIS TOOLKIT DOES NIT AIM AT SIMPLIFYING DEBIAN PACKAGING.
+THIS TOOLKIT IS STILL AN EXPERIMENT AND IT WILL BE VOLATILE.
 
 D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". (Although ugly. [Put your suggestion here.](https://github.com/dupr/duprkit/issues/2))
 
@@ -75,7 +77,14 @@ suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIM
 
 * Install, same as above.
 
-* Choose a [template](./templates), copy it to somewhere and modify it.
+* Choose a [template](./templates), copy it to somewhere and modify it. Or you
+just create `.durpkg` header and a `debian/` directory. **HFT Format is not
+mandatory.** Nobody prevents you from rejecting the `HFT` file specification
+and using the traditional `debian/` directory layout, I don't accept any
+argument on personal preference at this point. The `HFT` format and `debian/`
+directory can be bi-directionally transformed with `bin/hft`, e.g. `hft -f
+debian -o debian.hft` for folding the texts, `hft -u debian.hft -d .` for
+unfolding the `HFT` file.
 
 * Make sure `dupr b mypackage.durpkg` works fine.
 
@@ -133,6 +142,17 @@ request for membership by openning an issue.
 Only 1000~2000 people on this earth have salsa account. More than a million
 people have their Github accounts. Hosting this project on github makes access
 and contributing easy.
+
+* I think the FHT format is totally rubbish. It looks more complex than the traditional `debian/`.
+
+Don't use it if you don't like it, FHT is not mandatory. Please use the
+traditional `debian/` layout instead, see `templates/template-headonly.durpkg`
+for an example.  Simplifying Debian packaging is not a motivation of this
+project, and I don't comment on personal preference.
+
+* Where can I submit my `.durpkg` file?
+
+Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own collection.
 
 # LICENSE
 
