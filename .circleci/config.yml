@@ -33,7 +33,7 @@ jobs:
               echo "deb-src http://deb.debian.org/debian unstable main" >> /etc/apt/sources.list
               apt-get update -y
               apt-get upgrade -y
-              apt-get install debhelper devscripts -y
+              apt-get install debhelper -y
       - run:
           name: build package
           command: |
