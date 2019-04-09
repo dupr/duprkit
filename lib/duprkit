@@ -73,7 +73,7 @@ EOF
 dkGen_debian_source_format () {
 	if ! test -r $1/debian/source/format; then
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/source/format"; fi
-		mkdir -p $1/debian/source; echo "3.0 (quilt)" > $1/debian/source/format
+		mkdir -p $1/debian/source; echo "3.0 (native)" > $1/debian/source/format
 	fi
 }
 
