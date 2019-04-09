@@ -30,11 +30,10 @@ jobs:
           command: |
               echo "deb http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
               echo "deb-src http://deb.debian.org/debian unstable main" > /etc/apt/sources.list
-              apt update -y
-              apt upgrade -y
-              apt autoremove -y
-              apt install debhelper devscripts -y
-              dpkg-buildpackage -us -uc
+              apt-get update -y
+              apt-get upgrade -y
+              apt-get install debhelper devscripts -y
       - run:
-          name: Print the Current Time
-          command: date
+          name: build package
+          command: |
+              dpkg-buildpackage -us -uc
