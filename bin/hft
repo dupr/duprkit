@@ -1,0 +1,125 @@
+#!/usr/bin/python3
+'''
+Hatless Folded Text: Lib, Utility
+Copyright (C) 2019 M. Zhou <lumin@debian.org>
+'''
+import argparse
+import sys, os, re, stat
+from typing import *
+
+__VERSION__ = '0.0b'
+
+__HFT_SPEC__ = '''
+Hatless Folded Text (HFT) Specification
+---------------------------------------
+
+Hatless Folded Text is basically sort of plaintext 'tar'. An FHT file,
+is a series of (filepath,content) plain texts, where the filepath line
+has a special format "^ FILENAME". For example, "^ debian/rules",
+"^ /tmp/foobar". The content can be any plain text except for a line
+starts with the hat (^). Comment lines starts with "^#", and one can
+repeat the hash for many times as a split line.
+
+The features of the HFT spec include:
+
+  1. It doesn't support embedding binary blobs, deliberately.
+  2. The content must NOT contain any line that starts with a hat (^).
+
+HFT Example
+-----------
+
+::
+    ^# This is a comment
+    ^ debian/compat
+    11
+    ^ debian/source/format
+    3.0 (native)
+    ^ debian/rules
+    #!/usr/bin/make -f
+    %:
+        dh $@
+    ^ debian/README
+    first line of readme
+    ^# You can even write a comment in-line
+    second line of readme
+'''
+
+
+def hft_fold(dir: str) -> List[str]:
+    raise NotImplementedError
+
+
+def hft_unfold(hft: List[str], *, fp=None) -> None:
+    '''
+    Unfold an FHT file.
+    '''
+
+    def fpclose(fp):
+        # FIXME: the mode bit is unrelated to the HFT spec.
+        fp.close()
+        if fp.name.endswith('debian/rules'):
+            os.chmod(fp.name, mode=stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
+
+    # FIXME: the pattern matching could be improved
+    if len(hft) == 0:
+        if fp is not None: fpclose(fp)
+        return
+    else:
+        curline = hft[0]
+        if curline.startswith('^#'):
+            hft_unfold(hft[1:], fp=fp)
+        elif curline.startswith('^'):
+            if fp is not None: fpclose(fp)
+            path = curline.split('^')[-1].strip()
+            if os.path.exists(path):
+                raise Exception(f'{path} already exists!')
+            os.makedirs(os.path.dirname(path))
+            fp = open(path, 'w')
+            hft_unfold(hft[1:], fp=fp)
+        else:
+            if fp is None:
+                raise SyntaxError(f'Doesnt know where to write {hft}')
+            fp.write(hft[0])
+            hft_unfold(hft[1:], fp=fp)
+
+
+if __name__ == '__main__':
+
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-f', '--fold', type=str, default='', required=False,
+            help='fold the given file or directory')
+    ag.add_argument('-o', '--output', type=str, default='', required=False,
+            help='specify output file of the folded result')
+    ag.add_argument('-u', '--unfold', type=str, default='', required=False,
+            help='unfold the given HFT file')
+    ag.add_argument('-d', '--destdir', type=str, default='', required=False,
+            help='destination directory when unfolding an HFT file')
+    ag.add_argument('-S', '--spec', action='store_true', required=False,
+            help='print the Hatless Folded Text spec')
+    ag.add_argument('-v', '--verbose', action='store_true', required=False,
+            help='toggle verbose mode')
+    ag.add_argument('-V', '--version', action='store_true', required=False,
+            help='print version information')
+    ag, agparser = ag.parse_args(), ag
+
+    # Misc info.
+    if ag.version:
+        print(f'Hatless Folded Text, Version {__VERSION__}')
+        exit(0)
+    elif ag.spec:
+        print(__HFT_SPEC__)
+        exit(0)
+
+    # Do folding / unfolding
+    if not any([ag.fold, ag.unfold]):
+        agparser.print_help()
+    elif all([ag.fold, ag.unfold]):
+        raise ValueError("Both fold and unfold have been specified!")
+    elif ag.fold:
+        raise NotImplementedError()
+    elif ag.unfold:
+        if not ag.unfold.endswith('.hft'):
+            hft = open(ag.unfold, 'r').readlines()
+            hft_unfold(hft)
+        else:
+            raise Exception(f"Is {ag.unfold} really an HFT file?")
