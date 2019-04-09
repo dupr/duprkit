@@ -38,6 +38,42 @@ of code before execution.
 
 * FYI, 4 templates of .durpkg in different styles are available [here](./templates/)
 
+# Motivation
+
+```
+The absense of a centralized, informal Debian package repository where
+trusted users could upload their own packaging scripts has been
+long-forgotten. As an inevitable result, many user packaging scripts
+exist in the wild, scattered like stars in the sky, with varied
+packaging quality. Their existence reflects our users' demand,
+especially the experienced ones', that has not been satisfied by the
+Debian archive. Such idea about informal packaging repository has been
+demonstrated successful by the Archlinux User Repository (AUR). Hence,
+it should be valuable to think about it for Debian.
+```
+
+# What kind of packages are the project targeted to?
+
+* Packages that are extremely hard to made compliant to Debian Policy. For
+example, bazel the build system of TensorFlow.
+
+* Dirty but useful non-free blobs, such as nvidia's cuDNN (CUDA Deep
+Neural Network) library, that doesn't make sense to be made policy-compliant.
+
+* Repackging upstream pre-built binary tarballs into .deb format.
+
+* Data or pre-trained neural networks with obscure licensing. In this
+repository one doesn't need to carefully examine the underlying license.
+
+* Packages with dirty hacks, or targeted on testing the water.
+
+* Packages that are more experimental than Debian/experimental.
+
+* Packages that utilizes SIMD instructions heavily. Due to the hardware
+compatibility reason, Debian doesn't distribute pre-built binaries with any
+higher ISA baseline than the generic one.  (So this work actually
+suppresses and replaces the [SIMDebian project](https://github.com/SIMDebian/SIMDebian)).
+
 # Contributing
 
 This Toolkit and the [DefaultCollection](https://github.com/dupr/DefaultCollection)
