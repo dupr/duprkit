@@ -16,11 +16,14 @@ case "$1" in
 		grep -ri $1 ;;
 	b|build)
 		shift
-		echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into shell script and debian/ directory ...\033[0m"
+		echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into \033[1;36m.sh\033[1;38;5;162m and \033[1;36mdebian/\033[1;38;5;162m dir ...\033[0m"
 		unfold -f $1
 		echo "\033[1;38;5;162m→ Triggering build for \033[1;36m$1\033[1;38;5;162m ...\033[0m"
+		start_time="$(date -u +%s)"
 		bash $1.sh
-		echo "\033[1;38;5;162m→ Complete: \033[1;36m$1\033[1;38;5;162m\033[0m"
+		sleep 1
+		end_time="$(date -u +%s)"
+		echo "\033[1;38;5;162m→ Completed \033[1;36m$1\033[1;38;5;162m in \033[1;36m$(($end_time-$start_time))\033[1;38;5;162m seconds.\033[0m"
 		;;
 	*)
 		usage;;
