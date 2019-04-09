@@ -13,14 +13,14 @@ __HFT_SPEC__ = '''
 Hatless Folded Text (HFT) Specification
 ---------------------------------------
 
-Hatless Folded Text is basically sort of plaintext 'tar'. An HFT file,
-is a series of (filepath,content) plain texts, where the filepath line
-has a special format "^ FILENAME". For example, "^ debian/rules",
-"^ /tmp/foobar". The content can be any plain text except for a line
-starts with the hat (^). Comment lines starts with "^#", and one can
-repeat the hash for many times as a split line.
+Hatless Folded Text basically resembles sort of plaintext 'tar'.
+An HFT file, is a series of (filepath,content) plain texts,
+where the filepath line has a special format "^ FILENAME".
+For example, "^ debian/rules", "^ /tmp/foobar".
+The content can contain any plain text except for any line
+starts with the hat (^). Comment lines starts with "^#".
 
-The features of the HFT spec include:
+HFT spec has some features:
 
   1. It doesn't support embedding binary blobs, deliberately.
   2. The content must NOT contain any line that starts with a hat (^).
