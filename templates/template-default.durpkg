@@ -20,6 +20,8 @@ compat="11"
 maintainer="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
 build_depends=""
 depends=""
+dh_buildsystem=""  # e.g. makefile, cmake, ninja
+dh_with=""  # e.g. python3, python,
 
 # Get and Pre-Process Source
 if ! test -r example.tar.xz; then wget -c $srcurl; fi

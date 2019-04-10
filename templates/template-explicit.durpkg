@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
-
 # XXX: The explicit format is recommended to everyone who like explicitness.
 #      Or doesn't want to call functions from the shell script: lib/duprkit .
-#      For simplified version (involves auto generation): -default template
 
 # get upstream source and delete unwanted files
 if ! test -r example.tar.xz; then wget -c $srcurl; fi
@@ -16,7 +14,7 @@ hft -u ${0%.sh}.hft -d $src -v
 
 # trigger the build process
 pushd $src
-debuild -j4
+dpkg-buildpackage -us -uc -j4
 popd
 ^############################################################## SPLIT LINE ####
 ^ debian/changelog
