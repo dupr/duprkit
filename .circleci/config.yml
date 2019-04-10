@@ -16,11 +16,6 @@ jobs:
               apt-get install eatmydata -y
               eatmydata -- apt-get install debhelper python3 -y
       - run:
-          name: build package
-          command: |
-              dpkg-buildpackage -us -uc
-              git clean -xdf
-      - run:
           name: make test
           command: |
               make test
@@ -29,4 +24,9 @@ jobs:
           make: lib-test
           command: |
               cd lib; make test
+              git clean -xdf
+      - run:
+          name: build package
+          command: |
+              dpkg-buildpackage -us -uc
               git clean -xdf
