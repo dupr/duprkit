@@ -21,13 +21,13 @@ md5sum="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"                     # 33-char # [opt]
 homepage=""                                                       # URL # [opt]
 build_depends=""                         # sep=comma, e.g. "depA, depB" # [opt]
 depends=""                               # sep=comma, e.g. "depA, depB" # [opt]
-dh_buildsystem=""                         # e.g. makefile, cmake, ninja # [opt] 
+dh_buildsystem=""                         # e.g. makefile, cmake, ninja # [opt]
 dh_with=""                                 # e.g. python3, python, etc. # [opt]
 source_format=""                               # default="3.0 (native)" # [opt]
 
 # Get and Pre-Process Source
 dkGet; ln -s $src.blob example.tar.xz
-mkdir $src; tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
+mkdir $src; tar xvf example.tar.xz --strip-components=1 -C $src/
 
 # Unfold the HFT part (if any) into the dir. Then Generate missing files.
 # XXX: If you don't like HFT just write no HFT. DUPRKIT shall never complain.
