@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-__version__="0.0c"
+__version__="0.0d"
 
 dkGet () {
 	# download something and check the checksum
