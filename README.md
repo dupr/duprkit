@@ -165,6 +165,10 @@ request for membership by openning an issue.
 
 # FAQ
 
+* I'm a Ubuntu (or LinuxMint, Kali, Deepin) user, can I use this?
+
+Of course. Theoretically the whole Debian family can use this.
+
 * Why is this project hosted on GitHub instead of Debian's Salsa server?
 
 Only 1000~2000 people on this earth have salsa account. More than a million
