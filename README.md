@@ -104,13 +104,22 @@ texts, `hft -u debian.hft -d .` for unfolding the `HFT` file.
 
 # Specifications
 
+## DUPR/duprpkg Definition
+
+DUPR's packaging recipe is similar to AUR's PKGBUILD, or Gentoo's ebuild.
+By utilizing the packaging recipe, the user will download the source tarball
+and build it locally.
+
 ## DUPR General Recommendations
 
 See [doc/general-recommendations.rst](./doc/general-recommendations.rst)
 
 ## Hatless Folded Text (HFT) Specification
 
+HFT is an **optional** plain text format which allows to to squash packaging
+scripts into a single file.
 See https://github.com/dupr/duprkit/blob/master/bin/hft
+for the specification.
 
 ## DURPKG Specification
 
