@@ -24,9 +24,9 @@ test:
 	@echo "[48;5;92mdupr-sanity[m"
 	./bin/dupr help
 	@echo "[48;5;92mhft-fold[m"
-	./bin/hft -f debian -o debian.hft -v
+	./bin/hft -f bin -o bin.hft -v
 	@echo "[48;5;92mhft-unfold[m"
-	./bin/hft -u debian.hft -d junk -v
+	./bin/hft -u bin.hft -d junk -v
 	@echo "[48;5;92mLIB-TEST[m"
 	$(MAKE) -Clib test
 
