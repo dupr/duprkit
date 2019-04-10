@@ -131,9 +131,9 @@ dkSubst_ () {
 }
 
 dkSubst () {
-	for file in $(find $1 -type f | sort); do
-		if test -n "$DK_VERBOSE"; then echo "DK: Subst'ing placeholders in $1"; fi
-		dkSubst $file
+	for __file in $(find $1 -type f | sort); do
+		if test -n "$DK_VERBOSE"; then echo "DK: Subst'ing placeholders in $__file"; fi
+		dkSubst_ $__file
 	done
 }
 

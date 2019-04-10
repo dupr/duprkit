@@ -32,3 +32,11 @@ test -r debian/control
 test -r debian/copyright 
 test -x debian/rules
 test -r debian/source/format
+
+echo "@SRC@ @VERSION@" > junk
+dkSubst_ junk
+
+mkdir junk.d;
+echo "@SECTION@" > junk.d/a
+echo "@STDVER@"  > junk.d/b
+dkSubst junk.d
