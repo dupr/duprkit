@@ -77,7 +77,8 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
         raise TypeError(f"Unsupported {path}!")
 
 
-def hft_unfold(hft: List[str], destdir='', *, fp=None, verbose=False) -> None:
+def hft_unfold(hft: List[str], destdir='', *,
+        fp=None, verbose=False, force=False) -> None:
     '''
     Unfold an HFT file.
     '''
@@ -95,24 +96,24 @@ def hft_unfold(hft: List[str], destdir='', *, fp=None, verbose=False) -> None:
     else:
         curline, restlines = hft[0], hft[1:]
         if curline.startswith('^#'):
-            hft_unfold(restlines, destdir, fp=fp, verbose=verbose)
+            hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
         elif curline.startswith('^'):
             if fp is not None: fpclose(fp)
             path = curline.split('^')[-1].strip()
             path = os.path.join(destdir, path)
-            if os.path.exists(path):
+            if os.path.exists(path) and not force:
                 raise Exception(f'{path} already exists!')
             if not os.path.exists(os.path.dirname(path)):
                 os.makedirs(os.path.dirname(path))
             fp = open(path, 'w')
             if verbose:
                 print(path)
-            hft_unfold(restlines, destdir, fp=fp, verbose=verbose)
+            hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
         else:
             if fp is None:
                 raise SyntaxError(f'Doesnt know where to write {hft}')
             fp.write(curline)
-            hft_unfold(restlines, destdir, fp=fp, verbose=verbose)
+            hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
 
 
 if __name__ == '__main__':
@@ -126,6 +127,8 @@ if __name__ == '__main__':
             help='unfold the given HFT file')
     ag.add_argument('-d', '--destdir', type=str, default='', required=False,
             help='destination directory when unfolding an HFT file')
+    ag.add_argument('-F', '--force', action='store_true', required=False,
+            help='force overwrite the output destination')
     ag.add_argument('-S', '--spec', action='store_true', required=False,
             help='print the Hatless Folded Text spec')
     ag.add_argument('-v', '--verbose', action='store_true', required=False,
@@ -149,14 +152,13 @@ if __name__ == '__main__':
         raise ValueError("Both fold and unfold have been specified!")
     elif ag.fold:
         if not ag.output:
-            outpath = re.sub('/*$', '', ag.fold) + '.hft'
-            if os.path.exists(outpath):
-                raise Exception(f"{outpath} already exists!")
-            ag.output = outpath
+            ag.output = re.sub('/*$', '', ag.fold) + '.hft'
+        if os.path.exists(ag.output) and not ag.force:
+            raise Exception(f"{ag.output} already exists!")
         hft = hft_fold(ag.fold, verbose=ag.verbose)
         with open(ag.output, 'w') as f:
             f.writelines(hft)
     elif ag.unfold:
         with open(ag.unfold, 'r') as f:
             hft = f.readlines()
-        hft_unfold(hft, ag.destdir, verbose=ag.verbose)
+        hft_unfold(hft, ag.destdir, verbose=ag.verbose, force=ag.force)
