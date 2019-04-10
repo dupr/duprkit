@@ -169,6 +169,11 @@ request for membership by openning an issue.
 
 Of course. Theoretically the whole Debian family can use this.
 
+* Where is the resulting `.deb` files?
+
+DUPR, or .durpkg are not designed to deliver `.deb` files. It's recommended
+to build everything locally after careful review.
+
 * Why is this project hosted on GitHub instead of Debian's Salsa server?
 
 Only 1000~2000 people on this earth have salsa account. More than a million
