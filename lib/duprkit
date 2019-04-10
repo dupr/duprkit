@@ -38,6 +38,7 @@ dkGen_debian_control () {
 		cat > $1/debian/control <<EOF
 Source: $src
 Section: $section
+Homepage: $homepage
 Priority: optional
 Standards-Version: $stdver
 Maintainer: D**ian User Repo Contributors
@@ -46,9 +47,9 @@ Build-Depends: debhelper-compat (= $compat), $build_depends_
 
 Package: $src
 Architecture: any
-Depends: \${misc:Depends}, \${shlibs:Depends},
-  \${python:Depends}, \${python3:Depends},
-  $depends
+Multi-Arch: no
+Depends: \${shlibs:Depends}, \${python:Depends}, \${python3:Depends},
+  \${misc:Depends}, $depends
 Description: $description
  $description
 EOF

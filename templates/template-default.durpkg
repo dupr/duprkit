@@ -7,21 +7,21 @@ export DK_VERBOSE=1
 #      Some files are automatically generated from the shell variables.
 #      For explicitness please check the -explict template.
 
-# Meta Information
-src="example"
-srcurl=""
-version="0"
-description="example description"
-srcurl="https://example.org/example.tar.xz"
-license="Expat/MIT"
-section="utils"
-stdver="4.3.0"
-compat="11"
-maintainer="Anonymous <foobar@example.org>, Foobar <foo@bar.org>"
-build_depends=""
-depends=""
-dh_buildsystem=""  # e.g. makefile, cmake, ninja
-dh_with=""  # e.g. python3, python,
+# Meta Information, [*] are required, [opt] can be omitted
+src="example"  # [*]
+version="0"  # [*]
+description="example description"  # [*]
+srcurl="https://example.org/example.tar.xz"  # [opt]
+homepage=""  # [opt]
+license="Expat/MIT"  # [*]
+section="utils"  # [*]
+stdver="4.3.0"  # [*]
+compat="11"  # [*]
+maintainer="Anonymous <foobar@example.org>"  # [*]
+build_depends=""  # [opt]
+depends=""  # [opt]
+dh_buildsystem=""  # [opt] e.g. makefile, cmake, ninja
+dh_with=""  # [opt] e.g. python3, python,
 
 # Get and Pre-Process Source
 if ! test -r example.tar.xz; then wget -c $srcurl; fi
