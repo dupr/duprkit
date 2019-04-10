@@ -9,18 +9,15 @@ D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a b
 
 # DISCLAIMER
 
-```
 Everything included in this repository is totoally unrelated to the Debian
 Project, or any OFFICIAL Debian development. Debian Project is not responsible
-for any consequence resulted by utilization of the D**ian User Package
+for any consequence resulted by utilization of the D\*\*ian User Package
 Repository Toolkit or any related .durpkg collections or single .durpkg files.
 Please Take your own risk utilizing the toolkit, and please review every line
 of code before execution.
-```
 
 # Insight & Motivation
 
-```
 The absense of a centralized, informal Debian package repository where
 trusted users could upload their own packaging scripts has been
 long-forgotten. As an inevitable result, many user packaging scripts
@@ -30,7 +27,6 @@ especially the experienced ones', that has not been satisfied by the
 Debian archive. Such idea about informal packaging repository has been
 demonstrated successful by the Archlinux User Repository (AUR). Hence,
 it should be valuable to think about it for Debian.
-```
 
 # What kind of packages does the project target to?
 
