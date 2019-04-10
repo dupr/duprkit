@@ -1,15 +1,6 @@
 #!/bin/sh
 set -e
 
-usage () {
-	echo "\033[1;38;5;162m-- Dasteriskian User Package Repo Kit --\033[0m"
-	echo "Usage: $0 action [args]"
-	echo ""
-	echo "Actions"
-	echo "   build <.durpkg file>    Build .deb packages from .durpkg file."
-	echo "   help                    Print this usage information"
-}
-
 dupr_fetch () {
 	echo "\033[1;38;5;162m→ Fetching \033[1;36mDefaultCollection\033[1;38;5;162m ...\033[0m"
 	git clone https://github.com/dupr/DefaultCollection
@@ -20,6 +11,7 @@ dupr_search () {
 }
 
 dupr_build () {
+	test -z "$1" && (echo "Building nothing"; false)
 	echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into \033[1;36m.sh\033[1;38;5;162m and \033[1;36mdebian/\033[1;38;5;162m dir ...\033[0m"
 	# Splits the .durpkg into .sh script and .hft file
 	dunfold $1
@@ -32,10 +24,31 @@ dupr_build () {
 	echo "\033[1;38;5;162m→ Completed \033[1;36m$1\033[1;38;5;162m in \033[1;36m$(($end_time-$start_time))\033[1;38;5;162m seconds.\033[0m"
 }
 
+dupr_create () {
+	if test -z "$1"; then
+		cp /usr/share/doc/duprkit/examples/template-default.durpkg .
+	else
+		cp /usr/share/doc/duprkit/examples/template-$1.durpkg .
+	fi
+}
+
+usage () {
+	echo "\033[1;38;5;162m-- Dasteriskian User Package Repo Kit --\033[0m"
+	echo "Usage: $0 action [args]"
+	echo ""
+	echo "Actions"
+	echo "   fetch                   Fetch the default DUPR collection."
+	echo "   search                  NotImplementedError."
+	echo "   build <.durpkg file>    Build .deb packages from .durpkg file."
+	echo "   create [style]          Create a template file under CWD."
+	echo "                           style can be: {,default,explicit,headonly}"
+	echo "   help                    Print this usage information."
+}
+
 case "$1" in
 	f|fetch)
 		shift
-		dupr_fetch
+		dupr_fetch $@
 		;;
 	s|search)
 		shift
@@ -44,6 +57,10 @@ case "$1" in
 	b|build)
 		shift
 		dupr_build $@
+		;;
+	c|create)
+		shift
+		dupr_create $@
 		;;
 	*)
 		usage;;
