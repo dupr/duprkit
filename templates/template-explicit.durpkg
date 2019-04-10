@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 # XXX: The explicit format is recommended to everyone who like explicitness.
 #      Or doesn't want to call functions from the shell script: lib/duprkit .

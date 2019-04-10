@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # XXX: the -headonly style means that this .durpkg only contains the

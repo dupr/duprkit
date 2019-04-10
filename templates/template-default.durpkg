@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 . /usr/share/duprkit/duprkit || \
 	(echo "Error: the duprkit installation looks broken."; exit 1)
