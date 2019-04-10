@@ -3,6 +3,18 @@ set -e
 
 __version__="0.0c"
 
+dkGet () {
+	# download something and check the checksum
+	if test -r $src.blob; then return; fi
+	if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
+	if test -z "$srcurl"; then echo "DK: Please define 'srcurl'"; false; fi
+	if test -z "$md5sum"; then echo "DK: Please define 'md5sum'"; false; fi
+	aria2c -c "$srcurl" -o $src.blob
+	test "$md5sum" = "$(md5sum $src.blob | cut -d' ' -f1)" || \
+		(echo "DK: Checksum $src.blob ... FAILED"; exit 1)
+	if test -n "$DK_VERBOSE"; then echo "DK: Checksum $src.blob ... OK"; fi
+}
+
 dkGen_debian_changelog () {
 	if ! test -r $1/debian/changelog; then
 		if test -z "$src"; then echo "DK: Please define 'src'"; false; fi

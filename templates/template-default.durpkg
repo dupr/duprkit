@@ -17,6 +17,7 @@ stdver="4.3.0"                                                            # [*]
 compat="11"                                                               # [*]
 maintainer="Anonymous <foobar@example.org>"                               # [*]
 srcurl="https://example.org/example.tar.xz"                             # [opt]
+md5sum="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"                               # [opt]
 homepage=""                                                             # [opt]
 build_depends=""                                                        # [opt]
 depends=""                                                              # [opt]
@@ -25,7 +26,7 @@ dh_with=""                                 # e.g. python3, python, etc. # [opt]
 source_format=""                               # default="3.0 (native)" # [opt]
 
 # Get and Pre-Process Source
-if ! test -r example.tar.xz; then wget -c $srcurl; fi
+dkGet; ln -s $src.blob example.tar.xz
 mkdir $src; tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 
 # Unfold the HFT part (if any) into the dir. Then Generate missing files.
