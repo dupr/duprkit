@@ -32,12 +32,18 @@ mkdir $src; tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 hft -u ${0%.sh}.hft -d $src/ -v
 dkGenerate $src
 
+# Substitude placeholders
+dkSubst $src
+
 # Trigger the build process
 dkStartBuild $src
 
 ^############################################################## SPLIT LINE ####
-^# The only file that diverges from the default template
-^ debian/README.Debian
-README.Debian
+^ debian/install
+bin/foobar  usr/bin/
+^############################################################## SPLIT LINE ####
+^ debian/README
+README.Debian for the @SRC@ (= @VERSION@) package
 ---
 blah blah blah
+The source was downloaded from @SRCURL@

@@ -110,6 +110,33 @@ dkGenerate () {
 	dkGen_SANITY_CHECK $1
 }
 
+dkSubst_ () {
+   sed -i \
+	   -e "s#@HOMEPAGE@#$homepage#g" \
+	   -e "s#@SRCURL@#$srcurl#g" \
+	   -e "s/@BUILD_DEPENDS@/$build_depends/g" \
+	   -e "s/@COMPAT@/$compat/g" \
+	   -e "s/@DATE_R@/$(date -R)/g" \
+	   -e "s/@DEPENDS@/$depends/g" \
+	   -e "s/@DESCRIPTION@/$description/g" \
+	   -e "s/@DH_BUILDSYSTEM@/$dh_buildsystem/g" \
+	   -e "s/@DH_WITH@/$dh_with/g" \
+	   -e "s/@LICENSE@/$license/g" \
+	   -e "s/@MAINTAINERS@/$maintainers/g" \
+	   -e "s/@SECTION@/$section/g" \
+	   -e "s/@SRC@/$src/g" \
+	   -e "s/@STDVER@/$stdver/g" \
+	   -e "s/@VERSION@/$version/g" \
+	   $1
+}
+
+dkSubst () {
+	for file in $(find $1 -type f | sort); do
+		if test -n "$DK_VERBOSE"; then echo "DK: Subst'ing placeholders in $1"; fi
+		dkSubst $file
+	done
+}
+
 dkStartBuild () {
 	pushd $1
 	dpkg-buildpackage -us -uc
