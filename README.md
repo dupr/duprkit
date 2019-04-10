@@ -102,6 +102,13 @@ texts, `hft -u debian.hft -d .` for unfolding the `HFT` file.
 
 * https://github.com/dupr/DefaultCollection
 
+# List of Debian Packaging Documentations
+
+* https://www.debian.org/doc/devel-manuals#devref
+* https://www.debian.org/doc/devel-manuals#debmake-doc
+* https://www.debian.org/doc/devel-manuals#maint-guide
+* https://www.debian.org/doc/devel-manuals#packaging-tutorial
+
 # Specifications
 
 ## DUPR/duprpkg Definition
