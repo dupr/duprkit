@@ -10,22 +10,40 @@ usage () {
 	echo "   help                    Print this usage information"
 }
 
+dupr_fetch () {
+	echo "\033[1;38;5;162m→ Fetching \033[1;36mDefaultCollection\033[1;38;5;162m ...\033[0m"
+	git clone https://github.com/dupr/DefaultCollection
+}
+
+dupr_search () {
+	grep -ri $1
+}
+
+dupr_build () {
+	echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into \033[1;36m.sh\033[1;38;5;162m and \033[1;36mdebian/\033[1;38;5;162m dir ...\033[0m"
+	# Splits the .durpkg into .sh script and .hft file
+	dunfold $1
+	echo "\033[1;38;5;162m→ Triggering build for \033[1;36m$1\033[1;38;5;162m ...\033[0m"
+	start_time="$(date -u +%s)"
+	# Execute the resulting .sh script
+	bash $1.sh
+	sleep 1
+	end_time="$(date -u +%s)"
+	echo "\033[1;38;5;162m→ Completed \033[1;36m$1\033[1;38;5;162m in \033[1;36m$(($end_time-$start_time))\033[1;38;5;162m seconds.\033[0m"
+}
+
 case "$1" in
-	search)
+	f|fetch)
 		shift
-		grep -ri $1 ;;
+		dupr_fetch
+		;;
+	s|search)
+		shift
+		dupr_search $@
+		;;
 	b|build)
 		shift
-		echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into \033[1;36m.sh\033[1;38;5;162m and \033[1;36mdebian/\033[1;38;5;162m dir ...\033[0m"
-		# Splits the .durpkg into .sh script and .hft file
-		dunfold $1
-		echo "\033[1;38;5;162m→ Triggering build for \033[1;36m$1\033[1;38;5;162m ...\033[0m"
-		start_time="$(date -u +%s)"
-		# Execute the resulting .sh script
-		bash $1.sh
-		sleep 1
-		end_time="$(date -u +%s)"
-		echo "\033[1;38;5;162m→ Completed \033[1;36m$1\033[1;38;5;162m in \033[1;36m$(($end_time-$start_time))\033[1;38;5;162m seconds.\033[0m"
+		dupr_build $@
 		;;
 	*)
 		usage;;

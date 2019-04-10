@@ -70,7 +70,7 @@ def hft_fold(path: str) -> List[str]:
                     lines = f.readlines()
                     if any([x.startswith('^') for x in lines]):
                         raise SyntaxError("Hat (^) is not allowed in file content!")
-                    hft.extend()
+                    hft.extend(lines)
         return hft
     else:
         raise TypeError(f"Unsupported {path}!")
@@ -148,12 +148,14 @@ if __name__ == '__main__':
         raise ValueError("Both fold and unfold have been specified!")
     elif ag.fold:
         if not ag.output:
-            if os.path.exists(ag.fold + '.hft'):
-                raise Exception(f"{ag.fold+'.hft'} already exists!")
-            ag.output = ag.fold + '.hft'
+            outpath = re.sub('/*$', '', ag.fold) + '.hft'
+            if os.path.exists(outpath):
+                raise Exception(f"{outpath} already exists!")
+            ag.output = outpath
         hft = hft_fold(ag.fold)
         with open(ag.output, 'w') as f:
             f.writelines(hft)
     elif ag.unfold:
-        hft = open(ag.unfold, 'r').readlines()
+        with open(ag.unfold, 'r') as f:
+            hft = f.readlines()
         hft_unfold(hft, ag.destdir, verbose=ag.verbose)
