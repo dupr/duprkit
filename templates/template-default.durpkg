@@ -1,13 +1,14 @@
 #!/bin/bash
 set -e
-. /usr/share/duprkit/duprkit || (echo "Error: duprkit installation is incorrect."; exit 1)
+. /usr/share/duprkit/duprkit || \
+	(echo "Error: the duprkit installation looks broken."; exit 1)
 export DK_VERBOSE=1
 
 # XXX: The default, minimal format is recommended to everyone.
 #      Some files are automatically generated from the shell variables.
 #      For explicitness please check the -explict template.
 
-# Meta Information, [*] are required, [opt] can be omitted
+# Meta Information. [*] are required, [opt] can be omitted and deleted.
 src="example"                                                             # [*]
 version="0"                                                               # [*]
 description="example description"                                         # [*]
@@ -33,13 +34,12 @@ mkdir $src; tar Jxvf example.tar.xz --strip-commenents=1 -C $src/
 # XXX: If you don't like HFT just write no HFT. DUPRKIT shall never complain.
 hft -u ${0%.sh}.hft -d $src/ -v
 dkGenerate $src
+dkSubst $src/debian  # (Substitude all @FOOBAR@ placeholders in the directory)
 
-# Substitude placeholders
-dkSubst $src
-
-# Trigger the build process
+# Trigger the build
 dkStartBuild $src
 
+#EOF
 ^############################################################## SPLIT LINE ####
 ^ debian/install
 bin/foobar  usr/bin/
