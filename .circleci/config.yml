@@ -19,14 +19,14 @@ jobs:
           name: build package
           command: |
               dpkg-buildpackage -us -uc
-              debclean
+              git clean -xdf
       - run:
           name: make test
           command: |
-              git clean -xdf
               make test
+              git clean -xdf
       - run:
           make: lib-test
           command: |
-              git clean -xdf
               cd lib; make test
+              git clean -xdf
