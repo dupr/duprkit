@@ -46,7 +46,9 @@ Build-Depends: debhelper-compat (= $compat), $build_depends_
 
 Package: $src
 Architecture: any
-Depends: \${misc:Depends}, \${shlibs:Depends}, \${python3:Depends}, $depends
+Depends: \${misc:Depends}, \${shlibs:Depends},
+  \${python:Depends}, \${python3:Depends},
+  $depends
 Description: $description
  $description
 EOF
