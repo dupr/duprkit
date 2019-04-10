@@ -11,7 +11,7 @@ Build-Depends: debhelper-compat (= 11),
 Package: duprkit
 Architecture: all
 Depends: ${misc:Depends}, debhelper, devscripts, build-essential,
-         python3, python3-all, git, wget, debmake,
+         python3, python3-all, git, wget, curl, aria2, debmake,
 Description: D**ian User Package Repository Toolkit
  Dasteriskian User Package Repository Toolkit aims at getting scutwork done.
  .
