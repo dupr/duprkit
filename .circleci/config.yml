@@ -14,7 +14,7 @@ jobs:
               apt-get update -y
               apt-get upgrade -y
               apt-get install eatmydata -y
-              eatmydata -- apt-get install debhelper python3 -y
+              eatmydata -- apt-get install debhelper python3 git -y
       - run:
           name: make test
           command: |
