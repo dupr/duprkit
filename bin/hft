@@ -15,8 +15,8 @@ Hatless Folded Text (HFT) Specification
 
 Hatless Folded Text basically resembles sort of plaintext 'tar'.
 An HFT file, is a series of (filepath,content) plain texts,
-where the filepath line has a special format "^ FILENAME".
-For example, "^ debian/rules", "^ /tmp/foobar".
+where the filepath line has a special format "^ FILENAME [mode]".
+For example, "^ debian/rules 0o755", "^ /tmp/foobar".
 The content can contain any plain text except for any line
 starts with the hat (^). Comment lines starts with "^#".
 
@@ -24,6 +24,7 @@ HFT spec has some features:
 
   1. It doesn't support embedding binary blobs, deliberately.
   2. The content must NOT contain any line that starts with a hat (^).
+  3. The file mode is optional.
 
 HFT Example
 -----------
@@ -34,7 +35,7 @@ HFT Example
     11
     ^ debian/source/format
     3.0 (native)
-    ^ debian/rules
+    ^ debian/rules 0o755
     #!/usr/bin/make -f
     %:
         dh $@
@@ -65,7 +66,8 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
                 p = os.path.join(root, name)
                 if not os.path.isfile(p):
                     raise TypeError(f"Unsupported File Type: {p}!")
-                hft.append(f'^ {p}\n')
+                fmode = oct(os.stat(p).st_mode)
+                hft.append(f'^ {p} {fmode}\n')
                 with open(p, 'r') as f:
                     if verbose: print(p)
                     lines = f.readlines()
@@ -82,32 +84,35 @@ def hft_unfold(hft: List[str], destdir='', *,
     '''
     Unfold an HFT file.
     '''
-
-    def fpclose(fp):
-        # FIXME: the mode bit is unrelated to the HFT spec.
-        fp.close()
-        if fp.name.endswith('debian/rules'):
-            os.chmod(fp.name, mode=stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
-
-    # FIXME: the pattern matching could be improved
     if len(hft) == 0:  # Recursion boundary
-        if fp is not None: fpclose(fp)
+        if fp is not None: fp.close()
         return
     else:
         curline, restlines = hft[0], hft[1:]
-        if curline.startswith('^#'):
+        if re.match('^\^#.*$', curline):
             hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
         elif curline.startswith('^'):
-            if fp is not None: fpclose(fp)
-            path = curline.split('^')[-1].strip()
+            if fp is not None: fp.close()
+            # parse the "^ filepath [mode]" line
+            fmode = None
+            if re.match('^\^\s*([/\S]+)\s+([o\d]+)\s*$', curline):
+                path, fmode = re.match('^\^\s*([/\S]+)\s+([o\d]+)\s*$',
+                        curline).groups()
+                fmode = eval(fmode)
+            elif re.match('^\^\s*([/\S]+)\s*$', curline):
+                path = re.match('^\^\s*([/\S]+)\s*$', curline).group(1)
+            else:
+                raise SyntaxError(f"Cannot parse '{curline}' !")
+            # create the new file
             path = os.path.join(destdir, path)
             if os.path.exists(path) and not force:
                 raise Exception(f'{path} already exists!')
             if not os.path.exists(os.path.dirname(path)):
                 os.makedirs(os.path.dirname(path))
             fp = open(path, 'w')
-            if verbose:
-                print(path)
+            if fmode is not None: os.chmod(path, fmode)
+            if verbose: print(path)
+            # proceed with the rest lines
             hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
         else:
             if fp is None:

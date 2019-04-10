@@ -45,7 +45,7 @@ Expat/MIT
 ^ debian/example.install
 example  usr/bin/
 ^############################################################## SPLIT LINE ####
-^ debian/rules
+^ debian/rules 0o755
 #!/usr/bin/make -f
 %:
 	dh $@
