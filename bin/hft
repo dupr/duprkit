@@ -45,7 +45,7 @@ HFT Example
 '''
 
 
-def hft_fold(path: str) -> List[str]:
+def hft_fold(path: str, *, verbose=False) -> List[str]:
     '''
     Fold a given file or directory into hft format. It is basically
     equivalent to::
@@ -67,9 +67,10 @@ def hft_fold(path: str) -> List[str]:
                     raise TypeError(f"Unsupported File Type: {p}!")
                 hft.append(f'^ {p}\n')
                 with open(p, 'r') as f:
+                    if verbose: print(p)
                     lines = f.readlines()
                     if any([x.startswith('^') for x in lines]):
-                        raise SyntaxError("Hat (^) is not allowed in file content!")
+                        raise SyntaxError("Hat(^)-leading line is not allowed!")
                     hft.extend(lines)
         return hft
     else:
@@ -152,7 +153,7 @@ if __name__ == '__main__':
             if os.path.exists(outpath):
                 raise Exception(f"{outpath} already exists!")
             ag.output = outpath
-        hft = hft_fold(ag.fold)
+        hft = hft_fold(ag.fold, verbose=ag.verbose)
         with open(ag.output, 'w') as f:
             f.writelines(hft)
     elif ag.unfold:
