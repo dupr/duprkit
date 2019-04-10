@@ -30,6 +30,10 @@ dkGen_debian_control () {
 		if test -z "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
 		if test -z "$description"; then echo "DK: Please define 'description'"; false; fi
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/control"; fi
+		build_depends_="$build_depends"
+		if test -n "$(echo $dh_with | grep -o python)"; then
+			build_depends_="$build_depends,dh-python,python3-all,python3-all-dev,python-all,python-all-dev,"
+		fi
 		mkdir -p $1/debian
 		cat > $1/debian/control <<EOF
 Source: $src
@@ -38,7 +42,7 @@ Priority: optional
 Standards-Version: $stdver
 Maintainer: D**ian User Repo Contributors
 Uploaders: $maintainer
-Build-Depends: debhelper-compat (= $compat), $build_depends
+Build-Depends: debhelper-compat (= $compat), $build_depends_
 
 Package: $src
 Architecture: any
@@ -60,11 +64,17 @@ dkGen_debian_copyright () {
 dkGen_debian_rules () {
 	if ! test -r $1/debian/rules; then
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/rules"; fi
+		if test -n "$dh_with"; then
+			dh_with_="--with $dh_with"
+		fi
+		if test -n "$dh_buildsystem"; then
+			dh_buildsystem_="-S$dh_buildsystem"
+		fi
 		mkdir -p $1/debian
 		cat > $1/debian/rules <<EOF
 #!/usr/bin/make -f
 %:
-	dh \$@
+	dh \$@ $dh_buildsystem_ $dh_with_
 EOF
 		chmod +x $1/debian/rules
 	fi
