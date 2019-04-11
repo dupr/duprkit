@@ -72,6 +72,7 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
                     if verbose: print(p)
                     lines = f.readlines()
                     if any([x.startswith('^') for x in lines]):
+                        print(f'{p}: Syntax Error!')
                         raise SyntaxError("Hat(^)-leading line is not allowed!")
                     hft.extend(lines)
         return hft
