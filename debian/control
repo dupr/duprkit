@@ -12,6 +12,7 @@ Package: duprkit
 Architecture: all
 Depends: ${misc:Depends}, debhelper, devscripts, build-essential,
          python3, python3-all, git, wget, curl, aria2, debmake,
+         python3-chardet,
 Description: D**ian User Package Repository Toolkit
  Dasteriskian User Package Repository Toolkit aims at getting scutwork done.
  .
