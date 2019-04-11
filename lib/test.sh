@@ -40,3 +40,7 @@ mkdir junk.d;
 echo "@SECTION@" > junk.d/a
 echo "@STDVER@"  > junk.d/b
 dkSubst junk.d
+
+dh_skip="dh_auto_test dh_strip"
+rm ./debian/rules
+dkGen_debian_rules .

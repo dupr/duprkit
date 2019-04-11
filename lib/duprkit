@@ -97,6 +97,12 @@ dkGen_debian_rules () {
 %:
 	dh \$@ $dh_buildsystem_ $dh_with_
 EOF
+		if test -n "$dk_skip"; then
+			for item in $dk_skip; do
+				echo "" >> $1/debian/rules
+				echo "override_$item:" >> $1/debian/rules
+			done
+		fi
 		chmod +x $1/debian/rules
 	fi
 }

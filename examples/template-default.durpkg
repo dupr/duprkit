@@ -46,6 +46,8 @@ dh_buildsystem=""
 dh_with=""
 #- [opt] @SOURCE_FORMAT@                                 default="3.0 (native)"
 source_format=""
+#- [opt]                                sep=space, e.g. "dh_auto_test dh_strip"
+dk_skip=""
 #
 #\--- END Meta Information ----
 
