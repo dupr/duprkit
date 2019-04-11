@@ -78,8 +78,10 @@ dkSubst $src/debian
 #
 #\--- END Processing debian/ directory
 
-# Trigger the build
+#/--- BEGIN Build Stuff ----
+# Export DK_BUILD=deb,dsc,none
 dkStartBuild $src
+#\--- END Build Stuff ----
 
 #EOF
 ^##############################################################################
