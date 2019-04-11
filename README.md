@@ -177,19 +177,18 @@ Only 1000~2000 people on this earth have salsa account. More than a million
 people have their Github accounts. Hosting this project on github makes access
 and contributing easy.
 
-* I think the HFT format is totally rubbish.
+* I dislike the HFT format...
 
-Don't use it if you don't like it, HFT is not mandatory. Please carefully
-read the templates.
+HFT is not mandatory. Please carefully read the templates.
 
 * Where can I submit my `.durpkg` file?
 
 Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own collection.
 
-* Why is "D\*\*ian" ?
+* Why is it "D\*\*ian" ?
 
-This implementation and packaging recipes are ugly, and non-DFSG stuff are
-allowed here. Some people think such creation taints the name of Debian.
+This implementation allows non-DFSG stuff or dirty stuff.
+Some people think some derived works may taint the name of Debian.
 [propose a better name here](https://github.com/dupr/duprkit/issues/2)
 
 # LICENSE
