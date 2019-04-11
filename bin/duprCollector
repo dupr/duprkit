@@ -50,7 +50,7 @@ def prettyPrint(col: List[Dict]) -> None:
         print(green('       Source Name:'), f'{src}')
         print(green('       Description:'), f'{desc}')
         print()
-    print('Found', Yellow(f'{len(Collection)}'),
+    print('Found', Yellow(f'{len(col)}'),
           f'(matching) packages in "{ag.collection}"')
 
 
