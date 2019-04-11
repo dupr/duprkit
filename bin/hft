@@ -138,9 +138,9 @@ if __name__ == '__main__':
     ag.add_argument('-f', '--fold', type=str, default='', required=False,
             help='fold the given file or directory')
     ag.add_argument('-o', '--output', type=str, default='', required=False,
-            help='specify output file of the folded result')
+            help='specify output file of the folded result (incl. /dev/stdout)')
     ag.add_argument('-u', '--unfold', type=str, default='', required=False,
-            help='unfold the given HFT file')
+            help='unfold the given HFT file, (incl. /dev/stdin)')
     ag.add_argument('-d', '--destdir', type=str, default='', required=False,
             help='destination directory when unfolding an HFT file')
     ag.add_argument('-F', '--force', action='store_true', required=False,
