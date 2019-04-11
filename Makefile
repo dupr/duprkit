@@ -38,5 +38,6 @@ test:
 	$(MAKE) -Clib test
 
 fmt:
-	yapf3 -i bin/unfold
-	yapf3 -i bin/hft
+	for BIN in dunfold duprCollector  hft; do \
+		yapf3 -i bin/$$BIN; \
+	done
