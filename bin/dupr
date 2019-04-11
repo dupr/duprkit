@@ -6,10 +6,6 @@ dupr_fetch () {
 	git clone https://github.com/dupr/DefaultCollection
 }
 
-dupr_search () {
-	grep -ri $1
-}
-
 dupr_build () {
 	test -z "$1" && (echo "Building nothing"; false)
 	echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into \033[1;36m.sh\033[1;38;5;162m and \033[1;36mdebian/\033[1;38;5;162m dir ...\033[0m"
@@ -38,7 +34,8 @@ usage () {
 	echo ""
 	echo "Actions"
 	echo "   f|fetch              Fetch the default DUPR collection."
-	echo "   s|search             NotImplementedError."
+	echo "   s|search [keyword] [dir]"
+	echo "                        Search in the [dir, default=.] collection."
 	echo "   b|build <.durpkg>    Build .deb packages from .durpkg file."
 	echo "   c|create [name]      Create a template file: <name>.durpkg"
 	echo "   l|ls [dir]           List packages in collection: [dir]"
@@ -52,7 +49,7 @@ case "$1" in
 		;;
 	s|search)
 		shift
-		dupr_search $@
+		duprCollector -s $@
 		;;
 	b|build)
 		shift
