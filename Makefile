@@ -1,5 +1,5 @@
 DESTDIR       ?=
-PREFIX        ?= /usr/local
+PREFIX        ?= /usr
 BINDIR        ?= $(PREFIX)/bin/
 SHAREDIR      ?= $(PREFIX)/share/duprkit/
 DOCDIR        ?= $(PREFIX)/share/doc/duprkit/
