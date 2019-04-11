@@ -79,30 +79,30 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
         raise TypeError(f"Unsupported {path}!")
 
 
-def hft_unfold(hft: List[str], destdir='', *,
-        fp=None, verbose=False, force=False) -> None:
+def hft_unfold(hft: List[str], destdir:str='', *,
+        verbose:bool=False, force:bool=False) -> None:
     '''
     Unfold an HFT file.
     '''
-    if len(hft) == 0:  # Recursion boundary
-        if fp is not None: fp.close()
-        return
-    else:
-        curline, restlines = hft[0], hft[1:]
-        if re.match('^\^#.*$', curline):
-            hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
-        elif curline.startswith('^'):
-            if fp is not None: fp.close()
+    curline, rest, fp, fmode = None, hft, None, None
+    r_file_mode = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
+    r_file      = re.compile('^\^\s*([/\S]+)\s*$')
+    while len(rest) > 0:
+        curline, rest = rest[0], rest[1:]
+        if re.match('^\^#.*$', curline):  # A COMMENT LINE
+            continue
+        elif curline.startswith('^'):  # A PATH-MODE LINE
+            if fp is not None:
+                fp.close()
+                fp = None
             # parse the "^ filepath [mode]" line
-            fmode = None
-            if re.match('^\^\s*([/\S]+)\s+([o\d]+)\s*$', curline):
-                path, fmode = re.match('^\^\s*([/\S]+)\s+([o\d]+)\s*$',
-                        curline).groups()
+            if r_file_mode.match(curline):
+                path, fmode = r_file_mode.match(curline).groups()
                 fmode = eval(fmode)
-            elif re.match('^\^\s*([/\S]+)\s*$', curline):
-                path = re.match('^\^\s*([/\S]+)\s*$', curline).group(1)
+            elif r_file.match(curline):
+                path, fmode = r_file.match(curline).group(1), None
             else:
-                raise SyntaxError(f"Cannot parse '{curline}' !")
+                raise SyntaxError(f"Parser Error: Invalid line '{curline}'")
             # create the new file
             path = os.path.join(destdir, path)
             if os.path.exists(path) and not force:
@@ -112,13 +112,12 @@ def hft_unfold(hft: List[str], destdir='', *,
             fp = open(path, 'w')
             if fmode is not None: os.chmod(path, fmode)
             if verbose: print(path)
-            # proceed with the rest lines
-            hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
-        else:
+        else:  # NORMAL CONTENT
             if fp is None:
                 raise SyntaxError(f'Doesnt know where to write {hft}')
             fp.write(curline)
-            hft_unfold(restlines, destdir, fp=fp, verbose=verbose, force=force)
+    if fp is not None: fp.close()
+    return
 
 
 if __name__ == '__main__':
