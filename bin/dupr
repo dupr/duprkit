@@ -37,11 +37,12 @@ usage () {
 	echo "Usage: $0 action [args]"
 	echo ""
 	echo "Actions"
-	echo "   fetch                   Fetch the default DUPR collection."
-	echo "   search                  NotImplementedError."
-	echo "   build <.durpkg file>    Build .deb packages from .durpkg file."
-	echo "   create [name]           Create a template file: <name>.durpkg"
-	echo "   help                    Print this usage information."
+	echo "   f|fetch              Fetch the default DUPR collection."
+	echo "   s|search             NotImplementedError."
+	echo "   b|build <.durpkg>    Build .deb packages from .durpkg file."
+	echo "   c|create [name]      Create a template file: <name>.durpkg"
+	echo "   l|ls [dir]           List packages in collection: [dir]"
+	echo "   help                 Print this usage information."
 }
 
 case "$1" in
@@ -60,6 +61,10 @@ case "$1" in
 	c|create)
 		shift
 		dupr_create $@
+		;;
+	ls|list)
+		shift
+		dupr-librarian $@
 		;;
 	*)
 		usage;;
