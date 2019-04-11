@@ -28,7 +28,7 @@ dupr_create () {
 	if test -z "$1"; then
 		cp /usr/share/doc/duprkit/examples/template-default.durpkg .
 	else
-		cp /usr/share/doc/duprkit/examples/template-$1.durpkg .
+		cp /usr/share/doc/duprkit/examples/template-default.durpkg $1.durpkg
 	fi
 }
 
@@ -40,8 +40,7 @@ usage () {
 	echo "   fetch                   Fetch the default DUPR collection."
 	echo "   search                  NotImplementedError."
 	echo "   build <.durpkg file>    Build .deb packages from .durpkg file."
-	echo "   create [style]          Create a template file under CWD."
-	echo "                           style can be: {,default,explicit,headonly}"
+	echo "   create [name]           Create a template file: <name>.durpkg"
 	echo "   help                    Print this usage information."
 }
 

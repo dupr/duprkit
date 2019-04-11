@@ -10,10 +10,8 @@ install:
 	install -Dm0755 bin/dunfold $(DESTDIR)/$(BINDIR)/dunfold
 	install -Dm0755 bin/dupr $(DESTDIR)/$(BINDIR)/dupr
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
-	install -Dm0644 templates/template-default.durpkg $(DESTDIR)/$(EXAMPLEDIR)/template-default.durpkg
-	install -Dm0644 templates/template-headonly.durpkg $(DESTDIR)/$(EXAMPLEDIR)/template-headonly.durpkg
-	install -Dm0644 templates/template-explicit.durpkg $(DESTDIR)/$(EXAMPLEDIR)/template-explicit.durpkg
-
+	install -Dm0644 examples/template-default.durpkg \
+		$(DESTDIR)/$(EXAMPLEDIR)/template-default.durpkg
 
 test:
 	@echo "[48;5;92mhft-sanity[m"
