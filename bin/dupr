@@ -64,7 +64,7 @@ case "$1" in
 		;;
 	ls|list)
 		shift
-		dupr-librarian $@
+		duprCollector $@
 		;;
 	*)
 		usage;;

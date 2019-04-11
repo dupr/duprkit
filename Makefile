@@ -9,7 +9,7 @@ install:
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/dunfold $(DESTDIR)/$(BINDIR)/dunfold
 	install -Dm0755 bin/dupr $(DESTDIR)/$(BINDIR)/dupr
-	install -Dm0755 bin/dupr-librarian $(DESTDIR)/$(BINDIR)/dupr-librarian
+	install -Dm0755 bin/duprCollector $(DESTDIR)/$(BINDIR)/duprCollector
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
 	install -Dm0644 examples/template-default.durpkg \
 		$(DESTDIR)/$(EXAMPLEDIR)/template-default.durpkg
