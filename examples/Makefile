@@ -5,6 +5,10 @@ duprkit.durpkg:
 	cat duprkit.durpkg.header duprkit.durpkg.hft >> duprkit.durpkg
 	rm duprkit.durpkg.hft
 
+# Make you the default template.
+template-default.durpkg:
+	true
+
 # Make you an explicit example on how to convert existing debian pkg to .durpkg
 %.durpkg:
 	apt source $*

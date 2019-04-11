@@ -82,11 +82,12 @@ or targeted on testing the water.
 
 * Install, same as above.
 
-* Choose a [template](./templates), copy it to somewhere and modify it. Or you
-just create `.durpkg` header and a `debian/` directory. **HFT Format is not
-mandatory.** The `HFT` format and `debian/` directory can be bi-directionally
-transformed with `bin/hft`, e.g. `hft -f debian -o debian.hft` for folding the
-texts, `hft -u debian.hft -d .` for unfolding the `HFT` file.
+* Copy the [default template](./examples/template-default.durpkg) to somewhere
+and modify it. Or just create a `.durpkg` header and a `debian/` directory.
+**HFT Format is not mandatory.** The `HFT` format and `debian/` directory can
+be bi-directionally transformed with `bin/hft`, e.g. `hft -f debian -o
+debian.hft` for folding the texts, `hft -u debian.hft -d .` for unfolding the
+`HFT` file.
 
 * Make sure `dupr b mypackage.durpkg` works fine.
 
