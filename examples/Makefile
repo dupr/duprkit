@@ -15,3 +15,10 @@ template-default.durpkg:
 	cd $**/; hft -f debian/ -o ../$*.hft
 	sed -e "s/@SRC@/$*/g" < _.durpkg.header > $*.durpkg
 	cat $*.hft >> $*.durpkg
+
+# for debugging
+install:
+	install -Dm0644 vim/syntax/hft.vim \
+		/usr/share/vim/vim81/syntax/hft.vim
+	install -Dm0644 vim/ftdetect/hft.vim \
+		/usr/share/vim/vim81/ftdetect/hft.vim
