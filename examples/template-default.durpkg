@@ -101,6 +101,7 @@ The source was downloaded from @SRCURL@ (md5= @MD5SUM@)
 The @...@ placeholders in this file will be replaced by dkSubst or dkSubst_
 ^############################################################## SPLIT LINE ####
 ^# You may want to override the auto-generated debian/control
+^ debian/control
 Source: @SRC@
 Section: @SECTION@
 Homepage: @HOMEPAGE@
