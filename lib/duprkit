@@ -44,8 +44,11 @@ dkGen_debian_control () {
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/control"; fi
 		build_depends_="$build_depends"
 		if test -n "$(echo $dh_with | grep -o python)"; then
-			build_depends_="$build_depends,dh-python,python3-all,python3-all-dev,python-all,python-all-dev,"
-		fi
+			build_depends_="$build_depends,dh-python"; fi
+		if test -n "$(echo $dh_with | grep -o python3)"; then
+			build_depends_="$build_depends,python3-all,python3-all-dev"; fi
+		if test -n "$(echo $dh_with | grep -oP 'python[^3$]')"; then
+			build_depends_="$build_depends,python-all,python-all-dev": fi
 		mkdir -p $1/debian
 		cat > $1/debian/control <<EOF
 Source: $src
