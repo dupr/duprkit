@@ -7,7 +7,7 @@ EXAMPLEDIR    ?= $(DOCDIR)/examples/
 VIMADDON      ?= $(PREFIX)/share/vim/addons/
 VIM81         ?= $(PREFIX)/share/vim/vim81/
 
-install:
+install: install-vim
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/dunfold $(DESTDIR)/$(BINDIR)/dunfold
 	install -Dm0755 bin/dupr $(DESTDIR)/$(BINDIR)/dupr
