@@ -67,7 +67,7 @@ Package: $src
 Architecture: any
 Multi-Arch: no
 Depends: \${shlibs:Depends}, \${python:Depends}, \${python3:Depends},
-  \${misc:Depends}, $depends
+  \${misc:Depends}, \${misc:Pre-Depends}, $depends
 Description: $description
  $description
 EOF
@@ -146,10 +146,10 @@ dkSubst_ () {
 	   -e "s/@COMPAT@/$compat/g" \
 	   -e "s/@DATE_R@/$(date -R)/g" \
 	   -e "s/@DEPENDS@/$depends/g" \
-	   -e "s/@DESCRIPTION@/$description/g" \
+	   -e "s#@DESCRIPTION@#$description#g" \
 	   -e "s/@DH_BUILDSYSTEM@/$dh_buildsystem/g" \
 	   -e "s/@DH_WITH@/$dh_with/g" \
-	   -e "s/@LICENSE@/$license/g" \
+	   -e "s#@LICENSE@#$license#g" \
 	   -e "s/@MAINTAINERS@/$maintainers/g" \
 	   -e "s/@SECTION@/$section/g" \
 	   -e "s/@SRC@/$src/g" \
