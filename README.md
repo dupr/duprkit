@@ -3,9 +3,18 @@ D**ian User Package Repository Toolkit
 
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
 
-THIS TOOLKIT ONLY FOCUSES ON GETTING SCUTWORK DONE. EVERYTHING IS VOLATILE.
+DUPR Toolkit (duprkit) is a set of tools designed for Debian User Package
+Repository. Similar to Archlinux User Repository (AUR), DUPR aim to ease
+Debian packaging with simplified packaging recipe format, although it
+still requires a good knowlege on traditional Debian packaging. DUPR only
+distributes packaging recipes and doesn't distrbute any resulting `.deb`
+files.
 
-D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a better name here](https://github.com/dupr/duprkit/issues/2))
+DUPR Toolkit includes (1) the Hatless Folded Text (HFT) utility, which
+works like sort of "plain text tar"; (2) the `.durpkg` unfolder, namely
+`dunfold` which separates a `.durpkg` file into a shell script and an
+HFT file; (3) The DUPR helper `dupr`, which can build `.deb` packages
+with a given `.durpkg`.
 
 # DISCLAIMER
 
@@ -186,6 +195,8 @@ HFT is not mandatory. Please carefully read the templates.
 Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own collection.
 
 * Why is it "D\*\*ian" ?
+
+D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a better name here](https://github.com/dupr/duprkit/issues/2))
 
 This implementation allows non-DFSG stuff or dirty stuff.
 Some people think some derived works may taint the name of Debian.
