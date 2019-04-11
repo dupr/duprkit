@@ -4,7 +4,7 @@ Hatless Folded Text: Lib, Utility
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
 '''
 import argparse
-import sys, os, re, stat
+import sys, os, re, stat, chardet
 from typing import *
 
 __VERSION__ = '0.0e'
@@ -63,18 +63,29 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
         hft = []
         for root, dirs, files in os.walk(path):
             for name in files:
+                # probe the file
                 p = os.path.join(root, name)
                 if not os.path.isfile(p):
                     raise TypeError(f"Unsupported File Type: {p}!")
                 fmode = oct(os.stat(p).st_mode)
                 hft.append(f'^ {p} {fmode}\n')
-                with open(p, 'r') as f:
-                    if verbose: print(p)
+                # open and read the lines
+                f = open(p, 'r')
+                try:
                     lines = f.readlines()
-                    if any([x.startswith('^') for x in lines]):
-                        print(f'{p}: Syntax Error!')
-                        raise SyntaxError("Hat(^)-leading line is not allowed!")
-                    hft.extend(lines)
+                except UnicodeError as e:
+                    f.close()
+                    enc = chardet.detect(open(p, 'rb').read())['encoding']
+                    f = open(p, 'r', encoding=enc)
+                    lines = f.readlines()
+                if verbose: print(p)
+                # syntax check
+                if any([x.startswith('^') for x in lines]):
+                    print(f'{p}: Syntax Error!')
+                    raise SyntaxError("Hat(^)-leading line is not allowed!")
+                # append and next
+                hft.extend(lines)
+                f.close()
         return hft
     else:
         raise TypeError(f"Unsupported {path}!")
