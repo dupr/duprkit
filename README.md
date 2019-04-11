@@ -6,7 +6,7 @@ D**ian User Package Repository Toolkit
 DUPR Toolkit (duprkit) is a set of tools designed for Debian User Package
 Repository. Similar to Archlinux User Repository (AUR), DUPR aim to ease
 Debian packaging with simplified packaging recipe format, although it
-still requires a good knowlege on traditional Debian packaging. DUPR only
+still requires a good knowledge on traditional Debian packaging. DUPR only
 distributes packaging recipes and doesn't distrbute any resulting `.deb`
 files.
 
@@ -27,7 +27,7 @@ of code before execution.
 
 # Insight & Motivation
 
-The absense of a centralized, informal Debian package repository where
+The absence of a centralized, informal Debian package repository where
 trusted users could upload their own packaging scripts has been
 long-forgotten. As an inevitable result, many user packaging scripts
 exist in the wild, scattered like stars in the sky, with varied
@@ -53,7 +53,7 @@ to redistribute the pre-built binaries for the CUDA version of ffmpeg.
 However, this problem can be bypassed by only providing the build script.
 
 * Repackging upstream pre-built binary tarballs into .deb format. For example,
-the VisualStudio-Code upstream tarball. It costs you enourmous amount of
+the VisualStudio-Code upstream tarball. It costs you enormous amount of
 time and energy to build and put it to the official Debian archive. Why not
 just repack and use it?
 
@@ -167,7 +167,7 @@ A-Certain-Collection/
 This Toolkit and the [DefaultCollection](https://github.com/dupr/DefaultCollection)
 are still experimental projects. If you can fully understand what's going on
 here and be willing to participate, please feel free to submit a PR or
-request for membership by openning an issue.
+request for membership by opening an issue.
 
 # FAQ
 

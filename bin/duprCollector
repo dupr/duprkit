@@ -42,7 +42,7 @@ def collect(path: str) -> List[Dict]:
 
 def prettyPrint(col: List[Dict]) -> None:
     '''
-    Maybe mimicing the "emerge --search" style
+    Maybe mimicking the "emerge --search" style
     '''
     for item in col:
         durpkg, src, desc = item['.durpkg'], item['src'], item['description']
