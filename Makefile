@@ -4,6 +4,8 @@ BINDIR        ?= $(PREFIX)/bin/
 SHAREDIR      ?= $(PREFIX)/share/duprkit/
 DOCDIR        ?= $(PREFIX)/share/doc/duprkit/
 EXAMPLEDIR    ?= $(DOCDIR)/examples/
+VIMADDON      ?= $(PREFIX)/share/vim/addons/
+VIM81         ?= $(PREFIX)/share/vim/vim81/
 
 install:
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
@@ -13,6 +15,12 @@ install:
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
 	install -Dm0644 examples/template-default.durpkg \
 		$(DESTDIR)/$(EXAMPLEDIR)/template-default.durpkg
+
+install-vim:
+	install -Dm0644 examples/vim/syntax/hft.vim \
+		$(DESTDIR)/$(VIM81)/syntax/hft.vim
+	install -Dm0644 examples/vim/ftdetect/hft.vim \
+		$(DESTDIR)/$(VIM81)/ftdetect/hft.vim
 
 test:
 	@echo "[48;5;92mhft-sanity[m"
