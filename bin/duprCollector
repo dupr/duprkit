@@ -11,6 +11,11 @@ Yellow = lambda x: f'\x1b[1;33m{x}\x1b[m'
 Cyan = lambda x: f'\x1b[1;36m{x}\x1b[m'
 
 
+_META_FIELDS_ = ('src', 'description', 'version', 'license', 'section',
+        'srcurl', 'homepage', 'build_depends')
+_META_COMPLAIN_ = ('src', 'description')
+
+
 def collect(path: str) -> List[Dict]:
     '''
     Collect information from the specified Collection
@@ -21,21 +26,18 @@ def collect(path: str) -> List[Dict]:
             if name.endswith('.durpkg'):
                 path = os.path.join(root, name)
                 lines = open(path, 'r').readlines()
-                try:
-                    pkgsrc = [x for x in lines if re.match('^src=.*', x)][0]
-                    pkgsrc = re.match('^src=[\'\"](.+)[\'\"]', pkgsrc).group(1)
-                    pkgdesc = [
-                        x for x in lines if re.match('^description=.*', x)
-                    ][0]
-                    pkgdesc = re.match('^description=[\'\"](.+)[\'\"]',
-                                       pkgdesc).group(1)
-                except IndexError as e:
-                    print(
-                        f'"src" and "description" variables are missing from {path} !'
-                    )
-                    exit(1)
+                d = {}
+                for field in _META_FIELDS_:
+                    regex = re.compile(f"^{field}=[\'\"](.*)[\'\"]")
+                    match = [x for x in lines if regex.match(x)]
+                    if not match and field in _META_COMPLAIN_:
+                        print(f'{path} missed the "{field}" variable !')
+                    elif not match:
+                        continue
+                    value = regex.match(match[0]).group(1)  # XXX: maybe this is fine.
+                    if len(value)>0: d[field] = value
                 if ag.verbose: print(path, '... OK')
-                d = {'.durpkg': path, 'src': pkgsrc, 'description': pkgdesc}
+                d['.durpkg'] = path
                 Collection.append(d)
     return Collection
 
@@ -45,10 +47,10 @@ def prettyPrint(col: List[Dict]) -> None:
     Maybe mimicking the "emerge --search" style
     '''
     for item in col:
-        durpkg, src, desc = item['.durpkg'], item['src'], item['description']
-        print(f'\x1b[1;32m*  \x1b[1;37m{durpkg}\x1b[m')
-        print(green('       Source Name:'), f'{src}')
-        print(green('       Description:'), f'{desc}')
+        print(f'\x1b[1;32m*  \x1b[1;37m{item[".durpkg"]}\x1b[m')
+        for k in sorted(item.keys()):
+            if k not in _META_FIELDS_: continue
+            print(green(f'{k}:'.rjust(20)), f'{item[k]}')
         print()
     print('Found', Yellow(f'{len(col)}'),
           f'(matching) packages in "{ag.collection}"')
