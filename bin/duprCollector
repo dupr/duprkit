@@ -12,7 +12,7 @@ Cyan = lambda x: f'\x1b[1;36m{x}\x1b[m'
 
 
 _META_FIELDS_ = ('src', 'description', 'version', 'license', 'section',
-        'srcurl', 'homepage', 'build_depends')
+        'homepage', 'build_depends')
 _META_COMPLAIN_ = ('src', 'description')
 
 
@@ -28,7 +28,7 @@ def collect(path: str) -> List[Dict]:
                 lines = open(path, 'r').readlines()
                 d = {}
                 for field in _META_FIELDS_:
-                    regex = re.compile(f"^{field}=[\'\"](.*)[\'\"]")
+                    regex = re.compile(f"^{field}=[\'\"](.*?)[\'\"]")
                     match = [x for x in lines if regex.match(x)]
                     if not match and field in _META_COMPLAIN_:
                         print(f'{path} missed the "{field}" variable !')
