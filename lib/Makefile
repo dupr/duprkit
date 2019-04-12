@@ -1,3 +1,3 @@
 test:
 	sh test.sh
-	git clean -xdf
+	git clean -xdf || true
