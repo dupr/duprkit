@@ -17,24 +17,11 @@ highlight hftPathMode term=bold ctermbg=green
 let s:current_syntax = b:current_syntax
 unlet b:current_syntax
 syntax include @MAKE syntax/make.vim
-syntax region hftEmbMake start="\^.*debian/rules.*" end="\^.*"me=e-1 contains=@MAKE
+syntax region hftEmbMake start="\^.*debian/rules" skip="\^#" end="\^\@=" contains=@MAKE
 let b:current_syntax = s:current_syntax
 
 let s:current_syntax = b:current_syntax
 unlet b:current_syntax
 syntax include @DEBCONTROL syntax/debcontrol.vim
-syntax region hftEmbMake start="\^.*debian/control.*" end="\^.*"me=e-1 contains=@DEBCONTROL
+syntax region hftEmbMake start="\^.*debian/control" skip="\^#" end="\^\@=" contains=@DEBCONTROL
 let b:current_syntax = s:current_syntax
-
-let s:current_syntax = b:current_syntax
-unlet b:current_syntax
-syntax include @PYTHON syntax/python.vim
-syntax region hftEmbMake start="\^.*\.py.*" end="\^.*"me=e-1 contains=@PYTHON
-let b:current_syntax = s:current_syntax
-
-let s:current_syntax = b:current_syntax
-unlet b:current_syntax
-syntax include @SH syntax/sh.vim
-syntax region hftEmbMake start="\^.*\.sh.*" end="\^.*"me=e-1 contains=@SH
-let b:current_syntax = s:current_syntax
-
