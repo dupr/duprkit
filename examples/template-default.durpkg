@@ -15,7 +15,7 @@ export DK_VERBOSE=1
 # The corresponding @...@ marks are used by dkSubst or dkSubst_.
 #
 #- [*] @SRC@                                     [a-zA-z0-9\-\.]+, no underline
-src="example"
+src="${0%.durpkg.sh}"
 #- [*] @VERSION@                                           [a-zA-z0-9\.]+ # [*]
 version="0"
 #- [*] @DESCRIPTION@                                                     string
