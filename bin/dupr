@@ -1,29 +1,45 @@
 #!/bin/sh
 set -e
-
+SH=/bin/sh
+GIT=/usr/bin/git
+DUNFOLD=/usr/bin/dunfold
 DUPR_DEFCOLL=~/.defcoll
 
+_c36 () {
+	echo -n "\033[1;36m" $@
+}
+
+_c162 () {
+	echo -n "\033[1;38;5;162m" $@
+}
+
+_c () {
+	echo -n "\033[0m" $@
+}
+
 dupr_fetch () {
-	echo "\033[1;38;5;162m→ Fetching \033[1;36mDefaultCollection\033[1;38;5;162m ...\033[0m"
+	_c162 "→ Fetching"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
 	if ! test -r $DUPR_DEFCOLL; then
-		git clone https://github.com/dupr/DefaultCollection $DUPR_DEFCOLL
+		$GIT clone https://github.com/dupr/DefaultCollection $DUPR_DEFCOLL
 	else
-		cd $DUPR_DEFCOLL; git pull
+		cd $DUPR_DEFCOLL; $GIT pull
 	fi
 }
 
 dupr_build () {
 	test -z "$1" && (echo "Building nothing"; false)
-	echo "\033[1;38;5;162m→ Unfolding \033[1;36m$1\033[1;38;5;162m into \033[1;36m.sh\033[1;38;5;162m and \033[1;36mdebian/\033[1;38;5;162m dir ...\033[0m"
+	_c162 "→ Unfolding"; _c36 "$1"; _c162 "into"; _c36 ".sh"; _c162 "and";
+	_c36 "debian/"; _c162 "dir ..."; _c "\n"
 	# Splits the .durpkg into .sh script and .hft file
-	dunfold $1
-	echo "\033[1;38;5;162m→ Triggering build for \033[1;36m$1\033[1;38;5;162m ...\033[0m"
+	$DUNFOLD $1
+	_c162 "→ Triggering build for"; _c36 "$1"; _c162 "..."; _c "\n"
 	start_time="$(date -u +%s)"
 	# Execute the resulting .sh script
-	bash $1.sh
+	$SH $1.sh
 	sleep 1
 	end_time="$(date -u +%s)"
-	echo "\033[1;38;5;162m→ Completed \033[1;36m$1\033[1;38;5;162m in \033[1;36m$(($end_time-$start_time))\033[1;38;5;162m seconds.\033[0m"
+	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
+	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
 dupr_create () {
