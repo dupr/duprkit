@@ -77,6 +77,10 @@ dkSubst $src/debian
 #
 #\--- END Processing debian/ directory
 
+# FIXME: the header only defines how to fetch the source and prepare
+# the debian directory. It should not define how to deal with the source dir
+# any more.
+
 #/--- BEGIN Build Stuff ----
 # Export DK_BUILD=deb,dsc,none
 dkStartBuild $src

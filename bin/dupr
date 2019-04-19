@@ -59,7 +59,18 @@ case "$1" in
 		;;
 	b|build)
 		shift
+		#FIXME: impl: x, then build .deb
 		dupr_build $@
+		;;
+	d|dsc)
+		shift
+		#FIXME: impl: x, then build .dsc
+		dupr_dsc $@
+		;;
+	x|extract)
+		shift
+		#FIXME: impl: only extract files and prepare the debian dir
+		dupr_extract $@
 		;;
 	c|create)
 		shift
