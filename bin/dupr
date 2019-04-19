@@ -1,9 +1,15 @@
 #!/bin/sh
 set -e
 
+DUPR_DEFCOLL=~/.defcoll
+
 dupr_fetch () {
 	echo "\033[1;38;5;162m→ Fetching \033[1;36mDefaultCollection\033[1;38;5;162m ...\033[0m"
-	git clone https://github.com/dupr/DefaultCollection
+	if ! test -r $DUPR_DEFCOLL; then
+		git clone https://github.com/dupr/DefaultCollection $DUPR_DEFCOLL
+	else
+		cd $DUPR_DEFCOLL; git pull
+	fi
 }
 
 dupr_build () {
@@ -61,7 +67,7 @@ case "$1" in
 		;;
 	ls|list)
 		shift
-		duprCollector $@
+		duprCollector $DUPR_DEFCOLL $@
 		;;
 	*)
 		usage;;
