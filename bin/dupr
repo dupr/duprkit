@@ -28,9 +28,12 @@ dupr_build () {
 
 dupr_create () {
 	if test -z "$1"; then
-		cp /usr/share/doc/duprkit/examples/template-default.durpkg .
+		echo -n "Creating template ... "
+		cp -v /usr/share/doc/duprkit/examples/template-default.durpkg .
 	else
-		cp /usr/share/doc/duprkit/examples/template-default.durpkg $1.durpkg
+		echo -n "Creating comment-less template ... $1.durpkg"
+		cat /usr/share/doc/duprkit/examples/template-default.durpkg \
+			| awk '!/^#/&&!/^\^#/{print}' > $1.durpkg
 	fi
 }
 
