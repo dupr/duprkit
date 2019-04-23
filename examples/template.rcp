@@ -73,11 +73,6 @@ dk_debianize () {
 	hft -v -u ${0%.sh}.hft -d $src/ -F
 }
 
-#/--- BEGIN Prepare source and debian/ directory
-dk_get_source
-dk_prep_source
-dk_debianize
-#\--- END Prepare source and debian/ directory
 ^### BEGIN HFT
 ^#
 ^# NOTE, HFT Format is not mandatory. The `HFT` format and `debian/` directory

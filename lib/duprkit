@@ -185,6 +185,7 @@ dk_get_source () {
 }
 
 dk_prep_source () {
+	true
 }
 
 dk_debianize () {

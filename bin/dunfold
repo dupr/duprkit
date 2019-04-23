@@ -60,7 +60,11 @@ def recipe_unfold(path: str):
             'export DK_VERBOSE=1\n',
             '\n'
             ] + lns_shell + [
-            'true\n'
+            '#--- BEGIN Prepare source and debian/ directory\n',
+            'dk_get_source\n',
+            'dk_prep_source\n',
+            'dk_debianize\n',
+            '#--- END Prepare source and debian/ directory\n',
             ]
     fp_shell.writelines(lns_shell)
     fp_shell.close()
