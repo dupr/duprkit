@@ -170,18 +170,41 @@ dkSubst () {
 #------------------------------------------------------------------------------
 
 dk_get_source () {
-	# FIXME: store cache to ~/.cache/dupr
-	# FIXME: get rid of the $src.blob cruft
-	# FIXME: doesn't check md5 if hashsum unavailable
-	# download something and check the checksum
-	if test -r $src.blob; then return; fi
 	if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
+	if test -z "$version"; then echo "DK: Please define 'version'"; false; fi
 	if test -z "$srcurl"; then echo "DK: Please define 'srcurl'"; false; fi
-	if test -z "$md5sum"; then echo "DK: Please define 'md5sum'"; false; fi
-	aria2c -c "$srcurl" -o $src.blob
-	test "$md5sum" = "$(md5sum $src.blob | cut -d' ' -f1)" || \
-		(echo "DK: Checksum $src.blob ... FAILED"; exit 1)
-	if test -n "$DK_VERBOSE"; then echo "DK: Checksum $src.blob ... OK"; fi
+	CACHEDIR=$HOME/.cache/duprkit
+	# Check the cache directory
+	if ! test -d $CACHEDIR/stamps; then
+		mkdir -p $CACHEDIR/stamps
+	fi
+	# Is the cache available?
+	if test -r $CACHEDIR/stamps/${src}_${version}.dk_get_source;
+		cp $CACHEDIR/${src}_${version}.* .
+		return
+	fi
+	# download $srcurl
+	if test -n "$(basename $srcurl | grep -o .tar.gz)"; then
+		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.tar.gz
+	elif test -n "$(basename $srcurl | grep -o .tar.xz)"; then
+		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.tar.xz
+	elif test -n "$(basename $srcurl | grep -o .tar.bzip2)"; then
+		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.tar.bzip2
+	elif test -n "$(basename $srcurl | grep -o .zip)"; then
+		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.zip
+	else
+		echo "Oops, toolkit doesn't know how to deal with $srcurl ..."
+	fi
+	cp $CACHEDIR/${src}_${version}.* .
+	# verify hashsum
+	if test -n "$md5sum"; then
+		if ! test "$md5sum" = "$(md5sum ${src}_${version}.* | cut -d' ' -f1)"; then
+			echo "DK: Checksum $src.blob ... FAILED"
+		   	exit 1
+		else
+			echo "DK: Checksum $src.blob ... OK"
+		fi
+	fi
 }
 
 dk_prep_source () {
