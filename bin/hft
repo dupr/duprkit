@@ -126,7 +126,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             if verbose: print(path)
         else:  # NORMAL CONTENT
             if fp is None:
-                raise SyntaxError(f'Doesnt know where to write {hft}')
+                raise SyntaxError(f"Don't know where to write {hft}")
             fp.write(curline)
     if fp is not None: fp.close()
     return

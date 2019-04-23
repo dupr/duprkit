@@ -38,8 +38,8 @@ def durpkg_unfold(path: str):
         return
     if not durpkg[0].startswith('#!'):
         SyntaxError("It must have a shebang!")
-    fp_shell = open(path + '.sh', 'w')
-    fp_hft = open(path + '.hft', 'w')
+    fp_shell = open(re.sub('.durpkg$', '', path) + '.sh', 'w')
+    fp_hft = open(re.sub('.durpkg$', '', path) + '.hft', 'w')
 
     fp = fp_shell
     for line in durpkg:
