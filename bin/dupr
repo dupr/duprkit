@@ -26,20 +26,32 @@ dupr_fetch () {
 	fi
 }
 
-dupr_build () {
-	test -z "$1" && (echo "Building nothing"; false)
+dupr_unfold () {
+	test -z "$1" && (echo "Unfolding nothing"; false)
 	_c162 "→ Unfolding"; _c36 "$1"; _c162 "into"; _c36 ".sh"; _c162 "and";
-	_c36 "debian/"; _c162 "dir ..."; _c "\n"
+	_c36 ".hft"; _c162 "..."; _c "\n"
 	# Splits the .durpkg into .sh script and .hft file
 	$DUNFOLD $1
-	_c162 "→ Triggering build for"; _c36 "$1"; _c162 "..."; _c "\n"
+	_c162 "→ Executing"; _c36 "${1%.rcp}.sh"; _c162 "..."; _c "\n"
 	start_time="$(date -u +%s)"
 	# Execute the resulting .sh script
-	$SH $1.sh
+	$SH ${1%.rcp}.sh
 	sleep 1
 	end_time="$(date -u +%s)"
 	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
+}
+
+dupr_deb () {
+	local dir=${1%.rcp}
+	dupr_unfold $1
+	cd $dir; dpkg-buildpackage -us -uc
+}
+
+dupr_dsc () {
+	local dir=${1%.rcp}
+	dupr_unfold $1
+	cd $dir; dpkg-buildpackage -us -uc -nc -S
 }
 
 dupr_create () {
@@ -67,10 +79,12 @@ usage () {
 	echo "   f|fetch              Fetch the default DUPR collection."
 	echo "   s|search [keyword] [dir]"
 	echo "                        Search in the [dir, default=.] collection."
-	echo "   b|build <.durpkg>    Build .deb packages from .durpkg file."
-	echo "   c|create <name>      Create a template file: <name>.rcp"
-	echo "   m|minimal <name>     Create a MINIMAL template: <name>.rcp"
+	echo "   u|unfold <.rcp>      Unfold .rcp file into debianized source tree."
+	echo "   c|create <name>      Create talky template file: <name>.rcp"
+	echo "   m|minimal <name>     Create minimal template: <name>.rcp"
 	echo "   l|ls [dir]           List packages in collection: [dir]"
+	echo "   deb <.rcp>           Build .deb files from .rcp"
+	echo "   dsc <.rcp>           Build .dsc files from .rcp"
 	echo "   help                 Print this usage information."
 }
 
@@ -83,20 +97,17 @@ case "$1" in
 		shift
 		duprCollector -s $@
 		;;
-	b|build)
+	deb)
 		shift
-		#FIXME: impl: x, then build .deb
-		dupr_build $@
+		dupr_deb $@
 		;;
-	d|dsc)
+	dsc)
 		shift
-		#FIXME: impl: x, then build .dsc
 		dupr_dsc $@
 		;;
-	x|extract)
+	u|unfold)
 		shift
-		#FIXME: impl: only extract files and prepare the debian dir
-		dupr_extract $@
+		dupr_unfold $@
 		;;
 	c|create)
 		shift

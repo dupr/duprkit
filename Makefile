@@ -13,7 +13,7 @@ install: install-vim
 	install -Dm0755 bin/dupr $(DESTDIR)/$(BINDIR)/dupr
 	install -Dm0755 bin/duprCollector $(DESTDIR)/$(BINDIR)/duprCollector
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
-	install -Dm0644 examples/template-default.rcp \
+	install -Dm0644 examples/template.rcp \
 		$(DESTDIR)/$(EXAMPLEDIR)/template-default.rcp
 
 install-vim:

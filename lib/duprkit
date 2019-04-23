@@ -183,17 +183,3 @@ dk_get_source () {
 		(echo "DK: Checksum $src.blob ... FAILED"; exit 1)
 	if test -n "$DK_VERBOSE"; then echo "DK: Checksum $src.blob ... OK"; fi
 }
-
-#dkStartBuild () {
-#	pushd $1
-#	if test -z "$DK_BUILD" || test "$DK_BUILD" = "deb"; then
-#		dpkg-buildpackage -us -uc
-#	elif test "$DK_BUILD" = "dsc"; then
-#		dpkg-buildpackage -S -us -uc
-#	elif test "$DK_BUILD" = "none"; then
-#		echo ":-)"
-#	else
-#		echo "Invalid DK_BUILD '$DK_BUILD'"
-#	fi
-#	popd
-#}

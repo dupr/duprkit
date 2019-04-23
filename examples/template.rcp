@@ -15,6 +15,7 @@ license="Expat/MIT"
 section="utils"
 #- [*] @MAINTAINER@                                                Name <EMAIL>
 maintainer="Anonymous <foobar@example.org>"
+# 
 #- [opt] @STDVER@                                                        [digit]+
 stdver="4.3.0"
 #- [opt] @COMPAT@                                                        [0-9]+
@@ -30,7 +31,7 @@ build_depends=""
 #- [opt] @DEPENDS@                                 sep=comma, e.g. "depA, depB"
 depends=""
 #- [opt] @DH_BUILDSYSTEM@                  e.g. makefile, cmake, ninja, pybuild
-dh_buildsystem=""
+dh_buildsystem="makefile"
 #- [opt] @DH_WITH@                                   e.g. python3, python, etc.
 dh_with=""
 #- [opt] @SOURCE_FORMAT@                                 default="3.0 (native)"
@@ -44,9 +45,9 @@ dk_skip=""
 #
 #- dkGet downloads $srcurl and stores it to $src.blob, then checks the
 #  $src.blob with $md5sum. This can also be done with custom commands.
-dkGet; ln -s $src.blob $src.tar.xz
+# dkGet; ln -s $src.blob $src.tar.xz
 #- extract source tarball, typically
-mkdir $src; tar xvf $src.tar.xz --strip-components=1 -C $src/
+# mkdir $src; tar xvf $src.tar.xz --strip-components=1 -C $src/
 #
 #\--- END Fetching and Pre-processing SOURCE files
 
@@ -103,8 +104,8 @@ Build-Depends: debhelper-compat (= @COMPAT@), @BUILD_DEPENDS@
 Package: @SRC@
 Architecture: any
 Multi-Arch: no
-Depends: \${shlibs:Depends}, \${python:Depends}, \${python3:Depends},
-  \${misc:Depends}, @DEPENDS@
+Depends: ${shlibs:Depends}, ${python:Depends}, ${python3:Depends},
+  ${misc:Depends}, @DEPENDS@
 Description: @DESCRIPTION@
  @DESCRIPTION@
 ^#------------------------------------------------------------- SPLIT LINE ----
@@ -113,8 +114,11 @@ Description: @DESCRIPTION@
 ^ debian/rules 0o755
 #!/usr/bin/make -f
 %:
-	dh \$@ -S@DH_BUILDSYSTEM@ --with @DH_WITH@
+	dh \$@  # -S@DH_BUILDSYSTEM@ --with @DH_WITH@
 ^#------------------------------------------------------------- SPLIT LINE ----
 ^# This is also a typical addition to auto-generated debian/ dir.
 ^ debian/install
-bin/foobar  usr/bin/
+bin/helloworld  usr/bin/
+^ bin/helloworld 0o755
+#!/bin/sh
+echo "Hello, world!"

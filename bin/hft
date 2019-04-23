@@ -123,7 +123,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
                 os.makedirs(os.path.dirname(path))
             fp = open(path, 'w')
             if fmode is not None: os.chmod(path, fmode)
-            if verbose: print('HFT-unfold', path)
+            if verbose: print('HFT-unfold:', path)
         else:  # NORMAL CONTENT
             if fp is None:
                 raise SyntaxError(f"Don't know where to write {hft}")
