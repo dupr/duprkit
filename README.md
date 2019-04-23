@@ -5,8 +5,9 @@ Debian User Recipe Toolkit (Work-In-Progress)
 
 DUR Toolkit (durkit) is a set of tools designed for creating and utilizing user
 packaging recipe, which aims to simplify the source tree debianization process.
-A recipe can be transformed into a `debianized` source tree, `.dsc` files, or
-`.deb` files directly, at your option.  A set of recipe files form a
+A recipe defines how to get the source package and how to debianize the source
+tree, and can be transformed into a `debianized` source tree, `.dsc` files, or
+`.deb` files directly, at user's option.  A set of recipe files form a
 Collection, namely a Debian User Repository.
 
 This toolkit try to provide an experience resembles AUR's PKGBUILD or Gentoo's
