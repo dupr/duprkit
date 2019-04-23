@@ -35,6 +35,7 @@ execution.
 * [Motivation](./doc/motivation.md)
 * [Targeted Software](./doc/targets.md)
 * [Usage Instructions](./doc/instructions.md)
+* [Examples and Templates](./examples)
 * [Debian Packaging Reference](./doc/debpkg.md)
 * [Specification: Hatless Folded Text (HFT, .hft)](./bin/hft)
 * [Specification: Recipe (.rcp)](./bin/dunfold)
