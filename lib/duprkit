@@ -37,8 +37,8 @@ dkGen_debian_control () {
 	if ! test -r $1/debian/control; then
 		if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
 		if test -z "$section"; then echo "DK: Please define 'section'"; false; fi
-		if test -z "$stdver"; then echo "DK: Please define 'stdver'"; false; fi
-		if test -z "$compat"; then echo "DK: Please define 'compat'"; false; fi
+		if test -z "$stdver"; then stdver="4.3.0"; fi
+		if test -z "$compat"; then compat="11"; fi
 		if test -z "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
 		if test -z "$description"; then echo "DK: Please define 'description'"; false; fi
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/control"; fi

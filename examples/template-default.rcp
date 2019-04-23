@@ -13,12 +13,12 @@ description="example description"
 license="Expat/MIT"
 #- [*] @SECTION@                                                         string
 section="utils"
-#- [*] @STDVER@                                                        [digit]+
-stdver="4.3.0"
-#- [*] @COMPAT@                                                          [0-9]+
-compat="11"
 #- [*] @MAINTAINER@                                                Name <EMAIL>
 maintainer="Anonymous <foobar@example.org>"
+#- [opt] @STDVER@                                                        [digit]+
+stdver="4.3.0"
+#- [opt] @COMPAT@                                                        [0-9]+
+compat="11"
 #- [opt] @SRCURL@                                               URI, see uri(7)
 srcurl="https://example.org/example.tar.xz"
 #- [opt] @MD5SUM@                                                       33-char
