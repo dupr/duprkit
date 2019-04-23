@@ -1,18 +1,33 @@
 #!/bin/sh
 set -e
-
 __version__="0.0f"
 
-dkGet () {
-	# download something and check the checksum
-	if test -r $src.blob; then return; fi
-	if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
-	if test -z "$srcurl"; then echo "DK: Please define 'srcurl'"; false; fi
-	if test -z "$md5sum"; then echo "DK: Please define 'md5sum'"; false; fi
-	aria2c -c "$srcurl" -o $src.blob
-	test "$md5sum" = "$(md5sum $src.blob | cut -d' ' -f1)" || \
-		(echo "DK: Checksum $src.blob ... FAILED"; exit 1)
-	if test -n "$DK_VERBOSE"; then echo "DK: Checksum $src.blob ... OK"; fi
+# This library contains several groups of helper functions:
+#  1. debian/ directory generation helpers
+#  2. placeholder substitution helpers
+#  3. sequence helper
+
+#------------------------------------------------------------------------------
+# DK: Debian/ Directory Generation
+#------------------------------------------------------------------------------
+
+dkGenerate () {
+	test -n "$1" || (echo "missing dest dir"; false)
+	dkGen_debian_changelog $1
+	dkGen_debian_control $1
+	dkGen_debian_copyright $1
+	dkGen_debian_rules $1
+	dkGen_debian_source_format $1
+	dkGen_SANITY_CHECK $1
+}
+
+dkGen_SANITY_CHECK () {
+	# make sure the fundamental files are present
+	test -r $1/debian/changelog
+	test -r $1/debian/control
+	test -r $1/debian/copyright
+	test -r $1/debian/rules
+	test -r $1/debian/source/format
 }
 
 dkGen_debian_changelog () {
@@ -119,24 +134,9 @@ dkGen_debian_source_format () {
 }
 
 
-dkGen_SANITY_CHECK () {
-	# make sure the fundamental files are present
-	test -r $1/debian/changelog
-	test -r $1/debian/control
-	test -r $1/debian/copyright
-	test -r $1/debian/rules
-	test -r $1/debian/source/format
-}
-
-dkGenerate () {
-	test -n "$1" || (echo "missing dest dir"; false)
-	dkGen_debian_changelog $1
-	dkGen_debian_control $1
-	dkGen_debian_copyright $1
-	dkGen_debian_rules $1
-	dkGen_debian_source_format $1
-	dkGen_SANITY_CHECK $1
-}
+#------------------------------------------------------------------------------
+# DK: Placeholder Substitution
+#------------------------------------------------------------------------------
 
 dkSubst_ () {
    sed -i \
@@ -163,6 +163,25 @@ dkSubst () {
 		if test -n "$DK_VERBOSE"; then echo "DK: Subst'ing placeholders in $__file"; fi
 		dkSubst_ $__file
 	done
+}
+
+#------------------------------------------------------------------------------
+# DK: sequence helper
+#------------------------------------------------------------------------------
+
+dk_get_source () {
+	# FIXME: store cache to ~/.cache/dupr
+	# FIXME: get rid of the $src.blob cruft
+	# FIXME: doesn't check md5 if hashsum unavailable
+	# download something and check the checksum
+	if test -r $src.blob; then return; fi
+	if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
+	if test -z "$srcurl"; then echo "DK: Please define 'srcurl'"; false; fi
+	if test -z "$md5sum"; then echo "DK: Please define 'md5sum'"; false; fi
+	aria2c -c "$srcurl" -o $src.blob
+	test "$md5sum" = "$(md5sum $src.blob | cut -d' ' -f1)" || \
+		(echo "DK: Checksum $src.blob ... FAILED"; exit 1)
+	if test -n "$DK_VERBOSE"; then echo "DK: Checksum $src.blob ... OK"; fi
 }
 
 #dkStartBuild () {
