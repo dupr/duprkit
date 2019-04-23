@@ -23,7 +23,7 @@ def collect(path: str) -> List[Dict]:
     Collection = []  # A List of Dictionaries
     for root, dirs, files in os.walk(path):
         for name in files:
-            if name.endswith('.durpkg'):
+            if name.endswith('.rcp'):
                 path = os.path.join(root, name)
                 lines = open(path, 'r').readlines()
                 d = {}
@@ -37,7 +37,7 @@ def collect(path: str) -> List[Dict]:
                     value = regex.match(match[0]).group(1)  # XXX: maybe this is fine.
                     if len(value)>0: d[field] = value
                 if ag.verbose: print(path, '... OK')
-                d['.durpkg'] = path
+                d['.rcp'] = path
                 Collection.append(d)
     return Collection
 
@@ -47,7 +47,7 @@ def prettyPrint(col: List[Dict]) -> None:
     Maybe mimicking the "emerge --search" style
     '''
     for item in col:
-        print(f'\x1b[1;32m*  \x1b[1;37m{item[".durpkg"]}\x1b[m')
+        print(f'\x1b[1;32m*  \x1b[1;37m{item[".rcp"]}\x1b[m')
         for k in sorted(item.keys()):
             if k not in _META_FIELDS_: continue
             print(green(f'{k}:'.rjust(20)), f'{item[k]}')
@@ -72,11 +72,11 @@ if __name__ == '__main__':
     if ag.search is not None:
         filtered = []
         for item in Collection:
-            durpkg, src, desc = item['.durpkg'], item['src'], item[
+            rcp, src, desc = item['.rcp'], item['src'], item[
                 'description']
             if any([
-                    re.match(ag.search, durpkg),
-                (ag.search in durpkg),
+                    re.match(ag.search, rcp),
+                (ag.search in rcp),
                     re.match(ag.search, src),
                 (ag.search in src),
                     re.match(ag.search, desc),

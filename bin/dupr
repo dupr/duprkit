@@ -32,7 +32,7 @@ dupr_unfold () {
 	test -z "$1" && (echo "Unfolding nothing"; false)
 	_c162 "→ Unfolding"; _c36 "$1"; _c162 "into"; _c36 ".sh"; _c162 "and";
 	_c36 ".hft"; _c162 "..."; _c "\n"
-	# Splits the .durpkg into .sh script and .hft file
+	# Splits the .rcp into .sh script and .hft file
 	$DUNFOLD $1
 	_c162 "→ Executing"; _c36 "${1%.rcp}.sh"; _c162 "..."; _c "\n"
 	# Execute the resulting .sh script

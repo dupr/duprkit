@@ -11,27 +11,37 @@ with `bin/hft`.
 
 ## Use Existing Recipe
 
-* Install with `make install`. Or simply copy `/bin/*` to your `$PATH`.
+* Install the `.deb` package from the release page, or simply install with `make install`.
 
-* Fetch your favorite recipe collection to any directory, e.g. `git clone https://github.com/dupr/DefaultCollection'.
+* Fetch your favorite recipe collection, or just the default collection e.g. `dupr fetch'.
 
-* Browse or search in the collection, find your target `.durpkg` file.
+* Find your target `.rcp` file.
 
-* Review the .durpkg file to make sure it's safe.
+* Review the `.rcp` file to make sure it's safe.
 
-* Start the build: `dupr build foobar.durpkg` or `dupr b foobar.durpkg`.
-
-* The way to install resulting .deb packages is omitted. I assume you know that.
+* Build .deb packages: `dupr deb xxx.rcp`. Or build the .dsc files: `dupr dsc
+xxx.rcp`. Or simply prepare the debianized source tree: `dupr u xxx.rcp`.
 
 ## Create New Recipe
 
-* Install, same as above.
+* Install `duprkit`, same as above.
 
-* Copy the [default template](./examples/template-default.durpkg) to somewhere
-and modify it. Or just create a `.durpkg` header and a `debian/` directory.
+* Create a new recipe for package foobar: `dupr c foobar`. If you don't need
+the comments in the template, use `dupr m foobar`.
 
-* Make sure `dupr b mypackage.durpkg` works fine.
+* Edit `foobar.rcp` until it works well.
 
-* Optionally submit the `.durpkg` to your favorite collection.
+* Optionally submit the `.rcp` to your favorite collection.
 
-* The example `.durpkg` for this toolkit can be found in the `examples` directory after `cd examples; make`.
+## Examples
+
+1. Default template, self-documented: https://github.com/dupr/duprkit/blob/master/examples/template.rcp
+
+2. Hello world example, which simply installs a hello world shell script to `/usr/bin/`:
+https://github.com/dupr/duprkit/blob/master/examples/hello-world.rcp
+
+3. Recipe for duprkit itself: https://github.com/dupr/duprkit/blob/master/examples/duprkit.rcp
+
+4. A complex example -- `apt-nosync`, which accelerates apt with libeatmydata.
+This `.rcp` file is a complete self-contained package (i.e. doesn't require external source):
+https://github.com/dupr/duprkit/blob/master/examples/apt-nosync.rcp

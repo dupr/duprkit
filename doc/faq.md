@@ -6,7 +6,7 @@ Of course. Theoretically the whole Debian family can use this.
 
 * Where is the resulting `.deb` files?
 
-DUPR, or .durpkg are not designed to deliver `.deb` files. It's recommended
+DUPR, or .rcp are not designed to deliver `.deb` files. It's recommended
 to build everything locally after careful review.
 
 * Why is this project hosted on GitHub instead of Debian's Salsa server?
@@ -19,7 +19,7 @@ and contributing easy.
 
 HFT is not mandatory. Please carefully read the documentations and templates.
 
-* Where can I submit my `.durpkg` file?
+* Where can I submit my `.rcp` file?
 
 Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own collection.
 

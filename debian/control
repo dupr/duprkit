@@ -14,15 +14,5 @@ Architecture: all
 Depends: ${misc:Depends}, debhelper, devscripts, build-essential,
          python3, python3-all, git, wget, curl, aria2, debmake,
          python3-chardet,
-Description: D**ian User Package Repository Toolkit
- Dasteriskian User Package Repository Toolkit aims at getting scutwork done.
- .
- DISCLAIMER
- .
- Everything included in this package is totoally unrelated to the Debian
- Project, or any OFFICIAL Debian development. Debian Project is not responsible
- for any consequence resulted by utilization of the D**ian User Package
- Repository Toolkit or any related .durpkg collections or single .durpkg files.
- .
- Please Take your own risk utilizing the toolkit, and please review every line
- of code before execution.
+Description: Debian User Recipe Toolkit
+ Debian User Recipe Toolkit
