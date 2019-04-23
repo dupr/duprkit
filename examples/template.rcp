@@ -119,7 +119,7 @@ Description: @DESCRIPTION@
 ^ debian/rules 0o755
 #!/usr/bin/make -f
 %:
-	dh \$@  # -S@DH_BUILDSYSTEM@ --with @DH_WITH@
+	dh $@  # -S@DH_BUILDSYSTEM@ --with @DH_WITH@
 ^#------------------------------------------------------------- SPLIT LINE ----
 ^# This is also a typical addition to auto-generated debian/ dir.
 ^ debian/install
