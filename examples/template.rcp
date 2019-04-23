@@ -41,6 +41,7 @@ dk_skip=""
 #
 #\--- END Meta Information ----
 
+# [opt]
 dk_get_source () {
 	#- dkGet downloads $srcurl and stores it to $src.blob, then checks the
 	#  $src.blob with $md5sum. This can also be done with custom commands.
@@ -48,6 +49,7 @@ dk_get_source () {
 	true
 }
 
+# [opt]
 dk_prep_source () {
 	#- extract source tarball, typically
 	# ln -s $src.blob $src.tar.xz
@@ -56,18 +58,19 @@ dk_prep_source () {
 	true
 }
 
+# [opt]
 dk_debianize () {
 	#- dkGenerate $dest tries to generate the debian/ directory with Meta info.
 	#  It is smart enough to tell user what necessary variable might be missing.
 	dkGenerate $src
-	#- Unfold the HFT part (if any) into the dir. (force overwrite with -F)
-	#  Specifically, upon "dupr build xxx.durpkg", "dunfold xxx.durpkg" will
-	#  split the xxx.durpkg file into a shell script (xxx.durpkg.sh) and an
-	#  HFT file (xxx.durpkg.hft).
-	hft -v -u ${0%.sh}.hft -d $src/ -F
 	#- dkSubst $destdir will deal with the @...@ placeholders in a directory.
 	#  dkSubst_ $filepath deals with a single file instead of a directory.
-	dkSubst $src/debian
+	dkSubst_ ${0%.sh}.hft
+	#- Unfold the HFT part (if any) into the dir. (force overwrite with -F)
+	#  Specifically, upon "dupr build xxx.durpkg", "dunfold xxx.rcp" will
+	#  split the xxx.rcp file into a shell script (xxx.sh) and an
+	#  HFT file (xxx.hft).
+	hft -v -u ${0%.sh}.hft -d $src/ -F
 }
 
 #/--- BEGIN Prepare source and debian/ directory
