@@ -1,0 +1,72 @@
+# RCP version of: https://github.com/dupr/apt-nosync
+src="${0%.sh}"
+version="0.git"
+description="Accelerate APT and DPKG with eatmydata"
+license="Expat/MIT"
+section="admin"
+maintainer="Anonymous <foobar@example.org>"
+dk_get_source () {
+	true
+}
+dk_prep_source () {
+	true
+}
+^ LICENSE
+MIT License
+Copyright (c) 2019 M. Zhou
+^ README.md
+apt-nosync
+==========
+
+Accelerate APT and DPKG with eatmydata
+
+This package will divert apt and dpkg executables and replace them with
+eatmydata-based wrapper scripts. This would result in significantly faster apt
+and dpkg actions, and some side effects.
+
+## Building
+
+```
+dpkg-buildpackage -us -uc
+```
+^ bin/aptitude-curses 0o755
+#!/bin/sh
+eatmydata -- /usr/bin/aptitude-curses.real $@
+^ bin/apt 0o755
+#!/bin/sh
+eatmydata -- /usr/bin/apt.real $@
+^ bin/apt-get 0o755
+#!/bin/sh
+eatmydata -- /usr/bin/apt-get.real $@
+^ debian/apt-nosync.postrm
+#!/bin/sh
+set -e
+
+if [ "$1" != "upgrade" ]; then
+  dpkg-divert --rename --remove /usr/bin/apt
+  dpkg-divert --rename --remove /usr/bin/apt-get
+  dpkg-divert --rename --remove /usr/bin/aptitude-curses
+fi
+
+#DEBHELPER#
+exit 0
+^ debian/apt-nosync.lintian-overrides
+binary-without-manpage usr/bin/apt
+binary-without-manpage usr/bin/apt-get
+binary-without-manpage usr/bin/aptitude-curses
+^ debian/apt-nosync.preinst
+#!/bin/sh
+set -e
+
+dpkg-divert --divert /usr/bin/apt.real --rename /usr/bin/apt
+dpkg-divert --divert /usr/bin/apt-get.real --rename /usr/bin/apt-get
+dpkg-divert --divert /usr/bin/aptitude-curses.real --rename /usr/bin/aptitude-curses
+
+#DEBHELPER#
+exit 0
+^ debian/install
+bin/* usr/bin/
+^ debian/tests/control
+Test-Command: apt --help
+Test-Command: apt-get --help
+Test-Command: aptitude --help
