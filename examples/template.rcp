@@ -16,14 +16,14 @@ section="utils"
 #- [*] @MAINTAINER@                                                Name <EMAIL>
 maintainer="Anonymous <foobar@example.org>"
 # 
-#- [opt] @STDVER@                                                        [digit]+
+#- [opt] @STDVER@                                                      [digit]+
 stdver="4.3.0"
 #- [opt] @COMPAT@                                                        [0-9]+
 compat="11"
 #- [opt] @SRCURL@                                               URI, see uri(7)
 srcurl="https://example.org/example.tar.xz"
 #- [opt] @MD5SUM@                                                       33-char
-md5sum="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+md5sum="66666666666666666666666666666666"
 #- [opt] @HOMEPAGE@                                                         URL
 homepage=""
 #- [opt] @BUILD_DEPENDS@                           sep=comma, e.g. "depA, depB"
@@ -43,9 +43,9 @@ dk_skip=""
 
 # [opt]
 dk_get_source () {
-	#- dkGet downloads $srcurl and stores it to $src.blob, then checks the
-	#  $src.blob with $md5sum. This can also be done with custom commands.
-	# dkGet; 
+	#- The default dk_get_source downloads $srcurl to ${src}_${version}.*,
+	#  then optionally checks file with $md5sum. Here we override it
+	#  to do nothing.
 	true
 }
 
