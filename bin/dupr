@@ -43,13 +43,19 @@ dupr_build () {
 }
 
 dupr_create () {
-	if test -z "$1"; then
-		echo -n "Creating template ... "
-		cp -v /usr/share/doc/duprkit/examples/template-default.durpkg .
+	if test -n "$1"; then
+		cp -v /usr/share/doc/duprkit/examples/template-default.rcp $1.rcp
 	else
-		echo -n "Creating comment-less template ... $1.durpkg"
-		cat /usr/share/doc/duprkit/examples/template-default.durpkg \
-			| awk '!/^#/&&!/^\^#/{print}' > $1.durpkg
+		echo "Please specify recipe name"
+	fi
+}
+
+dupr_minimal () {
+	if test -n "$1"; then
+		cat /usr/share/doc/duprkit/examples/template-default.rcp \
+			| awk '!/^#/&&!/^\^#/{print}' > $1.rcp
+	else
+		echo "Please specify recipe name"
 	fi
 }
 
@@ -62,7 +68,8 @@ usage () {
 	echo "   s|search [keyword] [dir]"
 	echo "                        Search in the [dir, default=.] collection."
 	echo "   b|build <.durpkg>    Build .deb packages from .durpkg file."
-	echo "   c|create [name]      Create a template file: <name>.durpkg"
+	echo "   c|create <name>      Create a template file: <name>.rcp"
+	echo "   m|minimal <name>     Create a MINIMAL template: <name>.rcp"
 	echo "   l|ls [dir]           List packages in collection: [dir]"
 	echo "   help                 Print this usage information."
 }
@@ -94,6 +101,10 @@ case "$1" in
 	c|create)
 		shift
 		dupr_create $@
+		;;
+	m|minimal)
+		shift
+		dupr_minimal $@
 		;;
 	ls|list)
 		shift
