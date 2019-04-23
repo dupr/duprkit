@@ -7,7 +7,7 @@ import argparse
 import sys, os, re, stat
 from typing import *
 
-__VERSION__ = '0.0f'
+__VERSION__ = '0.0g'
 
 __RECIPE_SPEC__ = '''
 Recipe Specification

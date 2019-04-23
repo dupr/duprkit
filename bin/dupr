@@ -4,6 +4,7 @@ SH=/bin/sh
 GIT=/usr/bin/git
 DUNFOLD=/usr/bin/dunfold
 DUPR_DEFCOLL=~/.defcoll
+__version__="0.0g"
 
 _c36 () {
 	echo -n "\033[1;36m" $@
@@ -76,7 +77,7 @@ dupr_minimal () {
 }
 
 usage () {
-	echo "\033[1;38;5;162m-- Debian User Recipe ToolKit --\033[0m"
+	echo "\033[1;38;5;162m-- Debian User Recipe ToolKit $__version__ --\033[0m"
 	echo "Usage: $0 action [args]"
 	echo ""
 	echo "Actions"
