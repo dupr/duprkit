@@ -52,8 +52,8 @@ dk_get_source () {
 # [opt]
 dk_prep_source () {
 	#- extract source tarball, typically
-	# ln -s $src.blob $src.tar.xz
-	# mkdir $src; tar xvf $src.tar.xz --strip-components=1 -C $src/
+	# mkdir $src;
+	# tar xf ${src}_${version}.tar.gz --strip-components=1 -C $src/
 	# cd $src; patch -p1 < xxx.patch
 	true
 }

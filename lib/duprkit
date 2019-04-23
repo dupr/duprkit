@@ -173,29 +173,30 @@ dk_get_source () {
 	if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
 	if test -z "$version"; then echo "DK: Please define 'version'"; false; fi
 	if test -z "$srcurl"; then echo "DK: Please define 'srcurl'"; false; fi
-	CACHEDIR=$HOME/.cache/duprkit
+	DKCACHEDIR=$HOME/.cache/duprkit
 	# Check the cache directory
-	if ! test -d $CACHEDIR/stamps; then
-		mkdir -p $CACHEDIR/stamps
+	if ! test -d $DKCACHEDIR/stamps; then
+		mkdir -p $DKCACHEDIR/stamps
 	fi
 	# Is the cache available?
-	if test -r $CACHEDIR/stamps/${src}_${version}.dk_get_source;
-		cp $CACHEDIR/${src}_${version}.* .
+	if test -r $DKCACHEDIR/stamps/${src}_${version}.dk_get_source; then
+		cp $DKCACHEDIR/${src}_${version}.* .
 		return
 	fi
 	# download $srcurl
 	if test -n "$(basename $srcurl | grep -o .tar.gz)"; then
-		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.tar.gz
+		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.tar.gz
 	elif test -n "$(basename $srcurl | grep -o .tar.xz)"; then
-		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.tar.xz
+		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.tar.xz
 	elif test -n "$(basename $srcurl | grep -o .tar.bzip2)"; then
-		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.tar.bzip2
+		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.tar.bzip2
 	elif test -n "$(basename $srcurl | grep -o .zip)"; then
-		aria2c -c "$srcurl" -o $CACHEDIR/${src}_${version}.zip
+		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.zip
 	else
 		echo "Oops, toolkit doesn't know how to deal with $srcurl ..."
 	fi
-	cp $CACHEDIR/${src}_${version}.* .
+	cp $DKCACHEDIR/${src}_${version}.* .
+	touch $DKCACHEDIR/stamps/${src}_${version}.dk_get_source
 	# verify hashsum
 	if test -n "$md5sum"; then
 		if ! test "$md5sum" = "$(md5sum ${src}_${version}.* | cut -d' ' -f1)"; then
@@ -208,7 +209,12 @@ dk_get_source () {
 }
 
 dk_prep_source () {
-	true
+	if test -d $src; then
+		echo "DK: Could you please remove $src/ directory first?"
+		exit 1
+	fi
+	mkdir $src;
+	tar xf ${src}_${version}.tar.gz --strip-components=1 -C $src/
 }
 
 dk_debianize () {
