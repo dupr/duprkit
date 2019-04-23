@@ -1,0 +1,25 @@
+src="${0%.sh}"
+version="0"
+description="example description"
+license="Expat/MIT"
+section="utils"
+maintainer="Anonymous <foobar@example.org>"
+
+dk_get_source () {
+	true
+}
+
+dk_prep_source () {
+	true
+}
+
+^ debian/README.Debian
+README.Debian for the @SRC@ (= @VERSION@) package
+---
+The source was downloaded from @SRCURL@ (md5= @MD5SUM@)
+The @...@ placeholders in this file will be replaced by dkSubst or dkSubst_
+^ debian/install
+bin/helloworld  usr/bin/
+^ bin/helloworld 0o755
+#!/bin/sh
+echo "Hello, world!"
