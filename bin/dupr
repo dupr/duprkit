@@ -18,10 +18,11 @@ _c () {
 }
 
 dupr_fetch () {
-	_c162 "→ Fetching"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
 	if ! test -r $DUPR_DEFCOLL; then
+		_c162 "→ Cloning"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
 		$GIT clone https://github.com/dupr/DefaultCollection $DUPR_DEFCOLL
 	else
+		_c162 "→ Pulling"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
 		cd $DUPR_DEFCOLL; $GIT pull
 	fi
 }
@@ -75,20 +76,18 @@ dupr_minimal () {
 }
 
 usage () {
-	echo "\033[1;38;5;162m-- Dasteriskian User Package Repo Kit --\033[0m"
+	echo "\033[1;38;5;162m-- Debian User Recipe ToolKit --\033[0m"
 	echo "Usage: $0 action [args]"
 	echo ""
 	echo "Actions"
-	echo "   f|fetch              Fetch the default DUPR collection."
-	echo "   s|search [keyword] [dir]"
-	echo "                        Search in the [dir, default=.] collection."
-	echo "   u|unfold <.rcp>      Unfold .rcp file into debianized source tree."
-	echo "   c|create <name>      Create talky template file: <name>.rcp"
-	echo "   m|minimal <name>     Create minimal template: <name>.rcp"
-	echo "   l|ls [dir]           List packages in collection: [dir]"
-	echo "   deb <.rcp>           Build .deb files from .rcp"
-	echo "   dsc <.rcp>           Build .dsc files from .rcp"
-	echo "   help                 Print this usage information."
+	echo "   f|fetch                  Fetch the default DUPR collection."
+	echo "   s|search [keyword]       Search in the default collection."
+	echo "   l|ls                     List packages in default collection"
+	echo "   u|unfold <.rcp>          Unfold .rcp file into debianized source tree."
+	echo "   c|create <name>          Create talky template file: <name>.rcp"
+	echo "   m|minimal <name>         Create minimal template: <name>.rcp"
+	echo "   deb <.rcp>               Build .deb files from .rcp"
+	echo "   dsc <.rcp>               Build .dsc files from .rcp"
 }
 
 case "$1" in
@@ -98,7 +97,11 @@ case "$1" in
 		;;
 	s|search)
 		shift
-		duprCollector -s $@
+		if ! test -d $DUPR_DEFCOLL; then
+			echo "Please run 'dupr f' first."
+			exit 1
+		fi
+		duprCollector -s $@ $DUPR_DEFCOLL
 		;;
 	deb)
 		shift
@@ -120,7 +123,7 @@ case "$1" in
 		shift
 		dupr_minimal $@
 		;;
-	ls|list)
+	l|ls|list)
 		shift
 		duprCollector $DUPR_DEFCOLL $@
 		;;
