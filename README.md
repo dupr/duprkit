@@ -3,36 +3,32 @@ Debian User Recipe Toolkit (Work-In-Progress)
 
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
 
-DUPR Toolkit (duprkit) is a set of tools designed for Debian User Package
-Repository. Similar to Archlinux User Repository (AUR), DUPR aim to ease
-Debian packaging with simplified packaging recipe format, although it
-still requires a good knowledge on traditional Debian packaging. DUPR only
-distributes packaging recipes and doesn't distrbute any resulting `.deb`
-files.
+DUR Toolkit (durkit) is a set of tools designed for creating and utilizing user
+packaging recipe, which aims to simplify the source tree debianization process.
+A recipe can be transformed into a `debianized` source tree, `.dsc` files, or
+`.deb` files directly, at your option.  A set of recipe files form a
+Collection, namely a Debian User Repository.
 
-DUPR's packaging recipe is similar to AUR's PKGBUILD, or Gentoo's ebuild.
-By utilizing the packaging recipe, the user will download the source tarball
-and build it locally.
+This toolkit try to provide an experience resembles AUR's PKGBUILD or Gentoo's
+ebuild, although it still requires a good knowledge about traditional Debian
+packaging. The following tools are provided by this toolkit:
 
-DUPR Toolkit includes (1) the Hatless Folded Text (HFT) utility, which
-works like sort of "plain text tar"; (2) the `.durpkg` unfolder, namely
-`dunfold` which separates a `.durpkg` file into a shell script and an
-HFT file; (3) The DUPR helper `dupr`, which can build `.deb` packages
-with a given `.durpkg`.
+1. [Hatless Folded Text (HFT) utility](./bin/hft). HFT is in fact sort of
+   "plain text tar format", which allows one to squash multiple text files into
+   a single file, or restore the multiple files from a single HFT file.
 
-Hatless Folded Text (HFT) Specification HFT is an **optional** plain text format which allows to to squash packaging
-scripts into a single file.
-See https://github.com/dupr/duprkit/blob/master/bin/hft
-for the specification.
+2. [Recipe Unfolding Utility](./bin/dunfold). It splits a recipe into a shell
+   script and an HFT file.
+
+3. [DUPR Utility](./bin/dupr). The top-level utility used to build `.deb`,
+   `.dsc` or debianized source tree from a given recipe file.
 
 # DISCLAIMER
 
-Everything included in this repository is totoally unrelated to the Debian
-Project, or any OFFICIAL Debian development. Debian Project is not responsible
-for any consequence resulted by utilization of the D\*\*ian User Package
-Repository Toolkit or any related .durpkg collections or single .durpkg files.
-Please Take your own risk utilizing the toolkit, and please review every line
-of code before execution.
+This project is totoally unrelated to  OFFICIAL Debian development.  Debian
+Project is not responsible for any consequence incured by utilizing the
+toolkit.  Please Take your own risk and please review every line of code before
+execution.
 
 # Documentations
 
