@@ -1,6 +1,6 @@
 #/--- BEGIN Meta Information ----
 #
-# [*] means required, [opt] means can be deleted or left blank.
+# Items marked with [*] are required, those with [opt] can be safely removed.
 # The corresponding @...@ marks are used by dkSubst or dkSubst_.
 #
 #- [*] @SRC@                                     [a-zA-z0-9\-\.]+, no underline
@@ -31,7 +31,7 @@ build_depends=""
 #- [opt] @DEPENDS@                                 sep=comma, e.g. "depA, depB"
 depends=""
 #- [opt] @DH_BUILDSYSTEM@                  e.g. makefile, cmake, ninja, pybuild
-dh_buildsystem="makefile"
+dh_buildsystem=""
 #- [opt] @DH_WITH@                                   e.g. python3, python, etc.
 dh_with=""
 #- [opt] @SOURCE_FORMAT@                                 default="3.0 (native)"
