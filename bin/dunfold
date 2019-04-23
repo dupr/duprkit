@@ -38,12 +38,30 @@ def recipe_unfold(path: str):
         SyntaxError("It must have a shebang!")
     fp_shell = open(re.sub('.rcp$', '', path) + '.sh', 'w')
     fp_hft = open(re.sub('.rcp$', '', path) + '.hft', 'w')
+    lns_shell, lns_hft = [], []
 
-    fp = fp_shell
+    lns = lns_shell
     for line in recipe:
         if line.startswith('^'):
-            fp = fp_hft
-        fp.write(line)
+            lns = lns_hft
+        lns.append(line)
+
+    # nothing else to do with hft
+    fp_hft.writelines(lns_hft)
+    fp_hft.close()
+
+    # add header and tail to the shell script
+    lns_shell = [
+            '#!/bin/sh\n',
+            'set -e\n',
+            '. /usr/share/duprkit/duprkit\n',
+            'export DK_VERBOSE=1\n',
+            '\n'
+            ] + lns_shell + [
+            'true\n'
+            ]
+    fp_shell.writelines(lns_shell)
+    fp_shell.close()
 
 
 if __name__ == '__main__':
