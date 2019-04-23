@@ -36,8 +36,8 @@ def recipe_unfold(path: str):
         return
     if not recipe[0].startswith('#!'):
         SyntaxError("It must have a shebang!")
-    fp_shell = open(re.sub('.recipe$', '', path) + '.sh', 'w')
-    fp_hft = open(re.sub('.recipe$', '', path) + '.hft', 'w')
+    fp_shell = open(re.sub('.rcp$', '', path) + '.sh', 'w')
+    fp_hft = open(re.sub('.rcp$', '', path) + '.hft', 'w')
 
     fp = fp_shell
     for line in recipe:
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     ag = ag.parse_args()
 
     if ag.recipe:
-        if ag.recipe.endswith('.recipe') or ag.recipe.endswith('.rcp'):
+        if ag.recipe.endswith('.rcp'):
             recipe_unfold(ag.recipe)
         else:
-            raise Exception(f"Unsupported {ag.folded}")
+            raise Exception(f"Unsupported {ag.recipe}")
