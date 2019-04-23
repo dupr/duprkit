@@ -40,7 +40,7 @@ dupr_unfold () {
 }
 
 dupr_deb () {
-	local dir=${1%.rcp}
+	local dir=$(basename ${1%.rcp})
 	start_time="$(date -u +%s)"
 	dupr_unfold $1
 	cd $dir; dpkg-buildpackage -us -uc
@@ -50,7 +50,7 @@ dupr_deb () {
 }
 
 dupr_dsc () {
-	local dir=${1%.rcp}
+	local dir=$(basename ${1%.rcp})
 	start_time="$(date -u +%s)"
 	dupr_unfold $1
 	cd $dir; dpkg-buildpackage -us -uc -nc -S

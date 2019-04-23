@@ -76,11 +76,17 @@ if __name__ == '__main__':
                 'description']
             if any([
                     re.match(ag.search, rcp),
-                (ag.search in rcp),
+                    re.match(ag.search, rcp.lower()),
+                    (ag.search in rcp),
+                    (ag.search in rcp.lower()),
                     re.match(ag.search, src),
-                (ag.search in src),
+                    re.match(ag.search, src.lower()),
+                    (ag.search in src),
+                    (ag.search in src.lower()),
                     re.match(ag.search, desc),
-                (ag.search in desc),
+                    re.match(ag.search, desc.lower()),
+                    (ag.search in desc),
+                    (ag.search in desc.lower()),
             ]):
                 filtered.append(item)
         prettyPrint(filtered)
