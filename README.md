@@ -1,4 +1,4 @@
-D**ian User Package Repository Toolkit
+Debian User Recipe Toolkit (Work-In-Progress)
 ===
 
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
