@@ -184,9 +184,11 @@ dk_get_source () {
 		return
 	fi
 	# download $srcurl
-	if test -n "$(basename $srcurl | grep -o .tar.gz)"; then
+	if test -n "$(basename $srcurl | grep -o .tar.gz)" || \
+		test -n "$(basename $srcurl | grep -o .tgz)"; then
 		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.tar.gz
-	elif test -n "$(basename $srcurl | grep -o .tar.xz)"; then
+	elif test -n "$(basename $srcurl | grep -o .tar.xz)" || \
+		test -n "$(basename $srcurl | grep -o .txz)"; then
 		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.tar.xz
 	elif test -n "$(basename $srcurl | grep -o .tar.bzip2)"; then
 		wget -c "$srcurl" -O $DKCACHEDIR/${src}_${version}.tar.bzip2
