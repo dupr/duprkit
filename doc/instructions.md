@@ -1,6 +1,15 @@
 # Instructions
 
-### Use Existing Recipe
+## HFT
+
+The `HFT` format and `debian/` directory can be bi-directionally transformed
+with `bin/hft`.
+
+* Fold a directory of (hatless) plain files: `hft -v -f debian -o debian.hft`
+
+* Unfold an HFT file into the directory: `hft -v -u debian.hft -d destdir`
+
+## Use Existing Recipe
 
 * Install with `make install`. Or simply copy `/bin/*` to your `$PATH`.
 
@@ -14,16 +23,12 @@
 
 * The way to install resulting .deb packages is omitted. I assume you know that.
 
-### Create New Recipe
+## Create New Recipe
 
 * Install, same as above.
 
 * Copy the [default template](./examples/template-default.durpkg) to somewhere
 and modify it. Or just create a `.durpkg` header and a `debian/` directory.
-**HFT Format is not mandatory.** The `HFT` format and `debian/` directory can
-be bi-directionally transformed with `bin/hft`, e.g. `hft -f debian -o
-debian.hft` for folding the texts, `hft -u debian.hft -d .` for unfolding the
-`HFT` file.
 
 * Make sure `dupr b mypackage.durpkg` works fine.
 
