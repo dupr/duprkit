@@ -3,3 +3,6 @@ export DESTDIR=$(shell pwd)/debian/duprkit/
 export PREFIX=/usr
 %:
 	dh $@
+
+override_dh_compress:
+	dh_compress -Xtemplate.rcp

@@ -61,7 +61,7 @@ dupr_dsc () {
 
 dupr_create () {
 	if test -n "$1"; then
-		cp -v /usr/share/doc/duprkit/examples/template-default.rcp $1.rcp
+		cp -v /usr/share/doc/duprkit/examples/template.rcp $1.rcp
 	else
 		echo "Please specify recipe name"
 	fi
@@ -69,7 +69,7 @@ dupr_create () {
 
 dupr_minimal () {
 	if test -n "$1"; then
-		cat /usr/share/doc/duprkit/examples/template-default.rcp \
+		cat /usr/share/doc/duprkit/examples/template.rcp \
 			| awk '(!/^[[:blank:]]*#/)&&(!/^\^#/)||(/^#!/){print}' > $1.rcp
 	else
 		echo "Please specify recipe name"
