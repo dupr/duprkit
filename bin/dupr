@@ -33,25 +33,28 @@ dupr_unfold () {
 	# Splits the .durpkg into .sh script and .hft file
 	$DUNFOLD $1
 	_c162 "→ Executing"; _c36 "${1%.rcp}.sh"; _c162 "..."; _c "\n"
-	start_time="$(date -u +%s)"
 	# Execute the resulting .sh script
 	$SH ${1%.rcp}.sh
-	sleep 1
+}
+
+dupr_deb () {
+	local dir=${1%.rcp}
+	start_time="$(date -u +%s)"
+	dupr_unfold $1
+	cd $dir; dpkg-buildpackage -us -uc
 	end_time="$(date -u +%s)"
 	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
-dupr_deb () {
-	local dir=${1%.rcp}
-	dupr_unfold $1
-	cd $dir; dpkg-buildpackage -us -uc
-}
-
 dupr_dsc () {
 	local dir=${1%.rcp}
+	start_time="$(date -u +%s)"
 	dupr_unfold $1
 	cd $dir; dpkg-buildpackage -us -uc -nc -S
+	end_time="$(date -u +%s)"
+	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
+	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
 dupr_create () {
