@@ -4,7 +4,7 @@ SH=/bin/sh
 GIT=/usr/bin/git
 DUNFOLD=/usr/bin/dunfold
 DUPR_DEFCOLL=~/.defcoll
-__version__="0.0g"
+__version__="0.0h"
 
 _c36 () {
 	echo -n "\033[1;36m" $@
