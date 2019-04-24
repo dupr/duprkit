@@ -18,7 +18,7 @@ _c () {
 	echo -n "\033[0m" $@
 }
 
-dupr_fetch () {
+flink_fetch () {
 	if ! test -r $DUPR_DEFCOLL; then
 		_c162 "→ Cloning"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
 		$GIT clone https://github.com/dupr/DefaultCollection $DUPR_DEFCOLL
@@ -28,7 +28,7 @@ dupr_fetch () {
 	fi
 }
 
-dupr_unfold () {
+flink_unfold () {
 	test -z "$1" && (echo "Unfolding nothing"; false)
 	_c162 "→ Unfolding"; _c36 "$1"; _c162 "into"; _c36 ".sh"; _c162 "and";
 	_c36 ".hft"; _c162 "..."; _c "\n"
@@ -39,25 +39,25 @@ dupr_unfold () {
 	$SH ${1%.rcp}.sh
 }
 
-dupr_deb () {
+flink_deb () {
 	start_time="$(date -u +%s)"
-	dupr_unfold $1
+	flink_unfold $1
 	cd $(basename ${1%.rcp}).d; dpkg-buildpackage -us -uc
 	end_time="$(date -u +%s)"
 	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
-dupr_dsc () {
+flink_dsc () {
 	start_time="$(date -u +%s)"
-	dupr_unfold $1
+	flink_unfold $1
 	cd $(basename ${1%.rcp}).d; dpkg-buildpackage -us -uc -nc -S
 	end_time="$(date -u +%s)"
 	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
-dupr_create () {
+flink_create () {
 	if test -n "$1"; then
 		cp -v /usr/share/doc/duprkit/examples/template.rcp $1.rcp
 	else
@@ -65,7 +65,7 @@ dupr_create () {
 	fi
 }
 
-dupr_minimal () {
+flink_minimal () {
 	if test -n "$1"; then
 		cat /usr/share/doc/duprkit/examples/template.rcp \
 			| awk '(!/^[[:blank:]]*#/)&&(!/^\^#/)||(/^#!/){print}' > $1.rcp
@@ -92,35 +92,35 @@ usage () {
 case "$1" in
 	f|fetch)
 		shift
-		dupr_fetch $@
+		flink_fetch $@
 		;;
 	s|search)
 		shift
 		if ! test -d $DUPR_DEFCOLL; then
-			echo "Please run 'dupr f' first."
+			echo "Please run 'flink f' first."
 			exit 1
 		fi
 		duprCollector -s $@ $DUPR_DEFCOLL
 		;;
 	deb)
 		shift
-		dupr_deb $@
+		flink_deb $@
 		;;
 	dsc)
 		shift
-		dupr_dsc $@
+		flink_dsc $@
 		;;
 	u|unfold)
 		shift
-		dupr_unfold $@
+		flink_unfold $@
 		;;
 	c|create)
 		shift
-		dupr_create $@
+		flink_create $@
 		;;
 	m|minimal)
 		shift
-		dupr_minimal $@
+		flink_minimal $@
 		;;
 	l|ls|list)
 		shift

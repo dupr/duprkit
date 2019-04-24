@@ -21,7 +21,7 @@ packaging. The following tools are provided by this toolkit:
 2. [Recipe Unfolding Utility](./bin/dunfold). It splits a recipe into a shell
    script and an HFT file.
 
-3. [DUPR Utility](./bin/dupr). The top-level utility used to build `.deb`,
+3. [DUPR Main Utility: flink](./bin/flink). The top-level utility used to build `.deb`,
    `.dsc` or debianized source tree from a given recipe file.
 
 # DISCLAIMER

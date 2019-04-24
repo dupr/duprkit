@@ -11,8 +11,13 @@ Build-Depends: debhelper-compat (= 11),
 
 Package: duprkit
 Architecture: all
-Depends: ${misc:Depends}, debhelper, devscripts, build-essential,
+Depends: ${misc:Depends}, devscripts, build-essential,
          python3, python3-all, git, wget, curl, aria2, debmake,
          python3-chardet, gawk,
 Description: Debian User Recipe Toolkit
- Debian User Recipe Toolkit
+ DUR Toolkit (durkit) is a set of tools designed for creating and utilizing
+ user packaging recipe, which aims to simplify the source tree debianization
+ process.  A recipe defines how to get the source package and how to debianize
+ the source tree, and can be transformed into a debianized source tree, .dsc
+ files, or .deb files directly, at user's option.  A set of recipe files form
+ a Collection, namely a Debian User Repository.

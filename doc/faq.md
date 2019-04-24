@@ -25,8 +25,6 @@ Submit a PR to https://github.com/dupr/DefaultCollection . Or setup your own col
 
 * Why is it "D\*\*ian" ?
 
-D**ian may be pronounced as "Dasteriskian", i.e. "D-asterisk-ian". ([propose a better name here](https://github.com/dupr/duprkit/issues/2))
-
 This implementation allows non-DFSG stuff or dirty stuff.
 Some people think some derived works may taint the name of Debian.
 [propose a better name here](https://github.com/dupr/duprkit/issues/2)

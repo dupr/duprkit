@@ -13,21 +13,21 @@ with `bin/hft`.
 
 * Install the `.deb` package from the release page, or simply install with `make install`.
 
-* Fetch your favorite recipe collection, or just the default collection e.g. `dupr fetch'.
+* Fetch your favorite recipe collection, or just the default collection e.g. `flink fetch'.
 
 * Find your target `.rcp` file.
 
 * Review the `.rcp` file to make sure it's safe.
 
-* Build .deb packages: `dupr deb xxx.rcp`. Or build the .dsc files: `dupr dsc
-xxx.rcp`. Or simply prepare the debianized source tree: `dupr u xxx.rcp`.
+* Build .deb packages: `flink deb xxx.rcp`. Or build the .dsc files: `flink dsc
+xxx.rcp`. Or simply prepare the debianized source tree: `flink u xxx.rcp`.
 
 ## Create New Recipe
 
 * Install `duprkit`, same as above.
 
-* Create a new recipe for package foobar: `dupr c foobar`. If you don't need
-the comments in the template, use `dupr m foobar`.
+* Create a new recipe for package foobar: `flink c foobar`. If you don't need
+the comments in the template, use `flink m foobar`.
 
 * Edit `foobar.rcp` until it works well.
 

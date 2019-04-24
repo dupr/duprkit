@@ -10,7 +10,7 @@ VIM81         ?= $(PREFIX)/share/vim/vim81/
 install: install-vim
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/dunfold $(DESTDIR)/$(BINDIR)/dunfold
-	install -Dm0755 bin/dupr $(DESTDIR)/$(BINDIR)/dupr
+	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
 	install -Dm0755 bin/duprCollector $(DESTDIR)/$(BINDIR)/duprCollector
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
 	install -Dm0644 examples/template.rcp \
@@ -29,7 +29,7 @@ test:
 	@echo "[48;5;92mdunfold-sanity[m"
 	python3 bin/dunfold --help
 	@echo "[48;5;92mdupr-sanity[m"
-	./bin/dupr help
+	./bin/flink help
 	@echo "[48;5;92mhft-fold[m"
 	./bin/hft -f bin -o bin.hft -v
 	@echo "[48;5;92mhft-unfold[m"
