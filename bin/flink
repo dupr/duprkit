@@ -38,6 +38,7 @@ flink_unfold () {
 	_c162 "→ Executing"; _c36 "${1%.rcp}.sh"; _c162 "..."; _c "\n"
 	# Execute the resulting .sh script
 	$SH ${1%.rcp}.sh
+	rm -v ${1%.rcp}.sh ${1%.rcp}.hft
 }
 
 flink_deb () {
