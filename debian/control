@@ -7,13 +7,24 @@ Vcs-Git: https://github.com/dupr/duprkit.git
 Vcs-Browser: https://github.com/dupr/duprkit
 Maintainer: Mo Zhou <cdluminate@gmail.com>
 Build-Depends: debhelper-compat (= 11),
- python3 <!nocheck>, python3-chardet <!nocheck>,
+               python3 <!nocheck>,
+               python3-chardet <!nocheck>
 
 Package: duprkit
 Architecture: all
-Depends: ${misc:Depends}, devscripts, build-essential,
-         python3, python3-all, git, wget, curl, aria2, debmake,
-         python3-chardet, gawk, ccache,
+Depends: aria2,
+         build-essential,
+         ccache,
+         curl,
+         debmake,
+         devscripts,
+         gawk,
+         git,
+         python3 (>= 3.6~),
+         python3-all,
+         python3-chardet,
+         wget,
+         ${misc:Depends}
 Description: Debian User Recipe Toolkit
  DUR Toolkit (durkit) is a set of tools designed for creating and utilizing
  user packaging recipe, which aims to simplify the source tree debianization
