@@ -1,0 +1,5 @@
+addon: hft-rcp
+description: "DUPR RCP and HFT file formats support"
+files:
+    - ftdetect/hft.vim
+    - syntax/hft.vim

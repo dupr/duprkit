@@ -4,8 +4,7 @@ BINDIR        ?= $(PREFIX)/bin/
 SHAREDIR      ?= $(PREFIX)/share/duprkit/
 DOCDIR        ?= $(PREFIX)/share/doc/duprkit/
 EXAMPLEDIR    ?= $(DOCDIR)/examples/
-VIMADDON      ?= $(PREFIX)/share/vim/addons/
-VIM81         ?= $(PREFIX)/share/vim/vim81/
+VIM           ?= $(PREFIX)/share/vim/
 
 install: install-vim
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
@@ -18,9 +17,11 @@ install: install-vim
 
 install-vim:
 	install -Dm0644 examples/vim/syntax/hft.vim \
-		$(DESTDIR)/$(VIM81)/syntax/hft.vim
+		$(DESTDIR)/$(VIM)/addons/syntax/hft.vim
 	install -Dm0644 examples/vim/ftdetect/hft.vim \
-		$(DESTDIR)/$(VIM81)/ftdetect/hft.vim
+		$(DESTDIR)/$(VIM)/addons/ftdetect/hft.vim
+	install -Dm0644 examples/vim/hft-rcp.yaml \
+		$(DESTDIR)/$(VIM)/registry/hft-rcp.yaml
 
 test:
 	@echo "[48;5;92mhft-sanity[m"
