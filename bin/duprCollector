@@ -9,6 +9,7 @@ from typing import *
 green = lambda x: f'\x1b[32m{x}\x1b[m'
 Yellow = lambda x: f'\x1b[1;33m{x}\x1b[m'
 Cyan = lambda x: f'\x1b[1;36m{x}\x1b[m'
+Red = lambda x: f'\x1b[1;31m{x}\x1b[m'
 
 
 _META_FIELDS_ = ('src', 'description', 'version', 'license', 'section',
@@ -49,8 +50,11 @@ def prettyPrint(col: List[Dict]) -> None:
     for item in col:
         print(f'\x1b[1;32m*  \x1b[1;37m{item[".rcp"]}\x1b[m')
         for k in sorted(item.keys()):
+            color = green
             if k not in _META_FIELDS_: continue
-            print(green(f'{k}:'.rjust(20)), f'{item[k]}')
+            if k == 'build_depends':
+                color = Red
+            print(color(f'{k}:'.rjust(20)), f'{item[k]}')
         print()
     print('Found', Yellow(f'{len(col)}'),
           f'(matching) packages in "{ag.collection}"')
