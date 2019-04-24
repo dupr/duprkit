@@ -1,7 +1,19 @@
 #!/usr/bin/python3
 '''
 Hatless Folded Text: Lib, Utility
+=================================
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
+
+Typical Usage
+-------------
+
+Fold a directory of (hatless) plain files in verbose mode::
+
+  hft -v -f debian -o debian.hft
+
+Unfold an HFT file into the directory in verbose mode::
+
+  hft -v -u debian.hft -d destdir
 '''
 import argparse
 import sys, os, re, stat, chardet
@@ -46,6 +58,12 @@ HFT Example
 '''
 
 
+_C36  = "\x1b[1;36m"
+_c36  = "\x1b[0;36m"
+_C162 = "\x1b[1;38;5;162m"
+_c    = "\x1b[0;m"
+
+
 def hft_fold(path: str, *, verbose=False) -> List[str]:
     '''
     Fold a given file or directory into hft format. It is basically
@@ -78,7 +96,7 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
                     enc = chardet.detect(open(p, 'rb').read())['encoding']
                     f = open(p, 'rt', encoding=enc)
                     lines = f.readlines()
-                if verbose: print('HFT-fold:', p)
+                if verbose: print(f'{_C162}HFT-fold:{_c}', p)
                 # syntax check
                 if any([x.startswith('^') for x in lines]):
                     print(f'{p}: Syntax Error!')
@@ -123,7 +141,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
                 os.makedirs(os.path.dirname(path))
             fp = open(path, 'w')
             if fmode is not None: os.chmod(path, fmode)
-            if verbose: print('HFT-unfold:', path)
+            if verbose: print(f'{_C162}HFT-unfold:{_c}', path)
         else:  # NORMAL CONTENT
             if fp is None:
                 raise SyntaxError(f"Don't know where to write {hft}")
