@@ -1,0 +1,66 @@
+HFT(5)
+======
+:doctype: manpage
+
+NAME
+----
+hft - Hatless Folded Text Utility
+
+SYNOPSIS
+--------
+*hft* [-h] [-f FOLD] [-o OUTPUT] [-u UNFOLD] [-d DESTDIR] [-F] [-S] [-v] [-V]
+
+Hatless Folded Text (HFT) Specification
+---------------------------------------
+Hatless Folded Text basically resembles sort of plaintext 'tar'.
+An HFT file, is a series of (filepath,content) plain texts,
+where the filepath line has a special format "^ FILENAME [mode]".
+For example, "^ debian/rules 0o755", "^ /tmp/foobar".
+The content can contain any plain text except for any line
+starts with the hat (^). Comment lines starts with "^#".
+
+HFT spec has some features:
+
+. It doesn't support embedding binary blobs, deliberately.
+. The content must NOT contain any line that starts with a hat (^).
+. The file mode is optional.
+
+Typical Usage
+-------------
+
+Fold a directory of (hatless) plain files in verbose mode::
+
+  hft -v -f debian -o debian.hft
+
+Unfold an HFT file into the directory in verbose mode::
+
+  hft -v -u debian.hft -d destdir
+
+OPTIONS
+-------
+*-h, --help*::
+  show this help message and exit
+*-f, --fold*='FOLD'::
+  fold the given file or directory
+*-o, --output*='OUTPUT'::
+  specify output file of the folded result (incl. /dev/stdout)
+*-u, --unfold*='UNFOLD'::
+  unfold the given HFT file, (incl. /dev/stdin)
+*-d, --destdir*='DESTDIR'::
+  destination directory when unfolding an HFT file
+*-F, --force*::
+  force overwrite the output destination
+*-S, --spec*::
+  print the Hatless Folded Text spec
+*-v, --verbose*::
+  toggle verbose mode
+*-V, --version*::
+  print version information
+
+BUGS
+----
+https://github.com/dupr/duprkit/issues
+
+COPYING
+-------
+Copyright (C) 2019 M. Zhou <lumin@debian.org>
