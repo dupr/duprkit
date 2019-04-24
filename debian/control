@@ -13,7 +13,7 @@ Package: duprkit
 Architecture: all
 Depends: ${misc:Depends}, devscripts, build-essential,
          python3, python3-all, git, wget, curl, aria2, debmake,
-         python3-chardet, gawk,
+         python3-chardet, gawk, ccache,
 Description: Debian User Recipe Toolkit
  DUR Toolkit (durkit) is a set of tools designed for creating and utilizing
  user packaging recipe, which aims to simplify the source tree debianization
