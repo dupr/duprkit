@@ -1,5 +1,5 @@
 # RCP version of: https://github.com/dupr/apt-nosync
-src="${0%.sh}"
+src="$(basename ${0%.sh})"
 version="0.git"
 description="Accelerate APT and DPKG with eatmydata"
 license="Expat/MIT"
