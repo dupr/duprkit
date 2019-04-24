@@ -59,6 +59,14 @@ flink_dsc () {
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
+flink_sbuild () {
+	start_time="$(date -u +%s)"
+	flink_unfold $1
+	cd $(basename ${1%.rcp}).d; shift; sbuild --no-clean-source $@
+	end_time="$(date -u +%s)"
+	_c162 "→ Completed in"; _c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
+}
+
 flink_create () {
 	if test -n "$1"; then
 		cp -v /usr/share/doc/duprkit/examples/template.rcp $1.rcp
@@ -89,6 +97,7 @@ usage () {
 	echo "   m|minimal <name>         Create minimal template: <name>.rcp"
 	echo "   deb <.rcp>               Build .deb files from .rcp"
 	echo "   dsc <.rcp>               Build .dsc files from .rcp"
+	echo "   sb <.rcp> [sbuild-opts]  Sbuild in unfolded source tree from .rcp"
 }
 
 case "$1" in
@@ -111,6 +120,10 @@ case "$1" in
 	dsc)
 		shift
 		flink_dsc $@
+		;;
+	sb|sbuild)
+		shift
+		flink_sbuild $@
 		;;
 	u|unfold)
 		shift
