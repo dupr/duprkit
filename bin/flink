@@ -4,6 +4,7 @@ SH=/bin/sh
 GIT=/usr/bin/git
 DUNFOLD=/usr/bin/dunfold
 DUPR_DEFCOLL=~/.defcoll
+export PATH=/usr/lib/ccache:$PATH
 __version__="0.0h"
 
 _c36 () {
