@@ -68,7 +68,7 @@ flink_create () {
 flink_minimal () {
 	if test -n "$1"; then
 		cat /usr/share/doc/duprkit/examples/template.rcp \
-			| awk '(!/^[[:blank:]]*#/)&&(!/^\^#/)||(/^#!/){print}' > $1.rcp
+			| gawk '(!/^[[:blank:]]*#/)&&(!/^\^#/)||(/^#!/){print}' > $1.rcp
 	else
 		echo "Please specify recipe name"
 	fi
