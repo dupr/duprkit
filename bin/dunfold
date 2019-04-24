@@ -64,6 +64,9 @@ def recipe_unfold(path: str):
             'dk_get_source\n',
             'dk_prep_source\n',
             'dk_debianize\n',
+            'if ! test -r "$(basename ${0%.sh}).d"; then\n',
+            '  ln -sr $src "$(basename ${0%.sh}).d"\n',
+            'fi\n',
             '#--- END Prepare source and debian/ directory\n',
             ]
     fp_shell.writelines(lns_shell)

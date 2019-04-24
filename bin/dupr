@@ -40,20 +40,18 @@ dupr_unfold () {
 }
 
 dupr_deb () {
-	local dir=$(basename ${1%.rcp})
 	start_time="$(date -u +%s)"
 	dupr_unfold $1
-	cd $dir; dpkg-buildpackage -us -uc
+	cd $(basename ${1%.rcp}).d; dpkg-buildpackage -us -uc
 	end_time="$(date -u +%s)"
 	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
 }
 
 dupr_dsc () {
-	local dir=$(basename ${1%.rcp})
 	start_time="$(date -u +%s)"
 	dupr_unfold $1
-	cd $dir; dpkg-buildpackage -us -uc -nc -S
+	cd $(basename ${1%.rcp}).d; dpkg-buildpackage -us -uc -nc -S
 	end_time="$(date -u +%s)"
 	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
 	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
