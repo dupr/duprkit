@@ -42,6 +42,7 @@ execution.
 * [Specification: Recipe (.rcp)](./bin/dunfold)
 * [Specification: Collection](./doc/collection.md)
 * [DUPR General Recommendations](./doc/general-recommendations.rst)
+* [Related Projects](./doc/related.md)
 * [FAQ](./doc/faq.md)
 
 # List of Known Collections
