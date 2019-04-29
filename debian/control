@@ -23,6 +23,7 @@ Depends: aria2,
          python3 (>= 3.6~),
          python3-all,
          python3-chardet,
+         rakudo,
          wget,
          ${misc:Depends}
 Description: Debian User Recipe Toolkit
