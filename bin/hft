@@ -47,6 +47,9 @@ starting with "^". HFT supports several kinds of control messages:
 3. "^ FILENAME -> TARGET"
    A symbol link FILENAME pointing to TARGET.
 
+4. "^^ FILENAME"
+   Similar to "^ FILENAME" but this opens FILENAME in APPEND mode.
+
 Note, HFT doesn't support embedding binary blobs, deliberately.
 '''
 
@@ -112,16 +115,19 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     '''
     Unfold an HFT file.
     '''
-    curline, rest, fp, fmode = None, hft, None, None
+    curline, rest, fp, fmode, wmode = None, hft, None, None, 'w'
+    r_comment   = re.compile('^\^#.*$')
     r_file_mode = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
     r_file      = re.compile('^\^\s*([/\S]+)\s*$')
+    r_file_ap   = re.compile('^\^\^\s*([/\S]+)\s*$')
     r_symlink   = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
     while len(rest) > 0:
         curline, rest = rest[0], rest[1:]
-        if re.match('^\^#.*$', curline):
+        if r_comment.match(curline):
             # A COMMENT LINE
             continue
-        elif any([r_file.match(curline), r_file_mode.match(curline)]):
+        elif any([r_file.match(curline), r_file_mode.match(curline),
+                  r_file_ap.match(curline)]):
             # A PATH-MODE LINE
             if fp is not None:
                 fp.close()
@@ -130,17 +136,22 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             if r_file_mode.match(curline):
                 path, fmode = r_file_mode.match(curline).groups()
                 fmode = eval(fmode)
+                wmode = 'w'
             elif r_file.match(curline):
                 path, fmode = r_file.match(curline).group(1), None
+                wmode = 'w'
+            elif r_file_ap.match(curline):
+                path, fmode = r_file_ap.match(curline).group(1), None
+                wmode = 'a'
             else:
                 raise SyntaxError(f"Parser Error: Invalid line '{curline}'")
             # create the new file
             path = os.path.join(destdir, path)
-            if os.path.exists(path) and not force:
+            if os.path.exists(path) and not force and (wmode != 'a'):
                 raise Exception(f'{path} already exists!')
             if not os.path.exists(os.path.dirname(path)):
                 os.makedirs(os.path.dirname(path))
-            fp = open(path, 'w')
+            fp = open(path, wmode)
             if fmode is not None: os.chmod(path, fmode)
             if verbose: print(f'{_C162}HFT-unfold:{_c}', path)
         elif r_symlink.match(curline):
