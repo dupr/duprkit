@@ -37,6 +37,8 @@ HFT spec has some features:
   1. It doesn't support embedding binary blobs, deliberately.
   2. The content must NOT contain any line that starts with a hat (^).
   3. The file mode is optional.
+  4. WIP: symlink support
+  5. WIP: append support
 
 HFT Example
 -----------
@@ -117,11 +119,14 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     curline, rest, fp, fmode = None, hft, None, None
     r_file_mode = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
     r_file      = re.compile('^\^\s*([/\S]+)\s*$')
+    r_symlink   = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
     while len(rest) > 0:
         curline, rest = rest[0], rest[1:]
-        if re.match('^\^#.*$', curline):  # A COMMENT LINE
+        if re.match('^\^#.*$', curline):
+            # A COMMENT LINE
             continue
-        elif curline.startswith('^'):  # A PATH-MODE LINE
+        elif any([r_file.match(curline), r_file_mode.match(curline)]):
+            # A PATH-MODE LINE
             if fp is not None:
                 fp.close()
                 fp = None
@@ -142,9 +147,23 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             fp = open(path, 'w')
             if fmode is not None: os.chmod(path, fmode)
             if verbose: print(f'{_C162}HFT-unfold:{_c}', path)
+        elif r_symlink.match(curline):
+            # A SYMLINK LINE
+            if fp is not None:
+                fp.close(); fp = None;
+            sldst, slsrc = r_symlink.match(curline).groups()
+            path = os.path.join(destdir, sldst)
+            if os.path.exists(path) and not force:
+                raise Exception(f'{path} already exists!')
+            if not os.path.exists(os.path.dirname(path)):
+                os.makedirs(os.path.dirname(path))
+            if os.path.exists(path) and force:
+                os.unlink(path)
+            os.symlink(slsrc, path)
+            if verbose: print(f'{_C162}HFT-unfold:{_c}', path, '->', slsrc)
         else:  # NORMAL CONTENT
             if fp is None:
-                raise SyntaxError(f"Don't know where to write {hft}")
+                raise SyntaxError(f"SyntaxError: {curline}")
             fp.write(curline)
     if fp is not None: fp.close()
     return
