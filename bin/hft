@@ -150,7 +150,8 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             if os.path.exists(path) and not force and (wmode != 'a'):
                 raise Exception(f'{path} already exists!')
             if not os.path.exists(os.path.dirname(path)):
-                os.makedirs(os.path.dirname(path))
+                if os.path.dirname(path):
+                    os.makedirs(os.path.dirname(path))
             fp = open(path, wmode)
             if fmode is not None: os.chmod(path, fmode)
             if verbose: print(f'{_C162}HFT-unfold:{_c}', path)
