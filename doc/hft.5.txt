@@ -10,21 +10,6 @@ SYNOPSIS
 --------
 *hft* [-h] [-f FOLD] [-o OUTPUT] [-u UNFOLD] [-d DESTDIR] [-F] [-S] [-v] [-V]
 
-Hatless Folded Text (HFT) Specification
----------------------------------------
-Hatless Folded Text basically resembles sort of plaintext 'tar'.
-An HFT file, is a series of (filepath,content) plain texts,
-where the filepath line has a special format "^ FILENAME [mode]".
-For example, "^ debian/rules 0o755", "^ /tmp/foobar".
-The content can contain any plain text except for any line
-starts with the hat (^). Comment lines starts with "^#".
-
-HFT spec has some features:
-
-. It doesn't support embedding binary blobs, deliberately.
-. The content must NOT contain any line that starts with a hat (^).
-. The file mode is optional.
-
 Typical Usage
 -------------
 
@@ -35,6 +20,35 @@ Fold a directory of (hatless) plain files in verbose mode::
 Unfold an HFT file into the directory in verbose mode::
 
   hft -v -u debian.hft -d destdir
+
+Hatless Folded Text (HFT) Specification
+---------------------------------------
+Hatless Folded Text basically resembles sort of plain text 'tar'.
+An HFT file uses lines starting with "^" as special control messages,
+so it doesn't support "folding" any text file that contains a line
+starting with "^". HFT supports several kinds of control messages:
+
+1. "^ FILENAME [MODE]"
+
+   Any following non-control messages are regarded as the content of
+   file FILENAME. MODE is the optional file mode of FILENAME in python
+   Octet literal form, e.g. "0o755".
+
+   Example:
+
+       ^ bin/helloworld 0o755
+       #!/bin/sh
+       echo "Hello, world!"
+
+2. "^# COMMENT"
+
+   Single-line comment. Can be placed anywhere in an HFT file.
+
+3. "^ FILENAME -> TARGET"
+
+   A symbol link FILENAME pointing to TARGET.
+
+Note, HFT doesn't support embedding binary blobs, deliberately.
 
 OPTIONS
 -------
