@@ -49,24 +49,16 @@ sub MAIN (Str $PATH)
 	my $fp_hft := open :w, $path.basename.subst(/\.rcp$/, '.hft');
 	my $status = "she";
 
-	# write shell header
-	for @SHELL_HEADER -> $line {
-		$fp_she.say: $line;
-	}
-
-	for (slurp $path.path).lines -> $line {
-		if $line ~~ /^\^/ { $status = "hft"; }
+	$fp_she.say: $_ for @SHELL_HEADER;
+	for $path.lines {
+		if m/^\^/ { $status = "hft"; }
 		given $status {
-			when /she/ { $fp_she.say: $line; }
-			when /hft/ { $fp_hft.say: $line; }
+			when /she/ { $fp_she.say: $_; }
+			when /hft/ { $fp_hft.say: $_; }
 		}
 	}
+	$fp_she.say: $_ for @SHELL_TAILER;
 
-	# write shell tailer
-	for @SHELL_TAILER -> $line {
-		$fp_she.say: $line;
-	}
-	
 	close $fp_she;
 	close $fp_hft;
 }
