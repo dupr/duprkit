@@ -21,7 +21,7 @@ Recipe Example
     3.0 (native)
 =end Recipe-Specification
 
-constant $SHELL_HEADER = q :heredoc/END/;
+constant $SHELL_HEADER = q :to/END/;
 #!/bin/sh
 set -e
 . /usr/share/duprkit/duprkit
@@ -29,7 +29,7 @@ export DK_VERBOSE=1
 
 END
 
-constant $SHELL_TAILER = q :heredoc/END/;
+constant $SHELL_TAILER = q :to/END/;
 #--- BEGIN Prepare source and debian/ directory
 dk_get_source
 dk_prep_source
