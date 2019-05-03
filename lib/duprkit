@@ -215,7 +215,11 @@ dk_prep_source () {
 		exit 1
 	fi
 	mkdir $src;
-	tar xf ${src}_${version}.tar.gz --strip-components=1 -C $src/
+	if test $(tar tf ${src}_${version}.tar.* | awk -F/ '{m=9} NF<m{m=NF} END{print m}') = 1; then
+		tar xf ${src}_${version}.tar.* -C $src/
+	else
+		tar xf ${src}_${version}.tar.* --strip-components=1 -C $src/
+	fi
 }
 
 dk_debianize () {
