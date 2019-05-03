@@ -21,22 +21,24 @@ Recipe Example
     3.0 (native)
 =end Recipe-Specification
 
-constant @SHELL_HEADER =
-	"#!/bin/sh",
-	"set -e",
-	". /usr/share/duprkit/duprkit",
-	"export DK_VERBOSE=1",
-	"";
+constant $SHELL_HEADER = q :heredoc/END/;
+#!/bin/sh
+set -e
+. /usr/share/duprkit/duprkit
+export DK_VERBOSE=1
 
-constant @SHELL_TAILER =
-	"#--- BEGIN Prepare source and debian/ directory",
-	"dk_get_source",
-	"dk_prep_source",
-	"dk_debianize",
-	'if ! test -r "$(basename ${0%.sh}).d"; then',
-	'  ln -sr $src "$(basename ${0%.sh}).d"',
-	"fi",
-	"#--- END Prepare source and debian/ directory";
+END
+
+constant $SHELL_TAILER = q :heredoc/END/;
+#--- BEGIN Prepare source and debian/ directory
+dk_get_source
+dk_prep_source
+dk_debianize
+if ! test -r "$(basename ${0%.sh}).d"; then
+  ln -sr $src "$(basename ${0%.sh}).d"
+fi
+#--- END Prepare source and debian/ directory
+END
 
 sub MAIN (Str $PATH where *.IO.f)
 {
@@ -46,12 +48,12 @@ sub MAIN (Str $PATH where *.IO.f)
 	my $fp_hft := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.hft');
 	my $fp = $fp_she;
 
-	$fp_she.say: $_ for @SHELL_HEADER;
+	$fp_she.say: $_ for $SHELL_HEADER.lines;
 	for $PATH.IO.lines {
 		if m/^\^/ { $fp = $fp_hft; }
 		$fp.say: $_;
 	}
-	$fp_she.say: $_ for @SHELL_TAILER;
+	$fp_she.say: $_ for $SHELL_TAILER.lines;
 
 	close $fp_she; close $fp_hft;
 }
