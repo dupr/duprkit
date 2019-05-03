@@ -41,24 +41,18 @@ constant @SHELL_TAILER =
 sub MAIN (Str $PATH)
 {
 	my $path = IO::Path.new($PATH);
-	if not $path.path ~~ /.*.rcp$/ {
-		die "Unsupported file $path !";
-	}
+	$path.path ~~ /.*.rcp$/ || die "Unsupported file $path !";
 
 	my $fp_she := open :w, $path.basename.subst(/\.rcp$/, '.sh');
 	my $fp_hft := open :w, $path.basename.subst(/\.rcp$/, '.hft');
-	my $status = "she";
+	my $fp = $fp_she;
 
 	$fp_she.say: $_ for @SHELL_HEADER;
 	for $path.lines {
-		if m/^\^/ { $status = "hft"; }
-		given $status {
-			when /she/ { $fp_she.say: $_; }
-			when /hft/ { $fp_hft.say: $_; }
-		}
+		if m/^\^/ { $fp = $fp_hft; }
+		$fp.say: $_;
 	}
 	$fp_she.say: $_ for @SHELL_TAILER;
 
-	close $fp_she;
-	close $fp_hft;
+	close $fp_she; close $fp_hft;
 }
