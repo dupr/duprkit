@@ -1,18 +1,11 @@
-#!/usr/bin/python3
-'''
+#!/usr/bin/perl6
+=begin Description
 Debian User Package Repository Toolkit: Recipe Unfolder
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
-'''
-import argparse
-import sys, os, re, stat
-from typing import *
+=end Description
+constant $version = '0.0h';
 
-__VERSION__ = '0.0h'
-
-__RECIPE_SPEC__ = '''
-Recipe Specification
---------------------
-
+=begin Recipe-Specification
 A .rcp file is a concatenation of a shell script and an HFT file.
 It defines how to get and prepare the source tree, as well as how to
 debianize the source tree.
@@ -26,60 +19,41 @@ Recipe Example
     11
     ^ debian/source/format
     3.0 (native)
-'''
+=end Recipe-Specification
 
+constant $SHELL_HEADER = q :to/END/;
+#!/bin/sh
+set -e
+. /usr/share/duprkit/duprkit
+export DK_VERBOSE=1
 
-def recipe_unfold(path: str):
-    '''
-    Unfold a .rcp into a shell script and a HFT file
-    '''
-    recipe = open(path).readlines()
-    if len(recipe) == 0:
-        return
-    if not recipe[0].startswith('#!'):
-        SyntaxError("It must have a shebang!")
-    fp_shell = open(re.sub('.rcp$', '', path) + '.sh', 'w')
-    fp_hft = open(re.sub('.rcp$', '', path) + '.hft', 'w')
-    lns_shell, lns_hft = [], []
+END
 
-    lns = lns_shell
-    for line in recipe:
-        if line.startswith('^'):
-            lns = lns_hft
-        lns.append(line)
+constant $SHELL_TAILER = q :to/END/;
+#--- BEGIN Prepare source and debian/ directory
+dk_get_source
+dk_prep_source
+dk_debianize
+if ! test -r "$(basename ${0%.sh}).d"; then
+  ln -sr $src "$(basename ${0%.sh}).d"
+fi
+#--- END Prepare source and debian/ directory
+END
 
-    # nothing else to do with hft
-    fp_hft.writelines(lns_hft)
-    fp_hft.close()
+sub MAIN (Str $PATH where *.IO.f)
+{
+	$PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
 
-    # add header and tail to the shell script
-    lns_shell = [
-            '#!/bin/sh\n',
-            'set -e\n',
-            '. /usr/share/duprkit/duprkit\n',
-            'export DK_VERBOSE=1\n',
-            '\n'
-            ] + lns_shell + [
-            '#--- BEGIN Prepare source and debian/ directory\n',
-            'dk_get_source\n',
-            'dk_prep_source\n',
-            'dk_debianize\n',
-            'if ! test -r "$(basename ${0%.sh}).d"; then\n',
-            '  ln -sr $src "$(basename ${0%.sh}).d"\n',
-            'fi\n',
-            '#--- END Prepare source and debian/ directory\n',
-            ]
-    fp_shell.writelines(lns_shell)
-    fp_shell.close()
+	my $fp_she := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+	my $fp_hft := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+	my $fp = $fp_she;
 
+	$fp_she.say: $_ for $SHELL_HEADER.lines;
+	for $PATH.IO.lines {
+		if m/^\^/ { $fp = $fp_hft; }
+		$fp.say: $_;
+	}
+	$fp_she.say: $_ for $SHELL_TAILER.lines;
 
-if __name__ == '__main__':
-    ag = argparse.ArgumentParser()
-    ag.add_argument('recipe', type=str)
-    ag = ag.parse_args()
-
-    if ag.recipe:
-        if ag.recipe.endswith('.rcp'):
-            recipe_unfold(ag.recipe)
-        else:
-            raise Exception(f"Unsupported {ag.recipe}")
+	close $fp_she; close $fp_hft;
+}
