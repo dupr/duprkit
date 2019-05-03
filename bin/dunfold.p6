@@ -38,17 +38,16 @@ constant @SHELL_TAILER =
 	"fi",
 	"#--- END Prepare source and debian/ directory";
 
-sub MAIN (Str $PATH)
+sub MAIN (Str $PATH where *.IO.f)
 {
-	my $path = IO::Path.new($PATH);
-	$path.path ~~ /.*.rcp$/ || die "Unsupported file $path !";
+	$PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
 
-	my $fp_she := open :w, $path.basename.subst(/\.rcp$/, '.sh');
-	my $fp_hft := open :w, $path.basename.subst(/\.rcp$/, '.hft');
+	my $fp_she := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+	my $fp_hft := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.hft');
 	my $fp = $fp_she;
 
 	$fp_she.say: $_ for @SHELL_HEADER;
-	for $path.lines {
+	for $PATH.IO.lines {
 		if m/^\^/ { $fp = $fp_hft; }
 		$fp.say: $_;
 	}
