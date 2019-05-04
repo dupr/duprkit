@@ -67,9 +67,8 @@ dk_debianize () {
 	#  dkSubst_ $filepath deals with a single file instead of a directory.
 	dkSubst_ ${0%.sh}.hft
 	#- Unfold the HFT part (if any) into the dir. (force overwrite with -F)
-	#  Specifically, upon "flink u xxx.rcp", "dunfold xxx.rcp" will
-	#  split the xxx.rcp file into a shell script (xxx.sh) and an
-	#  HFT file (xxx.hft).
+    #  Specifically, upon "flink s xxx.rcp" the xx.rcp file will be
+    #  split into a shell script (xxx.sh) and an HFT file (xxx.hft).
 	hft -v -u ${0%.sh}.hft -d $src/ -F
 }
 

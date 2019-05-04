@@ -18,10 +18,7 @@ packaging. The following tools are provided by this toolkit:
    "plain text tar format", which allows one to squash multiple text files into
    a single file, or restore the multiple files from a single HFT file.
 
-2. [Recipe Unfolding Utility](./bin/dunfold). It splits a recipe into a shell
-   script and an HFT file.
-
-3. [DUPR Main Utility: flink](./bin/flink). The top-level utility used to build `.deb`,
+2. [DUPR Main Utility: flink](./bin/flink). The top-level utility used to build `.deb`,
    `.dsc` or debianized source tree from a given recipe file.
 
 # DISCLAIMER
@@ -39,7 +36,7 @@ execution.
 * [Examples and Templates](./examples)
 * [Debian Packaging Reference](./doc/debpkg.md)
 * [Specification: Hatless Folded Text (HFT, .hft)](./bin/hft)
-* [Specification: Recipe (.rcp)](./bin/dunfold)
+* [Specification: Recipe (.rcp)](./bin/flink)
 * [Specification: Collection](./doc/collection.md)
 * [DUPR General Recommendations](./doc/general-recommendations.rst)
 * [Related Projects](./doc/related.md)

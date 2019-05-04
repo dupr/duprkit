@@ -1,3 +1,2 @@
-duprkit: binary-without-manpage usr/bin/dunfold
 duprkit: binary-without-manpage usr/bin/flink
 duprkit: binary-without-manpage usr/bin/duprCollector

@@ -8,7 +8,6 @@ VIM           ?= $(PREFIX)/share/vim/
 
 install: install-vim
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
-	install -Dm0755 bin/dunfold $(DESTDIR)/$(BINDIR)/dunfold
 	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
 	install -Dm0755 bin/duprCollector $(DESTDIR)/$(BINDIR)/duprCollector
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
@@ -27,18 +26,16 @@ test:
 	@echo "[48;5;92mhft-sanity[m"
 	python3 bin/hft --version
 	python3 bin/hft --help
-	@echo "[48;5;92mdunfold-sanity[m"
-	python3 bin/dunfold --help
-	@echo "[48;5;92mdupr-sanity[m"
-	./bin/flink help
 	@echo "[48;5;92mhft-fold[m"
 	./bin/hft -f bin -o bin.hft -v
 	@echo "[48;5;92mhft-unfold[m"
 	./bin/hft -u bin.hft -d junk -v
+	@echo "[48;5;92mdupr-sanity[m"
+	./bin/flink help
 	@echo "[48;5;92mLIB-TEST[m"
 	$(MAKE) -Clib test
 
 fmt:
-	for BIN in dunfold duprCollector  hft; do \
+	for BIN in duprCollector  hft; do \
 		yapf3 -i bin/$$BIN; \
 	done
