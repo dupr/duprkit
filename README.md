@@ -4,11 +4,23 @@ Licensecheck-NG
 Currently a (toy) license classifier based on k-NN. k-NN is a very simple
 machine learning algorithm. In this implementation, we use n-gram bag-of-words
 vectors to represent text, and measure text similarity by cosine distance.
+The implimentation is pure python and doesn't use anything outside the python
+standard library.
 
 Many details could be further improved.
 Open an issue on the salsa repo for anything you want to say.
 
 Key words: k-NN, Bag-of-Words, n-Gram, Machine Learning, Computational Linguistics
+
+## Known problems
+
+1. this toy is still not properly assessed. people on IRC suggested me test
+it against chromium, fpc, lazarus.
+
+2. currently it works not quite well with very short license declarations,
+such as the one on the python script itself `:-(`.
+
+3. we need choose a threshold under which the program rejects to classify.
 
 ## Dependency
 
