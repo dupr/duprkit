@@ -8,7 +8,7 @@ from collections import Counter, defaultdict
 
 
 '''latex
-Informal Problem/Solution Formulation
+\section{Informal Problem/Solution Formulation}
 
 Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$ whose license type
 is unknown. We want to identify the license type $c$ from this sequence.
@@ -28,6 +28,10 @@ then the similarity score $S$ is defined as:
 $$ S = 0.5*cos(v_{i,1gram}, v_{j,1gram}) + 0.5*cos(v_{i,2gram}, v_{j,2gram}) $$
 The score $S$ will fall in the range $[0,1]$. And the higher the score is,
 the more similar the two sequences are.
+
+\section{Thanks}
+
+Many thanks to Osamu Aoki who provided many training data in debmake's source.
 '''
 
 
