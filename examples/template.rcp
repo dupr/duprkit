@@ -1,88 +1,80 @@
+# Recipe-YAML
 # Items marked with [*] are required, those with [opt] can be safely removed.
-# The corresponding @...@ marks are used by dkSubst or dkSubst_.
 #
-#- [*] @SRC@                                     [a-zA-z0-9\-\.]+, no underline
-source: template
-#- [*] @VERSION@                                           [a-zA-z0-9\.]+ # [*]
-version: 0
-#- [*] @DESCRIPTION@                                                     string
-description: duprkit default template
-#- [*] @LICENSE@                                                         string
-license: Expat/MIT
-#- [*] @SECTION@                                                         string
-section: utils
-#- [*] @MAINTAINER@                                                Name <EMAIL>
-maintainer: Anonymous <foobar@example.org>
+#- [*]                                           [a-zA-z0-9\-\.]+, no underline
+Source: template
+#- [*]                                                                   string
+Section: utils
+#- [*]                                                     [a-zA-z0-9\.]+ # [*]
+Version: 0
+#- [*]                                                                   string
+Description: duprkit default template
+#- [*]                                                                   string
+License: Expat/MIT
+#- [*]                                                             Name <EMAIL>
+Maintainer: Anonymous <foobar@example.org>
 # 
-#- [opt] @STDVER@                                                      [digit]+
-stdver: 4.3.0
-#- [opt] @COMPAT@                                                        [0-9]+
-compat: 12
-#- [opt] @SRCURL@                                               URI, see uri(7)
-srcurl: https://example.org/example.tar.xz
-#- [opt] @MD5SUM@                                                       33-char
-md5sum: 66666666666666666666666666666666
+#- [opt]                                                               [digit]+
+Standards-Version: 4.3.0
+#- [opt]                                                                 [0-9]+
+Debhelper-Compat: 12
 #- [opt] @HOMEPAGE@                                                         URL
-homepage:
+Homepage:
 #- [opt] @BUILD_DEPENDS@                           sep=comma, e.g. "depA, depB"
-build_depends:
+Build-Depends:
 #- [opt] @DEPENDS@                                 sep=comma, e.g. "depA, depB"
-depends:
+Depends:
 #- [opt] @DH_BUILDSYSTEM@                  e.g. makefile, cmake, ninja, pybuild
-dh_buildsystem:
+Debhelper-Buildsystem:
 #- [opt] @DH_WITH@                                   e.g. python3, python, etc.
-dh_with:
+Debhelper-Plugins:
 #- [opt] @SOURCE_FORMAT@                                 default="3.0 (native)"
-source_format:
-#- [opt]                                sep=space, e.g. "dh_auto_test dh_strip"
-dk_skip:
+Source-Format:
+#- [opt]                                                        URI, see uri(7)
+Source-URL: https://example.org/{Source}_{Version}.tar.xz
+#- [opt]                                                                33-char
+Hash-MD5: 66666666666666666666666666666666
 
-# [opt]
-dk_get_source:
-# The default dk_get_source downloads $srcurl to ${src}_${version}.*,
-#  then optionally checks file with $md5sum. Here we override it
-#  to do nothing.
+#- [*]
+Recipe-Prep-Source:
+  # Prepare the source tree under directory {Source}.d
+  - mkdir {Source}.d
+  - flink cache '{Source-URL}' {Source}_{Version}.tar.xz {Hash-MD5}
+  - tar xf {Source}_{Version}.tar.xz --strip-components=1 -C {Source}.d
 
-# [opt]
-dk_prep_source:
-# extract source tarball, typically
-# - mkdir $src;
-# - tar xf ${src}_${version}.tar.gz --strip-components=1 -C $src/
-# - cd $src; patch -p1 < xxx.patch
-
-# [opt]
-dk_debianize:
-#- dkGenerate $dest tries to generate the debian/ directory with Meta info.
-#  It is smart enough to tell user what necessary variable might be missing.
-  - dkGenerate $src
+# [opt] FIXME: this looks like a fixed sequence. move it to flink.
+Recipe-Debianize:
 #- dkSubst $destdir will deal with the @...@ placeholders in a directory.
 #  dkSubst_ $filepath deals with a single file instead of a directory.
-  - dkSubst_ ${0%.sh}.hft
+  - flinkH placeholder FLINK_YAML FLINK_YAML
+  - flinkH placeholder FLINK_YAML FLINK_HFT
+#- dkGenerate $dest tries to generate the debian/ directory with Meta info.
+#  It is smart enough to tell user what necessary variable might be missing.
+  - flink generate {FLINK_YAML} {Source}.d
 #- Unfold the HFT part (if any) into the dir. (force overwrite with -F)
 #  Specifically, upon "flink s xxx.rcp" the xx.rcp file will be
 #  split into a shell script (xxx.sh) and an HFT file (xxx.hft).
-  - hft -v -u ${0%.sh}.hft -d $src/ -F
+  - hft -v -F -u {FLINK_HFT} -d {Source}.d/
 
-^### BEGIN HFT
-^#
-^# NOTE, HFT Format is not mandatory. The `HFT` format and `debian/` directory
-^# can be bi-directionally transformed with `bin/hft`, e.g.
-^#
-^#   $ hft -v -f debian     -o debian.hft    # folds the texts
-^#   $ hft -v -u debian.hft -d .             # unfolds the texts
-^#
-^# One can do anything without HFT, e.g. copy a nearby auxiliary debian/
-^# directory to the root of source, download debian source and automatically
-^# modify the debian directory inside.
-^#
-^# Basic vim syntax highlighting support is available under :examples/vim
-^#------------------------------------------------------------- SPLIT LINE ----
+# [opt]
+override_dh_auto_test:
+
+# [opt]
+override_dh_auto_strip:
+
+^# HFT -------------------------------------------------------- SPLIT LINE ----
 ^ debian/README.Debian
-README.Debian for the @SRC@ (= @VERSION@) package
----
-The source was downloaded from @SRCURL@ (md5= @MD5SUM@)
-The @...@ placeholders in this file will be replaced by dkSubst or dkSubst_
-^#------------------------------------------------------------- SPLIT LINE ----
+README.Debian for the {Source} (= {Version}) package
+The source was downloaded from @SRCURL@ (md5= {MD5SUM})
+The placeholders in this file will be replaced by dkSubst or dkSubst_
+^# HFT -------------------------------------------------------- SPLIT LINE ----
+^ bin/helloworld 0o755
+#!/bin/sh
+echo "Hello, world!"
+^# HFT -------------------------------------------------------- SPLIT LINE ----
+^ debian/install
+bin/helloworld  usr/bin/
+^# HFT -------------------------------------------------------- SPLIT LINE ----
 ^# One may want to override the auto-generated debian/control
 ^# If the debian/control auto-generated by dkGenerate looks good enough,
 ^# the following debian/control override won't be necessary.
@@ -103,17 +95,10 @@ Depends: ${shlibs:Depends}, ${python:Depends}, ${python3:Depends},
   ${misc:Depends}, @DEPENDS@
 Description: @DESCRIPTION@
  @DESCRIPTION@
-^#------------------------------------------------------------- SPLIT LINE ----
+^# HFT -------------------------------------------------------- SPLIT LINE ----
 ^# One may also want to override the auto-generated debian/rules
 ^# Note that debian/rules will be set executable: Oo755 (python oct literal)
 ^ debian/rules 0o755
 #!/usr/bin/make -f
 %:
 	dh $@  # -S@DH_BUILDSYSTEM@ --with @DH_WITH@
-^#------------------------------------------------------------- SPLIT LINE ----
-^# This is also a typical addition to auto-generated debian/ dir.
-^ debian/install
-bin/helloworld  usr/bin/
-^ bin/helloworld 0o755
-#!/bin/sh
-echo "Hello, world!"
