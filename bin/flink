@@ -4,7 +4,7 @@ FLINK: Debian User Recipes
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
 =end DESCRIPTION
 # FIXME To be merged into flink
-constant $__version__ = '0.0i';
+constant $__version__ = '0.0j';
 
 =begin Recipe-Specification
 A .rcp file is a concatenation of a shell script and an HFT file.

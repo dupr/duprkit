@@ -1,5 +1,5 @@
 set -e
-__version__="0.0h"
+__version__="0.0j"
 
 # This library contains several groups of helper functions:
 #  1. debian/ directory generation helpers
