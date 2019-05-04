@@ -6,3 +6,6 @@ test:
 		echo $$i; \
 		./licensecheck-ng.py --predict $$i; \
 		done;
+
+confusion:
+	./confusion.sh
