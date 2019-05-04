@@ -1,146 +1,189 @@
+#!/usr/bin/perl6
+=begin DESCRIPTION
+FLINK: Debian User Recipes
+Copyright (C) 2019 M. Zhou <lumin@debian.org>
+=end DESCRIPTION
+# FIXME To be merged into flink
+constant $__version__ = '0.0i';
+
+=begin Recipe-Specification
+A .rcp file is a concatenation of a shell script and an HFT file.
+It defines how to get and prepare the source tree, as well as how to
+debianize the source tree.
+
+Recipe Example
+--------------
+
+::
+    src="foobar"
+    ^ debian/compat
+    11
+    ^ debian/source/format
+    3.0 (native)
+=end Recipe-Specification
+
+constant $SHELL_HEADER = q :to/END/;
 #!/bin/sh
 set -e
-SH=/bin/sh
-GIT=/usr/bin/git
-DUNFOLD=/usr/bin/dunfold
-DUPR_DEFCOLL=~/.defcoll
-export PATH=/usr/lib/ccache:$PATH
-__version__="0.0h"
+. /usr/share/duprkit/duprkit
+export DK_VERBOSE=1
 
-_c36 () {
-	echo -n "\033[1;36m" $@
+END
+
+constant $SHELL_TAILER = q :to/END/;
+#--- BEGIN Prepare source and debian/ directory
+dk_get_source
+dk_prep_source
+dk_debianize
+if ! test -r "$(basename ${0%.sh}).d"; then
+  ln -sr $src "$(basename ${0%.sh}).d"
+fi
+#--- END Prepare source and debian/ directory
+END
+
+constant $SH = '/bin/sh';
+constant $DUPR_DEFCOLL = "$*HOME/.defcoll";
+constant $COLLECTOR = '/usr/bin/duprCollector';
+constant $GIT = '/usr/bin/git';
+constant $TEMPLATE = '/usr/share/doc/duprkit/examples/template.rcp';
+constant $_C162 = "\x1b[1;38;5;162m";
+constant $_C36  = "\x1b[1;36m";
+constant $_c    = "\x1b[0m";
+
+sub flink_fetch () {
+	if $DUPR_DEFCOLL.IO.d {
+		say "{$_C162}→ Cloning {$_C36}DefaultCollection{$_C162} ...{$_c}";
+		chdir $DUPR_DEFCOLL;
+		run $GIT, 'pull';
+	} else {
+		say "{$_C162}→ Pulling {$_C36}DefaultCollection{$_C162} ...{$_c}";
+		run $GIT, 'clone', 'https://github.com/dupr/DefaultCollection',  $DUPR_DEFCOLL;
+	}
 }
 
-_c162 () {
-	echo -n "\033[1;38;5;162m" $@
+sub flink_split (Str $PATH)
+{
+	$PATH.IO.f || die "Non-existent file [$PATH]!" ;
+	$PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
+
+	my $fp_she := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+	my $fp_hft := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+	my $fp = $fp_she;
+
+	$fp_she.say: $_ for $SHELL_HEADER.lines;
+	for $PATH.IO.lines {
+		if m/^\^/ { $fp = $fp_hft; }
+		$fp.say: $_;
+	}
+	$fp_she.say: $_ for $SHELL_TAILER.lines;
+
+	close $fp_she; close $fp_hft;
 }
 
-_c () {
-	echo -n "\033[0m" $@
+sub flink_unfold (Str $PATH)
+{
+	print "{$_C162}→ Unfolding {$_C36} $PATH {$_C162}into";
+    say "{$_C36}.sh {$_C162}and {$_C36}.hft {$_C162}...{$_c}";
+	flink_split $PATH;
+	my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+	my $hft_file = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+	say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
+	run $SH, $shell_file;
+	$shell_file.IO.unlink; $hft_file.IO.unlink;
 }
 
-flink_fetch () {
-	if ! test -r $DUPR_DEFCOLL; then
-		_c162 "→ Cloning"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
-		$GIT clone https://github.com/dupr/DefaultCollection $DUPR_DEFCOLL
-	else
-		_c162 "→ Pulling"; _c36 "DefaultCollection"; _c162 "..."; _c "\n"
-		cd $DUPR_DEFCOLL; $GIT pull
-	fi
+sub flink_create (Str $NAME)
+{
+	run 'cp','-v', $TEMPLATE, $NAME ~ '.rcp';
 }
 
-flink_unfold () {
-	test -z "$1" && (echo "Unfolding nothing"; false)
-	_c162 "→ Unfolding"; _c36 "$1"; _c162 "into"; _c36 ".sh"; _c162 "and";
-	_c36 ".hft"; _c162 "..."; _c "\n"
-	# Splits the .rcp into .sh script and .hft file
-	$DUNFOLD $1
-	_c162 "→ Executing"; _c36 "${1%.rcp}.sh"; _c162 "..."; _c "\n"
-	# Execute the resulting .sh script
-	$SH ${1%.rcp}.sh
-	rm -v ${1%.rcp}.sh ${1%.rcp}.hft
+sub flink_minimal (Str $NAME)
+{
+	my $fp = open :w, $NAME ~ '.rcp';
+	for $TEMPLATE.IO.lines {
+		if !m/^\^\#/ && !m/^\s*\#/ || m/^\#\!/ {
+			$fp.say: $_;
+		} #else { .say }
+	}
 }
 
-flink_deb () {
-	start_time="$(date -u +%s)"
-	flink_unfold $1
-	cd $(basename ${1%.rcp}).d; dpkg-buildpackage -us -uc
-	end_time="$(date -u +%s)"
-	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
-	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
+sub flink_deb (Str $PATH)
+{
+	flink_unfold $PATH;
+	my $workdir = $PATH.IO.basename.subst(/\.rcp$/, '.d');
+	chdir $workdir;
+	run 'dpkg-buildpackage', '-us', '-uc';
 }
 
-flink_dsc () {
-	start_time="$(date -u +%s)"
-	flink_unfold $1
-	cd $(basename ${1%.rcp}).d; dpkg-buildpackage -us -uc -nc -S
-	end_time="$(date -u +%s)"
-	_c162 "→ Completed"; _c36 "$1"; _c162 "in";
-	_c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
+sub flink_dsc (Str $PATH)
+{
+	flink_unfold $PATH;
+	my $workdir = $PATH.IO.basename.subst(/\.rcp$/, '.d');
+	chdir $workdir;
+	run 'dpkg-buildpackage', '-us', '-uc', '-nc', '-S';
 }
 
-flink_sbuild () {
-	start_time="$(date -u +%s)"
-	flink_unfold $1
-	cd $(basename ${1%.rcp}).d; shift; sbuild --no-clean-source $@
-	end_time="$(date -u +%s)"
-	_c162 "→ Completed in"; _c36 "$(($end_time-$start_time))"; _c162 "seconds."; _c "\n"
+sub flink_sbuild (Str $PATH)
+{
+	flink_unfold $PATH;
+	my $workdir = $PATH.IO.basename.subst(/\.rcp$/, '.d');
+	chdir $workdir;
+	run 'sbuild', '--no-clean-source';
 }
 
-flink_create () {
-	if test -n "$1"; then
-		cp -v /usr/share/doc/duprkit/examples/template.rcp $1.rcp
-	else
-		echo "Please specify recipe name"
-	fi
+sub MAIN ( Str $ACTION, Str $TARGET = "" )
+{
+	given $ACTION {
+		when 'f' | 'fetch' {
+			flink_fetch;
+		}
+		when 'l' | 'ls' | 'list' {
+			if $TARGET.chars {
+				run $COLLECTOR, '-s', $TARGET, $DUPR_DEFCOLL;
+			} else {
+				run $COLLECTOR, $DUPR_DEFCOLL;
+			}
+		}
+		when 's' | 'split' {
+			flink_split $TARGET;
+		}
+		when 'u' | 'unfold' {
+			flink_unfold $TARGET;
+		}
+		when 'c' | 'create' {
+			flink_create $TARGET;
+		}
+		when 'm' | 'minimal' {
+			flink_minimal $TARGET;
+		}
+		when 'dsc' {
+			flink_dsc $TARGET;
+		}
+		when 'deb' {
+			flink_deb $TARGET;
+		}
+		when 'sb' | 'sbuild' {
+			flink_sbuild $TARGET;
+		}
+		default {
+			die "Unknown action???"
+		}
+	}
 }
 
-flink_minimal () {
-	if test -n "$1"; then
-		cat /usr/share/doc/duprkit/examples/template.rcp \
-			| gawk '(!/^[[:blank:]]*#/)&&(!/^\^#/)||(/^#!/){print}' > $1.rcp
-	else
-		echo "Please specify recipe name"
-	fi
-}
+sub USAGE() {
+    print qq :to/EOH/;
+{$_C162}-- Debian User Recipe ToolKit $__version__ --{$_c}
+Usage: {$*PROGRAM-NAME} action [args]
 
-usage () {
-	echo "\033[1;38;5;162m-- Debian User Recipe ToolKit $__version__ --\033[0m"
-	echo "Usage: $0 action [args]"
-	echo ""
-	echo "Actions"
-	echo "   f|fetch                  Fetch the default DUPR collection."
-	echo "   s|search [keyword]       Search in the default collection."
-	echo "   l|ls                     List packages in default collection"
-	echo "   u|unfold <.rcp>          Unfold .rcp file into debianized source tree."
-	echo "   c|create <name>          Create talky template file: <name>.rcp"
-	echo "   m|minimal <name>         Create minimal template: <name>.rcp"
-	echo "   deb <.rcp>               Build .deb files from .rcp"
-	echo "   dsc <.rcp>               Build .dsc files from .rcp"
-	echo "   sb <.rcp> [sbuild-opts]  Sbuild in unfolded source tree from .rcp"
+Actions
+   f|fetch                  Fetch the default DUPR collection.
+   l|ls [keyword]           List/search packages in default collection
+   u|unfold <.rcp>          Unfold .rcp file into debianized source tree.
+   c|create <name>          Create talky template file: <name>.rcp
+   m|minimal <name>         Create minimal template: <name>.rcp
+   deb <.rcp>               Build .deb files from .rcp
+   dsc <.rcp>               Build .dsc files from .rcp
+   sb <.rcp> [sbuild-opts]  Sbuild in unfolded source tree from .rcp
+EOH
 }
-
-case "$1" in
-	f|fetch)
-		shift
-		flink_fetch $@
-		;;
-	s|search)
-		shift
-		if ! test -d $DUPR_DEFCOLL; then
-			echo "Please run 'flink f' first."
-			exit 1
-		fi
-		duprCollector -s $@ $DUPR_DEFCOLL
-		;;
-	deb)
-		shift
-		flink_deb $@
-		;;
-	dsc)
-		shift
-		flink_dsc $@
-		;;
-	sb|sbuild)
-		shift
-		flink_sbuild $@
-		;;
-	u|unfold)
-		shift
-		flink_unfold $@
-		;;
-	c|create)
-		shift
-		flink_create $@
-		;;
-	m|minimal)
-		shift
-		flink_minimal $@
-		;;
-	l|ls|list)
-		shift
-		duprCollector $DUPR_DEFCOLL $@
-		;;
-	*)
-		usage;;
-esac
