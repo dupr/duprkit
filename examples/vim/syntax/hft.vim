@@ -3,8 +3,8 @@ if exists("b:current_syntax")
 	finish
 endif
 
-runtime! syntax/sh.vim
-let b:current_syntax = "sh"
+runtime! syntax/yaml.vim
+let b:current_syntax = "yaml"
 
 
 syntax region hftComment oneline start="^\^#" end="$"
