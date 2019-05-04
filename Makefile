@@ -31,7 +31,7 @@ test:
 	@echo "[48;5;92mhft-unfold[m"
 	./bin/hft -u bin.hft -d junk -v
 	@echo "[48;5;92mdupr-sanity[m"
-	./bin/flink help
+	./bin/flink
 	@echo "[48;5;92mLIB-TEST[m"
 	$(MAKE) -Clib test
 
