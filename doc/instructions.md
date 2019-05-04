@@ -45,3 +45,14 @@ https://github.com/dupr/duprkit/blob/master/examples/hello-world.rcp
 4. A complex example -- `apt-nosync`, which accelerates apt with libeatmydata.
 This `.rcp` file is a complete self-contained package (i.e. doesn't require external source):
 https://github.com/dupr/duprkit/blob/master/examples/apt-nosync.rcp
+
+## External References
+
+1. YAML Quick Tutorial: https://learnxinyminutes.com/docs/yaml/
+
+List of Debian Packaging Documentations:
+
+* https://www.debian.org/doc/devel-manuals#devref
+* https://www.debian.org/doc/devel-manuals#debmake-doc
+* https://www.debian.org/doc/devel-manuals#maint-guide
+* https://www.debian.org/doc/devel-manuals#packaging-tutorial
