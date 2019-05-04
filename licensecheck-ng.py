@@ -1,18 +1,21 @@
-#!/usr/bin/python3
+#!/usr/bin/pypy3
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
 from typing import *
 import argparse, re, os, sys, json, glob, pickle, math
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 class BOWModel(object):
     '''
-    Bag-of-Words Model
+    Model that leverages Bag-of-Words Representation
     '''
     def __init__(self):
         self.vocab_1gram = Counter()
-        #self.vocab_2gram = Counter()  # to be implemented
+        self.vocab_2gram = Counter()
+        self.vocab_3gram = Counter() # not implemented
         self.vectors_1gram = dict()
+        self.vectors_2gram = dict()
+        self.vectors_3gram = dict() # not implemented
 
     def cosSim(self, vecA: Counter, vecB: Counter) -> float:
         '''
@@ -38,22 +41,46 @@ class BOWModel(object):
         '''
         # Collect vocabulary and Memorize vectors
         for k, v in data.items():
+            # 1-gram
             self.vectors_1gram[k] = Counter(v)
             self.vocab_1gram.update(self.vectors_1gram[k])
+            # 2-gram
+            vec2g = Counter()
+            for i in range(1, len(v)):
+                vec2g.update([(v[i-1], v[i])])
+            self.vectors_2gram[k] = Counter(vec2g)
+            self.vocab_2gram.update(self.vectors_2gram[k])
         # training stat
-        print('Vocab Size/Total of 1-Gram:', len(self.vocab_1gram), sum(self.vocab_1gram.values()))
+        print('1-Gram Vocab Size/Total of Training Data:', len(self.vocab_1gram), sum(self.vocab_1gram.values()))
         for k, v in self.vectors_1gram.items():
-            print(f'Vocab Size/Total of {k}:', len(v), sum(v.values()))
+            print(f'1-Gram Vocab Size/Total of {k}:', len(v), sum(v.values()))
+        print('2-Gram Vocab Size/Total of Training Data:', len(self.vocab_2gram), sum(self.vocab_2gram.values()))
+        for k, v in self.vectors_2gram.items():
+            print(f'2-Gram Vocab Size/Total of {k}:', len(v), sum(v.values()))
+
 
     def predict(self, path: str):
         text = re.sub('\W', ' ', open(path).read()).lower()
-        tokens = set(text.split())
-        common_tokens = tokens.intersection(set(self.vocab_1gram.keys()))
+        tokens = text.split()
+        common_tokens = set(tokens).intersection(set(self.vocab_1gram.keys()))
         vector_raw = Counter(tokens)
         vector = {k: vector_raw[k] for k in common_tokens}
-        print(vector)
+        scores = defaultdict(list)
+        print('1-Gram tokens:', len(vector.keys()))
         for k, v in self.vectors_1gram.items():
-            print(k, self.cosSim(v, v))
+            scores[k].append(self.cosSim(v, vector))
+        vec2g = Counter()
+        for i in range(1, len(tokens)):
+            token2g = (tokens[i-1], tokens[i])
+            if token2g in self.vocab_2gram.keys():
+                vec2g.update([token2g])
+        print('2-Gram tokens:', len(vec2g.keys()))
+        for k, v in self.vectors_2gram.items():
+            scores[k].append(self.cosSim(v, vec2g))
+        for k, v in scores.items():
+            print(f'{k} similarity:',
+                0.5 * v[0] + 0.5 * v[1],
+                '1-gram', v[0], '2-gram', v[1])
 
 
 def train(datadir: str):
@@ -72,8 +99,6 @@ def train(datadir: str):
     model.train(data)
     pickle.dump(model, open('model.pkl', 'wb'))
     print('Model saved to model.pkg')
-    print(model.vocab_1gram.items())
-    print(model.vectors_1gram.items())
 
 
 if __name__ == '__main__':
@@ -91,5 +116,6 @@ if __name__ == '__main__':
         model.predict(ag.predict)
 
 '''
-./licensecheck-ng.py --train data --predict data/BSD-3-Clause
+./licensecheck-ng.py --train data
+./licensecheck-ng.py --predict data/BSD-3-Clause
 '''
