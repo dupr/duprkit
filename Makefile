@@ -8,4 +8,5 @@ test:
 		done;
 
 confusion:
-	./confusion.sh
+	echo FIXME: outdated
+	#./confusion.sh
