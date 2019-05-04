@@ -1,8 +1,34 @@
 #!/usr/bin/pypy3
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
+# License: MIT/Expat
 from typing import *
 import argparse, re, os, sys, json, glob, pickle, math
 from collections import Counter, defaultdict
+# NOTE: we don't use non-standard python libraries because of pypy (JIT)
+
+
+'''latex
+Informal Problem/Solution Formulation
+
+Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$ whose license type
+is unknown. We want to identify the license type $c$ from this sequence.
+We solve this problem with k-NN ($k=1$) based on $n$-gram bag-of-words text
+representations.
+
+Training: Given a set of $N$ known licenses $D=\{(C_i,T_i)\}_N, 1<=i<=N$
+where $C_i$ is the unique name of the license, and $t$ is the token sequence
+$ T_i = [t_1, t_2, \ldots, t_M] $. We train a k-NN (k=1) with the 1- and
+2-gram bag-of-words representations from dataset $D$.
+
+Predict: Given an unseen token sequence $T_x = [t_1, t_2, \ldots, t_M]$
+where unseen tokens were already filtered out, we classify the sequence
+$T_x$ by the similarity score $S$. Specifically, we denote the vector
+representations of two sequences to be compared with $v_i$ and $v_j$,
+then the similarity score $S$ is defined as:
+$$ S = 0.5*cos(v_{i,1gram}, v_{j,1gram}) + 0.5*cos(v_{i,2gram}, v_{j,2gram}) $$
+The score $S$ will fall in the range $[0,1]$. And the higher the score is,
+the more similar the two sequences are.
+'''
 
 
 class BOWModel(object):
