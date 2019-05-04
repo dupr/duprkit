@@ -7,6 +7,11 @@ vectors to represent text, and measure text similarity by cosine distance.
 
 Key words: k-NN, Bag-of-Words, n-Gram, Machine Learning, Computational Linguistics
 
+## Dependency
+
+Just pypy3. It is written in pure python and does not use anything outside
+the standard library.
+
 ## Train and Predict
 
 ```
