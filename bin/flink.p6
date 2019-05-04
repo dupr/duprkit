@@ -4,7 +4,7 @@ FLINK: Debian User Recipes
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
 =end DESCRIPTION
 # FIXME To be merged into flink
-constant $version = '0.0h';
+constant $__version__ = '0.0i';
 
 =begin Recipe-Specification
 A .rcp file is a concatenation of a shell script and an HFT file.
@@ -166,7 +166,24 @@ sub MAIN ( Str $ACTION, Str $TARGET = "" )
 			flink_sbuild $TARGET;
 		}
 		default {
-			die "???"
+			die "Unknown action???"
 		}
 	}
+}
+
+sub USAGE() {
+    print qq :to/EOH/;
+{$_C162}-- Debian User Recipe ToolKit $__version__ --{$_c}
+Usage: {$*PROGRAM-NAME} action [args]
+
+Actions
+   f|fetch                  Fetch the default DUPR collection.
+   l|ls [keyword]           List/search packages in default collection
+   u|unfold <.rcp>          Unfold .rcp file into debianized source tree.
+   c|create <name>          Create talky template file: <name>.rcp
+   m|minimal <name>         Create minimal template: <name>.rcp
+   deb <.rcp>               Build .deb files from .rcp
+   dsc <.rcp>               Build .dsc files from .rcp
+   sb <.rcp> [sbuild-opts]  Sbuild in unfolded source tree from .rcp
+EOH
 }
