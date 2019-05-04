@@ -1,0 +1,4 @@
+### Java source requires these.
+export JAVA_HOME=/usr/lib/jvm/default-java
+export CLASSPATH=/usr/share/java/csv.jar:/usr/share/java/debug-disable.jar:/usr/share/java/itext.jar
+

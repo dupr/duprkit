@@ -1,0 +1,1084 @@
+'\" t
+.\"     Title: debmake
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 08/08/2018
+.\"    Manual: Debmake Manual
+.\"    Source: DEBMAKE
+.\"  Language: English
+.\"
+.TH "DEBMAKE" "1" "08/08/2018" "DEBMAKE" "Debmake Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+debmake \- program to make a Debian source package
+.SH "SYNOPSIS"
+.sp
+\fBdebmake\fR [\fB\-h\fR] [\fB\-c\fR | \fB\-k\fR] [\fB\-n\fR | \fB\-a\fR \fIpackage\-version\fR\fB\&.orig\&.tar\&.gz\fR | \fB\-d\fR | \fB\-t\fR ] [\fB\-p\fR \fIpackage\fR] [\fB\-u\fR \fIversion\fR] [\fB\-r\fR \fIrevision\fR] [\fB\-z\fR \fIextension\fR] [\fB\-b\fR "\fIbinarypackage\fR\fI, \&...\fR]" [\fB\-e\fR \fIfoo@example\&.org\fR] [\fB\-f\fR "\fIfirstname lastname\fR"] [\fB\-i\fR "\fIbuildtool\fR" | \fB\-j\fR] [\fB\-l\fR \fIlicense_file\fR] [\fB\-m\fR] [\fB\-o\fR \fIfile\fR] [\fB\-q\fR] [\fB\-s\fR] [\fB\-v\fR] [\fB\-w\fR "\fIaddon, \&...\fR"] [\fB\-x\fR [01234]] [\fB\-y\fR] [\fB\-L\fR] [\fB\-P\fR] [\fB\-T\fR]
+.SH "DESCRIPTION"
+.sp
+\fBdebmake\fR helps to build a Debian package from the upstream source\&. Normally, this is done as follows:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The upstream tarball is downloaded as the
+\fIpackage\-version\fR\fB\&.tar\&.gz\fR
+file\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+It is untarred to create many files under the
+\fIpackage\-version/\fR
+directory\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+debmake is invoked in the
+\fIpackage\-version/\fR
+directory, possibly without any arguments\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Files in the
+\fIpackage\-version\fR\fB/debian/\fR
+directory are manually adjusted\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdpkg\-buildpackage\fR
+(usually from its wrapper
+\fBdebuild\fR
+or
+\fBpdebuild\fR) is invoked in the
+\fIpackage\-version/\fR
+directory to make Debian packages\&.
+.RE
+.sp
+Make sure to protect the arguments of the \fB\-b\fR, \fB\-f\fR, \fB\-l\fR, and \fB\-w\fR options from shell interference by quoting them properly\&.
+.SS "optional arguments:"
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+show this help message and exit\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-copyright\fR
+.RS 4
+scan source for copyright+license text and exit\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-c\fR: simple output style
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-cc\fR: normal output style (similar to the
+\fBdebian/copyright\fR
+file)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-ccc\fR: debug output style
+.RE
+.RE
+.PP
+\fB\-k\fR, \fB\-\-kludge\fR
+.RS 4
+compare the
+\fBdebian/copyright\fR
+file with the source and exit\&.
+.sp
+The
+\fBdebian/copyright\fR
+file must be organized to list the generic file patterns before the specific exceptions\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-k\fR: basic output style
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-kk\fR: verbose output style
+.RE
+.RE
+.PP
+\fB\-n\fR, \fB\-\-native\fR
+.RS 4
+make a native Debian source package without
+\fB\&.orig\&.tar\&.gz\fR\&. This makes a \(lq\fB3\&.0 (native)\fR\(rq format package\&.
+.sp
+If you are thinking of packaging a Debian\-specific source tree with
+\fBdebian/\fR* in it into a native Debian package, please think otherwise\&. You can use the \(lq\fBdebmake \-d \-i debuild\fR\(rq or \(lq\fBdebmake \-t \-i debuild\fR\(rq commands to make a \(lq\fB3\&.0 (quilt)\fR\(rq format non\-native Debian package\&. The only difference is that the
+\fBdebian/changelog\fR
+file must use the non\-native version scheme:
+\fIversion\-revision\fR\&. The non\-native package is more friendly to downstream distributions\&.
+.RE
+.PP
+\fB\-a\fR \fIpackage\-version\fR\fB\&.tar\&.gz\fR, \fB\-\-archive\fR \fIpackage\-version\fR\fB\&.tar\&.gz\fR
+.RS 4
+use the upstream source tarball directly\&. (\fB\-p\fR,
+\fB\-u\fR,
+\fB\-z\fR: overridden)
+.sp
+The upstream tarball may be specified as
+\fIpackage_version\fR\fB\&.orig\&.tar\&.gz\fR
+and
+\fBtar\&.gz\fR\&. For other cases, it may be
+\fBtar\&.bz2\fR, or
+\fBtar\&.xz\fR\&.
+.sp
+If the specified upstream tarball name contains uppercase letters, the Debian package name is generated by converting them to lowercase letters\&.
+.sp
+If the specified argument is the URL (http://, https://, or ftp://) to the upstream tarball, the upstream tarball is downloaded from the URL using
+\fBwget\fR
+or
+\fBcurl\fR\&.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-dist\fR
+.RS 4
+run the \(lqmake dist\(rq command equivalents first to generate the upstream tarball and use it\&.
+.sp
+The \(lq\fBdebmake \-d\fR\(rq command is designed to run in the
+\fIpackage/\fR
+directory hosting the upstream VCS with the build system supporting the \(lq\fBmake dist\fR\(rq command equivalents\&. (automake/autoconf, Python distutils, \&...)
+.RE
+.PP
+\fB\-t\fR, \fB\-\-tar\fR
+.RS 4
+run the \(lq\fBtar\fR\(rq command to generate the upstream tarball and use it\&.
+.sp
+The \(lq\fBdebmake \-t\fR\(rq command is designed to run in the
+\fIpackage/\fR
+directory hosting the upstream VCS\&. Unless you provide the upstream version with the
+\fB\-u\fR
+option or with the
+\fBdebian/changelog\fR
+file, a snapshot upstream version is generated in the
+\fB0~%y%m%d%H%M\fR
+format, e\&.g\&.,
+\fI0~1403012359\fR, from the UTC date and time\&. The generated tarball excludes the
+\fBdebian/\fR
+directory found in the upstream VCS\&. (It also excludes typical VCS directories:
+\fB\&.git/ \&.hg/ \&.svn/ \&.CVS/\fR\&.)
+.RE
+.PP
+\fB\-p\fR \fIpackage\fR, \fB\-\-package\fR \fIpackage\fR
+.RS 4
+set the Debian package name\&.
+.RE
+.PP
+\fB\-u\fR \fIversion\fR, \fB\-\-upstreamversion\fR \fIversion\fR
+.RS 4
+set the upstream package version\&.
+.RE
+.PP
+\fB\-r\fR \fIrevision\fR, \fB\-\-revision\fR \fIrevision\fR
+.RS 4
+set the Debian package revision\&.
+.RE
+.PP
+\fB\-z\fR \fIextension\fR, \fB\-\-targz\fR \fIextension\fR
+.RS 4
+set the tarball type,
+\fIextension\fR=(\fBtar\&.gz\fR|\fBtar\&.bz2\fR|\fBtar\&.xz\fR)\&. (alias:
+\fBz\fR,
+\fBb\fR,
+\fBx\fR)
+.RE
+.PP
+\fB\-b\fR "\fIbinarypackage[:type],\&...\fR", \fB\-\-binaryspec\fR "\fIbinarypackage[:type],\&...\fR"
+.RS 4
+set the binary package specs by a comma separated list of
+\fIbinarypackage:type\fR
+pairs, e\&.g\&., in the full form \(lq\fBfoo:bin,foo\-doc:doc,libfoo1:lib,libfoo\-dev:dev\fR\(rq or in the short form, \(lq\fB\-doc,libfoo1,libfoo\-dev\fR\(rq\&.
+.sp
+Here,
+\fIbinarypackage\fR
+is the binary package name, and the optional
+\fItype\fR
+is chosen from the following
+\fItype\fR
+values:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBbin\fR: C/C++ compiled ELF binary code package (any, foreign) (default, alias:
+\fB""\fR, i\&.e\&.,
+\fInull\-string\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdata\fR: Data (fonts, graphics, \&...) package (all, foreign) (alias:
+\fBda\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdev\fR: Library development package (any, same) (alias:
+\fBde\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdoc\fR: Documentation package (all, foreign) (alias:
+\fBdo\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBlib\fR: Library package (any, same) (alias:
+\fBl\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBperl\fR: Perl script package (all, foreign) (alias:
+\fBpl\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBpython\fR: Python script package (all, foreign) (alias:
+\fBpy\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBpython3\fR: Python3 script package (all, foreign) (alias:
+\fBpy3\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBruby\fR: Ruby script package (all, foreign) (alias:
+\fBrb\fR)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBscript\fR: Shell script package (all, foreign) (alias:
+\fBsh\fR)
+.RE
+.sp
+The pair values in the parentheses, such as (any, foreign), are the
+\fBArchitecture\fR
+and
+\fBMulti\-Arch\fR
+stanza values set in the
+\fBdebian/control\fR
+file\&.
+.sp
+In many cases, the
+\fBdebmake\fR
+command makes good guesses for
+\fItype\fR
+from
+\fIbinarypackage\fR\&. If
+\fItype\fR
+is not obvious,
+\fItype\fR
+is set to
+\fBbin\fR\&. For example,
+\fBlibfoo\fR
+sets
+\fItype\fR
+to
+\fBlib\fR, and
+\fBfont\-bar\fR
+sets
+\fItype\fR
+to
+\fBdata\fR, \&...
+.sp
+If the source tree contents do not match settings for
+\fItype\fR, the
+\fBdebmake\fR
+command warns you\&.
+.RE
+.PP
+\fB\-e\fR \fIfoo@example\&.org\fR, \fB\-\-email\fR \fIfoo@example\&.org\fR
+.RS 4
+set e\-mail address\&.
+.sp
+The default is taken from the value of the environment variable
+\fB$DEBEMAIL\fR\&.
+.RE
+.PP
+\fB\-f\fR "\fIfirstname lastname\fR", \fB\-\-fullname\fR "\fIfirstname lastname\fR"
+.RS 4
+set the fullname\&.
+.sp
+The default is taken from the value of the environment variable
+\fB$DEBFULLNAME\fR\&.
+.RE
+.PP
+\fB\-i\fR "\fIbuildtool\fR", \fB\-\-invoke\fR "\fIbuildtool\fR"
+.RS 4
+invoke "\fIbuildtool\fR" at the end of execution\&.
+\fIbuildtool\fR
+may be \(lq\fBdpkg\-buildpackage\fR\(rq, \(lq\fBdebuild\fR\(rq, \(lq\fBpdebuild\fR\(rq, \(lq\fBpdebuild \-\-pbuilder cowbuilder\fR\(rq, etc\&.
+.sp
+The default is not to execute any program\&.
+.sp
+Setting this option automatically sets the
+\fB\-\-local\fR
+option\&.
+.RE
+.PP
+\fB\-j\fR, \fB\-\-judge\fR
+.RS 4
+run
+\fBdpkg\-depcheck\fR
+to judge build dependencies and identify file paths\&. Log files are in the parent directory\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIpackage\fR\fB\&.build\-dep\&.log\fR: Log file for
+\fBdpkg\-depcheck\fR\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fIpackage\fR\fB\&.install\&.log\fR: Log file recording files in the
+\fBdebian/tmp\fR
+directory\&.
+.RE
+.RE
+.PP
+\fB\-l\fR "\fIlicense_file,\&...\fR", \fB\-\-license\fR "\fIlicense_file,\&...\fR"
+.RS 4
+add formatted license text to the end of the
+\fBdebian/copyright\fR
+file holding license scan results\&.
+.sp
+The default is to add
+\fBCOPYING\fR
+and
+\fBLICENSE\fR, and
+\fIlicense_file\fR
+needs to list only the additional file names all separated by \(lq\fB,\fR\(rq\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-monoarch\fR
+.RS 4
+force packages to be non\-multiarch\&.
+.RE
+.PP
+\fB\-o\fR \fIfile\fR, \fB\-\-option\fR \fIfile\fR
+.RS 4
+read optional parameters from
+\fIfile\fR\&. (This is not for everyday use\&.)
+.sp
+The content of
+\fIfile\fR
+is sourced as the Python3 code at the end of
+\fBpara\&.py\fR\&. For example, the package description can be specified by the following file\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+para[\*(Aqdesc\*(Aq] = \*(Aqprogram short description\*(Aq
+para[\*(Aqdesc_long\*(Aq] = \*(Aq\*(Aq\*(Aq\e
+ program long description which you wish to include\&.
+ \&.
+ Empty line is space + \&.
+ You keep going on \&.\&.\&.
+\*(Aq\*(Aq\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quitearly\fR
+.RS 4
+quit early before creating files in the
+\fBdebian/\fR
+directory\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-spec\fR
+.RS 4
+use upstream spec (setup\&.py for Python, etc\&.) for the package description\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-version\fR
+.RS 4
+show version information\&.
+.RE
+.PP
+\fB\-w\fR "\fIaddon,\&...\fR", \fB\-\-with\fR "\fIaddon,\&...\fR"
+.RS 4
+add extra arguments to the
+\fB\-\-with\fR
+option of the
+\fBdh\fR(1) command as
+\fIaddon\fR
+in
+\fBdebian/rules\fR\&.
+.sp
+The
+\fIaddon\fR
+values are listed all separated by \(lq\fB,\fR\(rq, e\&.g\&., \(lq\fB\-w "python2,autoreconf"\(rq\fR\&.
+.sp
+For Autotools based packages, setting
+\fBautoreconf\fR
+as
+\fIaddon\fR
+forces running \(lq\fBautoreconf \-i \-v \-f\fR\(rq for every package building\&. Otherwise,
+\fBautotools\-dev\fR
+as
+\fIaddon\fR
+is used as the default\&.
+.sp
+For Autotools based packages, if they install Python programs,
+\fBpython2\fR
+as
+\fIaddon\fR
+is needed for packages with \(lq\fBcompat < 9\fR\(rq since this is non\-obvious\&. But for
+\fBsetup\&.py\fR
+based packages,
+\fBpython2\fR
+as
+\fIaddon\fR
+is not needed since this is obvious and it is automatically set for the
+\fBdh\fR(1) command by the
+\fBdebmake\fR
+command when it is required\&.
+.RE
+.PP
+\fB\-x\fR \fIn\fR, \fB\-\-extra\fR \fIn\fR
+.RS 4
+generate configuration files as templates\&. (Please note
+\fBdebian/changelog\fR,
+\fBdebian/control\fR,
+\fBdebian/copyright\fR, and
+\fBdebian/rules\fR
+are bare minimum configuration files to build a Debian binary package\&.)
+.sp
+The number
+\fIn\fR
+determines which configuration templates are generated\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-x0\fR: bare minimum configuration files\&. (default option if any of bare minimum configuration files already exist)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-x1\fR: all
+\fB\-x0\fR
+files + desirable configuration files for the single binary package\&. (default option for the single binary package if none of bare minimum configuration files exist)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-x2\fR: all
+\fB\-x1\fR
+files + desirable configuration files for the multi binary package\&. (default option for the multi binary package if none of bare minimum configuration files exist)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-x3\fR: all
+\fB\-x2\fR
+files + unusual configuration template files\&. Unsual configuration template files are generated with the extra
+\fB\&.ex\fR
+suffix to ease their removal\&. To use these as configuration files, rename their file names to ones without the
+\fB\&.ex\fR
+suffix\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fB\-x4\fR: all
+\fB\-x3\fR
+files + copyright file examples\&.
+.RE
+.RE
+.PP
+\fB\-y\fR, \fB\-\-yes\fR
+.RS 4
+\(lqforce yes\(rq for all prompts\&. (without option: \(lqask [Y/n]\(rq; doubled option: \(lqforce no\(rq)
+.RE
+.PP
+\fB\-L\fR, \fB\-\-local\fR
+.RS 4
+generate configuration files for the local package to fool
+\fBlintian\fR(1) checks\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-pedantic\fR
+.RS 4
+pedantically check auto\-generated files\&.
+.RE
+.PP
+\fB\-T\fR, \fB\-\-tutorial\fR
+.RS 4
+output tutorial comment lines in template files\&.
+.RE
+.SH "EXAMPLES"
+.sp
+For a well behaving source, you can build a good\-for\-local\-use installable single Debian binary package easily with one command\&. Test install of such a package generated in this way offers a good alternative to the traditional \(lq\fBmake install\fR\(rq command installing into the \fB/usr/local\fR directory since the Debian package can be removed cleanly by the \(lq\fBdpkg \-P\fR \fI\&...\(rq\fR command\&. Here are some examples of how to build such test packages\&. (These should work in most cases\&. If the \fB\-d\fR option does not work, try the \fB\-t\fR option instead\&.)
+.sp
+For a typical C program source tree packaged with autoconf/automake:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdebmake \-d \-i debuild\fR
+.RE
+.sp
+For a typical Python module source tree:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdebmake \-s \-d \-b":python" \-i debuild\fR
+.RE
+.sp
+For a typical Python module in the \fIpackage\-version\fR\fB\&.tar\&.gz\fR archive:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdebmake \-s \-a \fR\fB\fIpackage\-version\fR\fR\fB\&.tar\&.gz \-b":python" \-i debuild\fR
+.RE
+.sp
+For a typical Perl module in the \fIPackage\-version\fR\fB\&.tar\&.gz\fR archive:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdebmake \-a \fR\fB\fIPackage\-version\fR\fR\fB\&.tar\&.gz \-b":perl" \-i debuild\fR
+.RE
+.SH "HELPER PACKAGES"
+.sp
+Packaging may require installation of some additional specialty helper packages\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Python3 programs may require the
+\fBdh\-python\fR
+package\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The Autotools (Autoconf + Automake) build system may require
+\fBautotools\-dev\fR
+or
+\fBdh\-autoreconf\fR
+package\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Ruby programs may require the
+\fBgem2deb\fR
+package\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Java programs may require the
+\fBjavahelper\fR
+package\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Gnome programs may require the
+\fBgobject\-introspection\fR
+package\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+etc\&.
+.RE
+.SH "CAVEAT"
+.sp
+\fBdebmake\fR is meant to provide template files for the package maintainer to work on\&. Comment lines started by \fB#\fR contain the tutorial text\&. You must remove or edit such comment lines before uploading to the Debian archive\&.
+.sp
+The license extraction and assignment process involves a lot of heuristics; it may fail in some cases\&. It is highly recommended to use other tools such as \fBlicensecheck\fR from the \fBdevscripts\fR package in conjunction with \fBdebmake\fR\&.
+.sp
+There are some limitations for what characters may be used as a part of the Debian package\&. The most notable limitation is the prohibition of uppercase letters in the package name\&. Here is a summary as a set of regular expressions:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Upstream package name (\fB\-p\fR): [\-+\&.a\-z0\-9]{2,}
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Binary package name (\fB\-b\fR): [\-+\&.a\-z0\-9]{2,}
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Upstream version (\fB\-u\fR): [0\-9][\-+\&.:~a\-z0\-9A\-Z]*
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Debian revision (\fB\-r\fR): [0\-9][+\&.~a\-z0\-9A\-Z]*
+.RE
+.sp
+See the exact definition in Chapter 5 \- Control files and their fields in the \(lqDebian Policy Manual\(rq\&.
+.sp
+\fBdebmake\fR assumes relatively simple packaging cases\&. So all programs related to the interpreter are assumed to be "\fBArchitecture: all\fR"\&. This is not always true\&.
+.SH "DEBUG"
+.sp
+Please report bugs to the \fBdebmake\fR package using the \fBreportbug\fR command\&.
+.sp
+The character set in the environment variable \fB$DEBUG\fR determines the logging output level\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBi\fR: print information
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBp\fR: list all global parameters
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBd\fR: list parsed parameters for all binary packages
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBf\fR: input filename for the copyright scan
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBy\fR: year/name split of copyright line
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBs\fR: line scanner for format_state
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBb\fR: content_state scan loop: begin\-loop
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBm\fR: content_state scan loop: after regex match
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBe\fR: content_state scan loop: end\-loop
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBc\fR: print copyright section text
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBl\fR: print license section text
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBa\fR: print author/translator section text
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBk\fR: sort key for debian/copyright stanza
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBn\fR: scan result of debian/copyright (\(lq\fBdebmake \-k\fR\(rq)
+.RE
+.sp
+Use this as:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+ $ DEBUG=pdfbmeclak debmake \&.\&.\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+See README\&.developer in the source for more\&.
+.SH "AUTHOR"
+.sp
+Copyright \(co 2014\-2017 Osamu Aoki <osamu@debian\&.org>
+.SH "LICENSE"
+.sp
+Expat License
+.SH "SEE ALSO"
+.sp
+The \fBdebmake\-doc\fR package provides the \(lqGuide for Debian Maintainers\(rq in plain text, HTML and PDF formats under the \fB/usr/share/doc/debmake\-doc/\fR directory\&.
+.sp
+See also \fBdpkg\-source\fR(1), \fBdeb\-control\fR(5), \fBdebhelper\fR(7), \fBdh\fR(1), \fBdpkg\-buildpackage\fR(1), \fBdebuild\fR(1), \fBquilt\fR(1), \fBdpkg\-depcheck\fR(1), \fBpdebuild\fR(1), \fBpbuilder\fR(8), \fBcowbuilder\fR(8), \fBgbp\-buildpackage\fR(1), \fBgbp\-pq\fR(1), and \fBgit\-pbuilder\fR(1) manpages\&.

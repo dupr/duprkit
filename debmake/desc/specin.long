@@ -1,0 +1,3 @@
+#!/bin/sh
+# spec file
+sed -e '1,/^%description/d' *.spec.in | sed -e '/^%/,$d'

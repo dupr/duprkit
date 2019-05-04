@@ -1,0 +1,6 @@
+@PACKAGE@ (@VERREV@) UNRELEASED; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- @FULLNAME@ <@EMAIL@>  @DATE@

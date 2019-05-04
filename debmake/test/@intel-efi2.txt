@@ -1,0 +1,22 @@
+#%#%#%# This is copyright analyser test data by Osamu Aoki.
+#%#%#%# The following lines shall not be considered copyright statement.
+#%#%#%# 
+/** @file
+  Definitions for FAT recovery PEIM API functions
+
+Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.<BR>
+
+This program and the accompanying materials
+are licensed and made available under the terms and conditions of the Software
+License Agreement which accompanies this distribution.
+
+**/
+
+#ifndef _FAT_API_H_
+#define _FAT_API_H_
+
+//
+// API data structures
+//
+
+THIS HAS NO CODE

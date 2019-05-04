@@ -1,0 +1,50 @@
+#%#%#%# This is copyright analyser test data by Osamu Aoki.
+#%#%#%# The following lines shall not be considered copyright statement.
+#%#%#%# 
+/*
+The following is the 'standard copyright' agreed upon by most contributors,
+and is currently the canonical license preferred by the X.Org Foundation.
+This is a slight variant of the common MIT license form published by the
+Open Source Initiative at http://www.opensource.org/licenses/mit-license.php
+
+Copyright holders of new code should use this license statement where
+possible, and insert their name to this list.  Please sort by surname
+for people, and by the full name for other entities (e.g.  Juliusz
+Chroboczek sorts before Intel Corporation sorts before Daniel Stone).
+
+Copyright © 2000-2001 Juliusz Chroboczek
+Copyright © 1998 Egbert Eich
+Copyright © 2006-2007 Intel Corporation
+Copyright © 2006 Nokia Corporation
+Copyright © 2006-2008 Peter Hutterer
+Copyright © 2006 Adam Jackson
+Copyright © 2009-2010 NVIDIA Corporation
+Copyright © 1987, 2003-2006, 2008-2010 Oracle and/or its affiliates.
+Copyright © 1999 Keith Packard
+Copyright © 2007-2009 Red Hat, Inc.
+Copyright © 2005-2008 Daniel Stone
+Copyright © 2006-2009 Simon Thum
+Copyright © 2006 Luc Verhaegen
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice (including the next
+paragraph) shall be included in all copies or substantial portions of the
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+*/
+
+

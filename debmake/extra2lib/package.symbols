@@ -1,0 +1,5 @@
+# You must remove unused comment lines for the released package.
+### See dh_makeshlibs(1)
+### For C library, please fill this file with pertinent data.
+### For C++ library, you may remove this to use shlibs mechanism instead.
+

@@ -1,0 +1,13 @@
+#%#%#%# This is copyright analyser test data by Osamu Aoki.
+#%#%#%# The following lines shall not be considered copyright statement.
+#%#%#%# 
+/*
+Copyright (c) 2012 Joe Brown
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without any warranty.
+
+Older versions of this license did not have the second sentence with the express warranty disclaimer.
+*/
