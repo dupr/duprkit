@@ -104,9 +104,11 @@ class BOWModel(object):
         for k, v in self.vectors_2gram.items():
             scores[k].append(self.cosSim(v, vec2g))
         for k, v in scores.items():
-            print(f'{k} similarity:'.rjust(30),
-                0.5 * v[0] + 0.5 * v[1],
-                '1-gram', v[0], '2-gram', v[1], sep='\t')
+            print(f'{k} similarity:'.rjust(36),
+                '%.3f' % (0.5 * v[0] + 0.5 * v[1]),
+                '1-gram', '%.3f' % v[0],
+                '2-gram', '%.3f' % v[1],
+                sep='\t')
 
 
 def train(datadir: str):
