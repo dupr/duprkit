@@ -81,12 +81,24 @@ class BOWModel(object):
             self.vectors_2gram[k] = Counter(vec2g)
             self.vocab_2gram.update(self.vectors_2gram[k])
         # training stat
-        print('1-Gram Vocab Size/Total of Training Data:', len(self.vocab_1gram), sum(self.vocab_1gram.values()))
+        print('1-Gram | Training Data:'.rjust(42),
+                'size', len(self.vocab_1gram),
+                'total', sum(self.vocab_1gram.values()),
+                sep='\t')
         for k, v in self.vectors_1gram.items():
-            print(f'1-Gram Vocab Size/Total of {k}:', len(v), sum(v.values()))
-        print('2-Gram Vocab Size/Total of Training Data:', len(self.vocab_2gram), sum(self.vocab_2gram.values()))
+            print(f'1-Gram | {k}:'.rjust(42),
+                'size', len(v),
+                'total', sum(v.values()),
+                sep='\t')
+        print('2-Gram | Training Data:'.rjust(42),
+                'size', len(self.vocab_2gram),
+                'total', sum(self.vocab_2gram.values()),
+                sep='\t')
         for k, v in self.vectors_2gram.items():
-            print(f'2-Gram Vocab Size/Total of {k}:', len(v), sum(v.values()))
+            print(f'2-Gram | {k}:'.rjust(42),
+                'size', len(v),
+                'total', sum(v.values()),
+                sep='\t')
 
 
     def predict(self, path: str):
@@ -124,13 +136,15 @@ def train(datadir: str):
     '''
     Train the model from the given directory
     '''
+    print('Collecting data from ./data ...')
     files = glob.glob('data/*')
     data = dict()
     for f in files:
         text = re.sub('\W', ' ', open(f).read()).lower()
         tokens = text.split()
-        print(f'Found {len(tokens)} tokens in file {f}')
+        print(f'{len(tokens)} ', end='')
         data[os.path.basename(f)] = tokens
+    print()
     print('Training model ...')
     model = BOWModel()
     model.train(data)

@@ -1,7 +1,7 @@
 train:
 	./licensecheck-ng.py --train data
 
-test:
+validate:
 	for i in $$(find data -type f); do \
 		echo $$i; \
 		./licensecheck-ng.py --predict $$i; \
