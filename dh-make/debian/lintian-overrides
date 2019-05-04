@@ -1,0 +1,7 @@
+dh-make: extra-license-file usr/share/debhelper/dh_make/licenses/artistic
+dh-make: extra-license-file usr/share/debhelper/dh_make/licenses/bsd
+dh-make: extra-license-file usr/share/debhelper/dh_make/licenses/gpl2
+dh-make: extra-license-file usr/share/debhelper/dh_make/licenses/gpl3
+dh-make: extra-license-file usr/share/debhelper/dh_make/licenses/lgpl2
+dh-make: extra-license-file usr/share/debhelper/dh_make/licenses/lgpl3
+

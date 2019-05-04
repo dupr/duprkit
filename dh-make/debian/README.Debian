@@ -1,0 +1,12 @@
+README for dh_make
+==================
+
+License for generated files
+---------------------------
+Please read /usr/share/doc/dh-make/copyright. Since 0.37 of dh-make the output
+files of the program are able to be used without restriction. The question is
+then, which license to use?  The templates will default to GPL v3 but you are
+free to change it. The most likely best second option is to make the license
+of the generated and customised (by you) files the same as the main program's
+license.
+

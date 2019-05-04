@@ -1,0 +1,850 @@
+#!/usr/bin/python3
+
+import argparse
+import sys
+import os
+import termios
+import tty
+from select import select
+import pwd
+import nis
+import time
+import re
+from shutil import copy2
+from email.utils import formatdate
+from enum import Enum
+
+__version__ = '2.201802'
+__dhlib__ = '/usr/share/debhelper/dh_make'
+policy_version = '4.1.3'
+
+if not os.path.isdir(__dhlib__):
+    print('dh_make directory {} doesn\'t exist'.format(__dhlib__))
+    exit(1)
+
+
+def make_subs_func(subs_dict):
+    '''
+    Create a translation closure
+    '''
+    def prepare_key(k):
+        return re.escape('#'+k+'#')
+
+    rx = re.compile('|'.join(map(prepare_key, subs_dict)))
+
+    def one_xlat(match):
+        return subs_dict[match.group(0).replace('#', '')]
+
+    def subs_func(text):
+        return rx.sub(one_xlat, text)
+    return subs_func
+
+
+def process_file(args, subs_func, infile, outfile):
+    '''
+    Process a single file infile is the template, outfile is
+    the destination. rx is a compilied regular expresssion
+    '''
+    outfile2 = str(outfile).rsplit('.ex', 1)[0]
+    if args.overlay is None and args.addmissing and (
+            os.path.isfile(outfile) or os.path.isfile(outfile2)):
+        print('File {} exists, skipping\n'.format(outfile))
+
+    try:
+        with open(infile, 'r') as inf, open(outfile, 'w') as outf:
+            for line in inf:
+                outf.write(subs_func(line))
+    except OSError as e:
+        print('Unable to open file {} for reading: {}'.
+              format(infile, e.strerror))
+
+
+def process_dhlib(args, subs_func, subdir, destdir=''):
+    '''
+    Recursively find all template files in the specified DHLIB directory
+    and process them into our debian directory
+    '''
+    for f in os.listdir(os.path.join(__dhlib__, subdir)):
+        file = os.path.join(__dhlib__, subdir, f)
+
+        if os.path.isdir(file):
+            process_dhlib(args, subs_func, os.path.join(subdir, f), f)
+        else:
+            process_file(args, subs_func, file, os.path.join(destdir, f))
+
+
+def process_dir(args, subs_func, adir):
+    '''
+    Find all templates in custom directory
+    and process them into our debian directory
+    '''
+    for f in os.listdir(adir):
+        process_file(args, subs_func, os.path.join(adir, f), f)
+
+
+def process_copyright(args, subs_func):
+    '''
+    Find the relevant copyright file and copy to our debian directory
+    '''
+    copyright_template = None
+    if args.license == License.custom:
+        copyright_template = os.path.realpath(args.copyrightfile)
+    else:
+        copyright_template = os.path.join(
+            __dhlib__, 'licenses', args.license.name)
+
+    if (os.path.isfile(copyright_template)):
+        process_file(args, subs_func, copyright_template, 'copyright')
+    else:
+        print('Unable to find copyright template file {}'.
+              format(copyright_template))
+        exit(1)
+
+
+def process_docs(python, docs_package, package_name):
+    '''
+    Find all documents and put the into the debian/docs
+    or debian/package.docs file for dh_installdocs
+    also append document stuff to control if required
+    '''
+    ignore_files = ('CMakeList.txt', 'CMakeLists.txt')
+    docfiles = []
+
+    if python:
+        filename = 'python-{}-doc.docs'.format(package_name)
+    elif docs_package:
+        filename = '{}.docs'.format(package_name)
+    else:
+        filename = '{}-docs.docs'.format(package_name)
+
+    if os.path.isfile(filename):
+        print('debian/{} file already exists, skipping.\n'.format(filename))
+        return
+
+    file_re = re.compile(r'(^news|faq|\.md$|\.txt$|^readme|\.readme$'
+                         r'|^bugs|todo|\.html$|\.pdf$)',
+                         re.I)
+
+    for docfile in os.listdir('.'):
+        if file_re.search(docfile) and docfile not in ignore_files:
+            docfiles.append(docfile)
+
+    if docfiles != []:
+        with open(filename, 'w') as outf:
+            for docfile in docfiles:
+                outf.write(docfile+'\n')
+
+    # Append the document package
+    if docs_package:
+        with open('control', 'a')as f:
+                f.write('''
+
+Package: {0}-doc
+Architecture: all
+Description: documentation for {0}
+ <insert long description, indented with spaces>
+'''.format(package_name))
+
+
+def process_infos(python, docs_package, package_name):
+    '''
+    Find all the info documents and put into debian/PACKAGE.info
+    or debian/PACKAGE-doc.info file for dh_installinfo
+    '''
+    infos = []
+
+    if python:
+        filename = 'python-{}-doc.info'.format(package_name)
+    elif docs_package:
+        filename = '{}.info'.format(package_name)
+    else:
+        filename = '{}-docs.info'.format(package_name)
+
+    if os.path.isfile(filename):
+        print('debian/{} already exists, skipping.\n'.format(filename))
+        return
+
+    file_re = re.compile(r'\.info(-[0-9]+)?')
+    for root, subdirs, files in os.walk('.'):
+        for f in files:
+            if file_re.search(f):
+                infos.append(os.path.join(root, f))
+
+    if infos != []:
+        with open(filename, 'w') as outf:
+            for info in infos:
+                outf.write(info+'\n')
+
+
+def rename_package_files(package_name):
+    '''
+    Any files in the /debian/ directory that are named
+    package.* will be renamed with the real package name
+    '''
+    for oldname in os.listdir('.'):
+        if oldname.startswith('package'):
+            newname = oldname.replace('package', package_name)
+            if os.path.isfile(newname):
+                print('File {} already exists, skipping.\n'.format(newname))
+            else:
+                os.rename(oldname, newname)
+
+
+def get_subs(args):
+    '''
+    Get the initial set of subsition variables
+    '''
+    subs = {
+            'PACKAGE': '',
+            'UCPACKAGE': '',
+            'VERSION': '',
+            'DASHLINE': '',
+            'EMAIL': get_email(args.email),
+            'DATE': formatdate(None, True),
+            'SHORTDATE': time.strftime('%B %e %Y'),
+            'YEAR': time.strftime('%Y'),
+            'USERNAME': get_username(),
+            'POLICY': policy_version,
+            'BUILD_DEPS': ['debhelper (>= 11)'],
+            'DH_ADDON': '',
+            'SOURCE_EXTRADOCS': '',
+            'RULES_START_TEXT': '',
+            'RULES_END_TEXT': '',
+           }
+    return subs
+
+
+class PackageClass(Enum):
+    indep = 'i'
+    library = 'l'
+    single = 's'
+    python = 'p'
+    defaultless = 'defaultless'
+
+    @classmethod
+    def from_args(cls, args):
+        """
+        Return the PackageClass parsed from command line arguments
+        """
+        if args.defaultless:
+            return cls.defaultless
+        elif args.packageclass is not None:
+            return cls(args.packageclass)
+        elif args.indep:
+            return cls.indep
+        elif args.library:
+            return cls.library
+        elif args.python:
+            return cls.python
+        elif args.single:
+            return cls.single
+        return None
+
+
+class License(Enum):
+    """
+    Class to hold and control the licenses
+    """
+    apache = 'apache'
+    artistic = 'artistic'
+    bsd = 'bsd'
+    gpl2 = 'gpl2'
+    gpl3 = 'gpl3'
+    isc = 'isc'
+    lgpl2 = 'lgpl2'
+    lgpl3 = 'lgpl3'
+    mit = 'mit'
+    custom = 'c'
+    blank = ''
+
+    @classmethod
+    def from_args(cls, args):
+        """
+        Return the right license given the command line arguments
+        """
+        matches = {'apache': cls.apache, 'artistic': cls.artistic,
+                   'bsd': cls.bsd, 'gpl': cls.gpl2, 'gpl2': cls.gpl2,
+                   'gpl3': cls.gpl3, 'isc': cls.isc, 'lgpl': cls.lgpl2,
+                   'lgpl2': cls.lgpl2, 'lgpl3': cls.lgpl3, 'mit': cls.mit}
+        if args.copyright == 'custom':
+            if args.copyrightfile is None:
+                sys.stderr.write(
+                    'Copyright type "custom" requires --copyrightfile'
+                    'option used.\n')
+                exit(1)
+            return cls.custom
+        if args.copyrightfile is not None:
+            sys.stderr.write('--copyrightfile only makes sense with custom'
+                             'license.\n')
+            exit(1)
+
+        license = matches.get(args.copyright)
+        if license is None:
+            if args.native:
+                license = cls.gpl3
+            else:
+                license = cls.blank
+        return license
+
+
+version_string = '''
+dh_make version {}
+
+Copyright (C) 1998-2018 Craig Small <csmall@debian.org>
+Based on deb-make by Christoph Lameter <clameter@debian.org>.
+Custom template support by Bruce Sass <bmsass@shaw.ca>.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+'''.format(__version__)
+copyright_choices = ('apache', 'artistic', 'bsd', 'gpl', 'gpl2', 'gpl3',
+                     'isc', 'lgpl', 'lgpl2', 'lgpl3', 'mit', 'custom')
+parser = argparse.ArgumentParser(
+        prog="dh_make",
+        formatter_class=argparse.RawTextHelpFormatter,
+        description="prepare Debian packaging from an original source archive")
+parser.add_argument('-a', '--addmissing', action='store_true',
+                    help='reprocess package and add missing files')
+parser.add_argument('-c', '--copyright', metavar='<type>',
+                    choices=copyright_choices,
+                    help='use <type> of license in copyright file '
+                    '(apache|artistic|bsd|gpl|gpl2|gpl3|isc|lgpl|lgpl2|'
+                    'lgpl3|mit|custom)')
+
+parser.add_argument('--copyrightfile', metavar='<file>',
+                    help='Template to use for custom copyright')
+parser.add_argument('-d', '--defaultless', action='store_true',
+                    help='skip the default Debian and package class templates')
+parser.add_argument('--docs', action='store_true',
+                    help='create a separate docs package')
+parser.add_argument('-e', '--email', metavar='<address>',
+                    help='use <address> as the maintainer e-mail address')
+parser.add_argument('-f', '--file', metavar='<file>',
+                    help='use <file> as the original source archive')
+parser.add_argument('-n', '--native', action='store_true',
+                    help='the program is Debian native, don\'t generate .orig')
+parser.add_argument('-o', '--overlay', metavar='<dir>',
+                    help='reprocess package using templates in <dir>')
+parser.add_argument('-p', '--packagename', metavar='<name>',
+                    help='force package name to be <name>')
+parser.add_argument('-t', '--templates', metavar='<dir>',
+                    help='apply customizing templates from <dir>')
+parser.add_argument('-y', '--yes', action='store_true',
+                    help='automatic yes to prompts and run non-interactively')
+parser.add_argument('--createorig', action='store_true',
+                    help='create orig.tar.xz file')
+parser.add_argument('--with-emacs', action='store_true',
+                    help='add files for emacsen')
+pcgroup = parser.add_mutually_exclusive_group()
+pcgroup.add_argument('-C', '--packageclass', metavar='<cls>',
+                     choices=('s', 'i', 'l', 'p'),
+                     help='set package class (s|i|l|p)')
+pcgroup.add_argument('-s', '--single', action='store_true',
+                     help='set package class to single')
+pcgroup.add_argument('-i', '--indep', action='store_true',
+                     help='set package class to arch-independent')
+pcgroup.add_argument('-l', '--library', action='store_true',
+                     help='set package class to library')
+pcgroup.add_argument('--python', action='store_true',
+                     help='set package class to python')
+
+parser.add_argument('-v', '--version', action='version',
+                    version=version_string)
+
+
+def getch():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        [i, o, e] = select([sys.stdin.fileno()], [], [], 5)
+        if i: ch=sys.stdin.read(1)
+        else: ch=''     
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+
+def get_logname():
+    """
+    Return current users login name
+    """
+    if 'LOGNAME' in os.environ:
+        return os.environ['LOGNAME']
+    elif 'USER' in os.environ:
+        return os.environ['USER']
+    else:
+        sys.stderr.write('Cannot get username; neither LOGNAME nor USER is set'
+                         'in the environment!\n')
+        exit(1)
+
+
+def get_username():
+
+    username = os.environ.get('DEBFULLNAME')
+    if username is not None and username != '':
+        return username
+
+    logname = get_logname()
+    if logname != '':
+        username = pwd.getpwnam(logname).pw_gecos.rsplit(',')[0]
+        if username != '':
+            return username
+
+    # NIS/ypmatch
+    try:
+        username = nis.match(logname, 'passwd.byname').split(':')[4]
+        if username != '':
+            return username
+    except nis.error:
+        pass
+
+    # TODO ldap?
+
+    # all failed
+    return 'unknown'
+
+
+def get_email(args_email):
+    """
+    Attempt to get user's email from various methods
+    """
+    if args_email is not None:
+        return args_email
+    elif 'DEBEMAIL' in os.environ:
+        return os.environ['DEBEMAIL']
+    elif 'EMAIL' in os.environ:
+        return os.environ['EMAIL']
+
+    # TODO ldapsearch
+
+    logname = get_logname()
+
+    try:
+        with open('/etc/mailname', 'r') as f:
+            mailhost = f.read().rstrip()
+    except IOError:
+        mailhost = 'unknown'
+    return '{}@{}'.format(logname, mailhost)
+
+
+def get_package(args, subs):
+    """
+    Determine the package name and versions
+    """
+    package_name = None
+    package_version = None
+    cwd = os.getcwd()
+
+    # Split out the version and name
+    if args.packagename is not None:
+        match = re.match(r'(.*)_([0-9][0-9a-zA-Z+.~-]*)$',
+                         args.packagename)
+        if match is not None:
+            package_name = match.group(1)
+            package_version = match.group(2)
+        else:
+            match = re.match(r'(.*)_(.*)', args.packagename)
+            if match is not None:
+                print('''
+The directory name you have specified is invalid!
+It seems the <packagename>_<version> format was attempted,
+since underscores are illegal in both package-name and version.
+Make sure that the version starts with a digit and contains only
+digits, lower and uppercase letters, dashes, or the signs plus, dot, tilde.
+
+Your current directory is:
+{}
+Perhaps you could try going to directory where the sources are?
+
+Please note that this change is necessary ONLY during the initial
+Debianization with dh_make.  When building the package, dpkg-source
+will gracefully handle almost any upstream tarball.
+'''.format(cwd))
+                exit(1)
+            else:
+                package_name = args.packagename
+
+    cwd_match = re.match(r'.*/(.*)-([0-9][0-9a-zA-Z+.~-]*)$', cwd)
+    if cwd_match is not None:
+        if package_name is None:
+            package_name = cwd_match.group(1)
+        if package_version is None:
+            package_version = cwd_match.group(2)
+
+    # Validate names
+    if package_name is not None:
+        match = re.match(r'^[a-z0-9+.-]+$', package_name)
+        if match is None:
+            print('''
+Package name "{}" is not in a valid format.
+Debian policy manual states:
+   "Package names must only consist of lower case letters, digits (0-9),
+    plus (+) or minus (-) signs, and periods (.)"
+'''.format(package_name))
+            exit(1)
+
+        match = re.match(r'^[a-z0-9+.-]$', package_name)
+        if match is not None:
+            print('''
+Package name "{}" is not in a valid format.
+You cannot create single-letter package names.
+'''.format(package_name))
+            exit(1)
+
+    if package_name is not None and package_version is not None:
+        subs['PACKAGE'] = package_name
+        subs['UCPACKAGE'] = package_name.capitalize()
+        subs['VERSION'] = package_version
+        subs['DASHLINE'] = '-' * len(package_name + 'for Debian')
+        return
+
+    print('''
+For dh_make to find the package name and version, the current directory
+needs to be in the format of <package>-<version>.  Alternatively use the
+_-p flag using the format <name>_<version> to override it.
+The directory name you have specified is invalid!
+
+Your current directory is:
+{}
+Perhaps you could try going to directory where the sources are?
+
+Please note that this change is necessary ONLY during the initial
+Debianization with dh_make.  When building the package, dpkg-source
+will gracefully handle almost any upstream tarball.
+            '''.format(cwd))
+    exit(1)
+
+
+def confirm_fields(args, subs):
+    """
+    Print the fields we will be using and get confirmation
+    from the user this is correct
+    """
+    vals = {'Maintainer Name': subs['USERNAME'],
+            'Email-Address': subs['EMAIL'],
+            'Date': subs['DATE'],
+            'Package Name': subs['PACKAGE'],
+            'Version': subs['VERSION'],
+            'License': args.license.name,
+            'Package Type': args.package_class.name,
+            }
+    valid = {'\r': True, '\n': True,
+            'y': True, 'yes': True,
+            'n': False, 'no': False}
+    for f, v in vals.items():
+        print("{0:<20}: {1}".format(f, v))
+
+    if args.yes:
+        return True
+    print('Are the details correct? [Y/n/q]')
+    while True:
+        choice = getch()
+        if choice == 'q':
+            print('Quit')
+            exit(0)
+        if choice in valid:
+            return valid[choice]
+        print('Please respond with "yes", "no" or "quit" (or "y", "n" or "q")')
+
+
+def choose_package_class(old_package_class):
+    """
+    If there has not been a package class chosen on command line prompt
+    the user to choose one
+    """
+    valid = {'s': PackageClass.single, 'i': PackageClass.indep,
+             'l': PackageClass.library, 'p': PackageClass.python}
+    while True:
+        print('Type of package: (single, indep, library, python)\n'
+              '[s/i/l/p]?')
+        if old_package_class is not None:
+            print('Hit enter for default: {}'.
+                  format(old_package_class.name))
+        choice = getch()
+        if choice == '\n' and old_package_class is not None:
+            return old_package_class
+        if choice in valid:
+            return valid[choice]
+        print('Please respond with one of the following: s,i,l,p')
+
+
+def parse_args():
+    """
+    Parse the arguments given to us by the user on the command line
+    """
+    args = parser.parse_args()
+
+    if args.overlay is not None:
+        args.addmissing = True
+        args.defaultless = True
+        args.templates = args.overlay
+
+    # Sanity checking
+    if not os.path.isdir('debian'):
+        if args.overlay:
+            print('--overlay flag used but cannot find debian subdirectory.')
+            exit(1)
+        if args.addmissing:
+            print('--addmissing flag used but cannot find debian subdirectory')
+            exit(1)
+
+    args.package_class = PackageClass.from_args(args)
+    args.license = License.from_args(args)
+    return args
+
+
+def check_origtar(source_file, create_orig, package_name, package_version):
+    """
+    Check for the orig.tar.* file, this can be satisfied by:
+      specified with --file and found
+      finding it in the .. directory
+      created with --createorig
+
+    Create the *.orig.tar.* file, if required
+    """
+    orig_suffixes = ('gz', 'bz2', 'lzma', 'xz')
+
+    # Does the file specified by user exist?
+    if source_file is not None:
+        if os.path.exists(source_file):
+            source_ext = os.path.splitext(source_file)[1][1:]
+            if source_ext not in orig_suffixes:
+                print('Source file {} has an unknown suffix "{}"'.
+                      format(source_file, source_ext))
+                exit(1)
+            dest_file = '../{}_{}.orig.tar.{}'.\
+                format(package_name, package_version, source_ext)
+            copy2(source_file, dest_file)
+            return
+        else:
+            print('Source archive you specified ( {} ) was not found!'.
+                  format(source_file))
+            exit(1)
+
+    # Try to find the file in the .. directory
+    for suff in orig_suffixes:
+        filename = '../{}_{}.orig.tar.{}'.format(
+                package_name, package_version, suff)
+        if os.path.exists(filename):
+            print('Skipping creating {} because it already exists'.
+                  format(filename))
+            return
+
+    # Can we create the file?
+    if create_orig:
+        os.system('tar cfJ ../{}_{}.orig.tar.xz .'.
+                  format(package_name, package_version))
+        return
+
+    # We failed :(
+    print('''
+Could not find {}_{}.orig.tar.xz
+Either specify an alternate file to use with -f,
+or add --createorig to create one.'''.
+          format(package_name, package_version))
+    exit(1)
+
+
+def setup_python(subs):
+    '''
+    Setup a python package
+    '''
+    subs['RULES_START_TEXT'] = 'export PYBUILD_NAME={}\n'.format(
+        subs['PACKAGE'])
+    subs['RULES_END_TEXT'] = '''
+# If you need to rebuild the Sphinx documentation
+# Add spinxdoc to the dh --with line
+#override_dh_auto_build:
+#\tdh_auto_build
+#\tPYTHONPATH=. http_proxy='127.0.0.1:9' sphinx-build -N -bhtml\
+        docs/ build/html # HTML generator
+#\tPYTHONPATH=. http_proxy='127.0.0.1:9' sphinx-build -N -bman\
+        docs/ build/man # Manpage generator
+'''
+    subs['DH_ADDON'] += ' --with python2,python3'\
+        ' --buildsystem=pybuild'
+    subs['BUILD_DEPS'].extend(['dh-python', 'python-all',
+                               'python-setuptools', 'python3-all',
+                               'python3-setuptools'])
+
+
+def setup_autotools(subs):
+    '''
+    Setup a package that uses autotools
+    '''
+    subs['BUILD_DEPS'].append('autotools-dev')
+
+
+def setup_cmake(subs):
+    '''
+    Setup a package that uses cmake
+    '''
+    subs['BUILD_DEPS'].append('cmake')
+
+
+def setup_make():
+    '''
+    Setup package that uses a makefile
+    '''
+    if not os.path.isfile('Makefile') and\
+       not os.path.isfile('makefile') and\
+       not os.path.isfile('GNUmakefile'):
+            print('Currently there is not top level Makefile. This may '
+                  'require additional tuning')
+
+
+def output_source_format(args):
+    '''
+    Write the debian/source/format file
+    '''
+    outfile = 'source/format'
+
+    if args.overlay is None and not args.addmissing and\
+            os.path.isfile(outfile):
+                print('File {} exists, skipping\n'.format(outfile))
+                return
+
+    if not os.path.isdir('source'):
+        try:
+            os.mkdir('source', 0o755)
+        except OSError as e:
+            print('Unable to make debian/source subdirectory: {}'.
+                  format(e.strerror))
+            exit(1)
+
+    try:
+        with open(outfile, 'w') as f:
+            if args.native:
+                f.write('3.0 (native)\n')
+            else:
+                f.write('3.0 (quilt)\n')
+    except Exception as e:
+        print('Unable to write source file {} for writing: {}'.
+              format(outfile, e.strerror))
+        exit(1)
+
+
+def do_debianize(args, subs):
+    """
+    Actually make a Debian package out of the source files
+    """
+    if not args.native:
+        check_origtar(args.file, args.createorig,
+                      subs['PACKAGE'], subs['VERSION'])
+
+    if args.package_class == PackageClass.python:
+        print('pth')
+        setup_python(subs)
+    else:
+        subs['RULES_START_TEXT'] = '''
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+'''
+        subs['RULES_END_TEXT'] = '''
+# dh_make generated override targets
+# This is example for Cmake (See https://bugs.debian.org/641051 )
+#override_dh_auto_configure:
+#	dh_auto_configure -- \
+#	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
+'''
+        if os.path.isfile('./configure') and os.access('./configure', os.X_OK):
+            setup_autotools(subs)
+        elif os.path.isfile('CmakeLists.txt'):
+            setup_cmake(subs)
+        else:
+            setup_make()
+
+    # Create debian directory
+    if args.addmissing is False:
+        if os.path.isdir('debian'):
+            print('You already have a debian/ subdirectory in the source'
+                  'tree.\ndh_make will not try to overwrite anything.')
+            exit(1)
+        try:
+            os.mkdir('debian', 0o755)
+        except OSError as e:
+            print('Unable to make debian subdirectory: {}\n'.format(
+                e.strerror))
+            exit(1)
+    try:
+        os.chdir('debian')
+    except OSError as e:
+        print('Unable to change to debian subdirectory: {}\n'.format(
+            e.strerror))
+        exit(1)
+
+    # Translate the lists to strings
+    subs['BUILD_DEPS'] = ', '.join(subs['BUILD_DEPS'])
+    subs_func = make_subs_func(subs)
+
+    if not args.defaultless:
+        output_source_format(args)
+
+        process_dhlib(args, subs_func, 'debian')
+        process_copyright(args, subs_func)
+
+        # native packages don't have a watch file #806672
+        if args.native:
+            os.unlink('watch.ex')
+
+        # Files specific to package classes
+        process_dhlib(args, subs_func, 'debian' + args.package_class.value)
+
+        if args.with_emacs:
+            process_dhlib(args, subs_func, 'emacs')
+
+        if args.native:
+            process_dhlib(args, subs_func, 'native')
+
+    # Custom templates
+    if args.templates is not None:
+        if not os.path.isdir(args.templates):
+            print('Cannot find customization directory, {}'.
+                  format(args.templates))
+            exit(1)
+        process_dir(args, subs_func, args.templates)
+
+    process_docs(args.python, args.docs, subs['PACKAGE'])
+    process_infos(args.python, args.docs, subs['PACKAGE'])
+
+    rename_package_files(subs['PACKAGE'])
+
+    os.chmod('rules', 0o755)
+
+    print('Done. Please edit the files in the debian/ subdirectory now.\n')
+    if args.package_class == PackageClass.library:
+        print('''
+Make sure you edit debian/control and change the Package: lines from
+{0}BROKEN to something else, such as {0}1\n'''.format(subs['PACKAGE']))
+
+
+def main():
+    """
+    Main function of the script
+    """
+
+    args = parse_args()
+    subs = get_subs(args)
+    get_package(args, subs)
+
+    # Create line of dashes
+    first = True
+    while True:
+        if not args.defaultless and \
+                (not first or args.package_class is None):
+            args.package_class = choose_package_class(args.package_class)
+
+        if confirm_fields(args, subs):
+            do_debianize(args, subs)
+            break
+        first = False
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,251 @@
+.\" (C) Copyright 1998-2017 Craig Small <csmall@debian.org>
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.TH DH_MAKE 1 2018-06-08 "Debian Project"
+.SH NAME
+dh_make \- prepare Debian packaging for an original source archive
+.SH SYNOPSIS
+.B dh_make
+[\fIoption\fR]...
+.SH DESCRIPTION
+.B dh_make
+is a tool to convert a regular source code package into one formatted
+according to the requirements of the Debian Policy.
+.B dh_make
+must be invoked within a directory containing the source code, which must
+be named <packagename>\-<version>.
+The <packagename> must be all lowercase,
+The <packagename> and <version>
+must be all lowercase,
+digits and dashes. The <version> can also contain digits, and the symbols
+plus, dot, tilde. The <version> must start with a digit.
+If the directory name does not conform to this scheme,
+you must rename it before using 
+.B dh_make.
+Alternatively, you may be able to use the \fB\-\-packagename\fR option to force 
+the package name.
+.br
+.SS PACKAGE CLASSES
+Classes can be set with the single direct options (such as \-\-s for single)
+or with the -C,--packageclass option (\-C=s for single).
+.TP
+.B Single binary (s)
+The package will generate a single binary .deb package. It is the standard
+case, so if you don't know what to do, choose this.
+.TP
+.B Arch-Independent (i)
+The package will generate a single package that is arch-independent.
+.TP
+.B Library (l)
+The package will generate at least two binaries. One library package
+containing just the lib in \fI/usr/lib\fR and another *\-dev_*.deb package
+containing documentation and C headers.
+.TP
+.SS ACTIONS PERFORMED
+Unless \fB\-\-native\fR was given, 
+.B dh_make
+makes sure a original source archive (<packagename>_<version>.orig.tar.gz)
+exists. The archive can either end with .gz or one of the other supported
+compression extensions such as bz2 or lzma.
+If no such file exists, the file specified with \fB\-f\fR is copied in place.
+If no \fB\-f\fR is supplied either but \fB\-\-createorig\fR is, the current
+directory is created into a news archive
+.I ../<packagename>\-<version>.orig.tar.gz
+The original archive is needed for other Debian tools to generate the
+diffs to the original sources required by the Debian packaging format.
+Unless there are reasons against it, this file should be the pristine
+upstream archive.
+.PP
+Then
+.B dh_make
+proceeds to generate a "debian" subdirectory and the necessary control
+files in the program source directory. Those control files are customized
+with the packagename and version extracted from the directory name.
+
+.B dh_make
+makes several attempts to obtain the username. It first checks for the 
+environment variables \fB$DEBFULLNAME\fR, \fB$LOGNAME\fR is used to
+find a name in the \fI/etc/passwd\fR file, and through NIS, YP
+and LDAP.
+
+The e\-mail address can either be specified with the -fB\-\-email\fR option
+or
+.B dh_make
+will attempt to find it. It will first check the environment variables
+\fB$DEBEMAIL\fR and then \fB$EMAIL. If they are not set then 
+.B dh_make
+will search an available LDAP directory using
+.BR ldapsearch (1)
+using \fB$LOGNAME\fR as the uid to search under.  Finally it will use
+\fB$LOGNAME\fR and \fI/etc/mailname\fR to generate an email address.
+
+.B dh_make
+will also generate example files that are also customized for the package
+generated. You can remove all files with *.ex if you wish. You can also
+delete the README.Debian file if you don't have anything to put in it.
+Renaming the example files to their name without the .ex at the end (and
+editing them if necessary) will activate that feature of debhelper.
+.PP
+If the \fB\-\-templates\fR or \fB\-o\fR (\fB\-\-overlay\fR) option is used
+.B dh_make
+will apply a customizing template to the "debian" directory. See the
+templates described in the FILES section of this manpage for samples.
+.SH OPTIONS
+.TP
+.BR \-c ", " \-\-copyright\  \fIlicense\fR
+Use \fIlicense\fR type in copyright file.  \fIlicense\fR can be
+apache, artistic, bsd, gpl, gpl2, gpl3, isc, lgpl, lgpl2, lgl3, mit
+or custom.
+If this field is not specified the copyright file has a space to
+fill in which sort of license is used. The field is case-insensitive so
+\-c GPL works as well as \-c gpl. gpl and lgpl will give you version 3
+of the corresponding license, apache implies Apache v2.0. If you need a 
+different version, change the
+license file afterwards or use the gpl2 and lgpl2 options.  If you select
+custom here you will need to use the \fB\-\-copyrightfile\fR option as well.
+.TP
+.BR \-\-copyrightfile\ \fIfilename\fR
+When using the custom \fB\-\-copyright\fR option this is the location of
+your custom copyright file. \fBdh_make\fR will process this file just like
+the standard copyright files. It is suggested you use one of the existing
+license files as a starting point.
+.TP
+.B \-\-docs
+Create a separate \fIPACKAGE-doc\fR binary package. All found documents
+in the source package will be installed here.
+.TP
+.BR \-e ", " \-\-email\ \fIaddress\fR
+Use \fIaddress\fR as the e\-mail address in the Maintainer: field of
+debian/control file.
+.TP
+.BR \-n ", " \-\-native
+Create a native Debian packages, i.e. do not generate a .orig archive, 
+since it will be generated when building with dpkg-buildpackage.
+The version number will not have a Debian revision number (e.g. \-1)
+appended to it.
+.TP
+.BR \-f ", " \-\-file\ \fIfile\fR
+Use \fIfile\fR as the original source archive, and skip the copying of the
+current program tree to program.orig.
+.TP
+.BR \-l ", " \-\-library
+Automatically set the package class to Library, skipping the question.
+.TP
+.BR \-s ", " \-\-single
+Automatically set the package class to Single binary, skipping the question.
+.TP
+.BR \-i ", " \-\-indep
+Automatically set the package class to arch-independent binary, skipping the question.
+.TP
+.BR \-a ", " \-\-addmissing
+Adds missing example and control files on an existing debian source directory.
+.TP
+.BR \-t ", " \-\-templates\ \fIdirectory\fR
+Applies the customizing templates in \fIdirectory\fR to the debian directory.
+.TP
+.BR \-o ", " \-\-overlay\ \fIdirectory\fR
+Applies a customization template to an existing debian directory.
+.TP
+.BR \-p ", " \-\-packagename\ \fIname\fR
+Force the package name to be \fIname\fR, good for packages with hyphens in their
+name or other strangeness. You can also make the parameter
+.IR name \_ version
+which will set both the package name and version and bypass and directory
+checking.
+.TP
+.BR \-d ", " \-\-defaultless
+Skips applying the default templates to the target debian directory. Generally
+used in conjunction with either the \fB\-\-overlay\fR or \fB\-\-templates\fR
+options.
+.TP
+.BR \-h ", " \-\-help
+Display the name, version, available options and authors, and exit
+successfully.
+.TP
+.BR \-v ", " \-\-version
+Show the program name and version, and exit successfully.
+.TP
+.BR \-y ", " \-\-yes
+Automatic yes to prompts and run non-interactively.  The package class
+needs to be set for \fBdh\_make\fR to run fully automatically.
+.SH ENVIRONMENT
+The following environment settings are used by \fBdh\_make\fR:
+.TP
+.B DEBEMAIL
+Email address to use in control and changelog entries.
+.TP
+.B DEBFULLNAME
+You full name, eg "John Doe" which will appear in the control and changelog
+entries.
+.TP
+.B EMAIL
+Email address to use in control and changelog entries, only used if \fBDEBEMAIL\fR is no set.
+.TP
+.B LOGNAME
+Default username used for looking up email and full name in other directories.
+.SH FILES
+.TP
+.I /usr/share/debhelper/dh_make
+Directory that contains all the template files, separated in six
+directories: 
+.TP
+.I debian/
+with files for all package classes,
+.TP
+.I debians/
+with files specific to the Single binary class,
+.TP
+.I debianl/
+with files specific to the Library class, and finally,
+.TP
+.I native/
+with files specific to the native Debian packages.
+.TP
+.I licenses/
+template files for the more common licenses used in Debian packages
+.SH EXAMPLES
+.PP
+To get \fBdh\_make\fR to use the defaults and ask you various questions
+about the package
+.in +4n
+.nf
+
+dh_make
+
+.fi
+.in
+.PP
+Create your single class package using the with the GPL license:
+.in +4n
+.nf
+
+dh_make \-s \-c gpl
+
+.fi
+.in
+.PP
+A more involved example where you set your name in the environment, contact \
+email and license in the options and specify the upstream file:
+.in +4n
+.nf
+
+DEBFULLNAME="John Doe"
+.br
+dh_make \-\-email contact@example.com \-\-copyright=bsd \\
+.br
+\ \-\-file ../foo.tar.gz 
+
+.fi
+.in
+.SH BUGS
+.B dh_make 
+may not detect your username and email address correctly when using sudo.
+.SH SEE ALSO
+.BR dpkg (1), dpkg\-buildpackage (1), dh (1), make\-kpkg (1), debhelper (7)
+.P
+You may also want to read the Debian Policy (in
+\fI/usr/share/doc/debian\-policy \fR) and the New Maintainers' Guide (in
+\fI/usr/share/doc/maint-guide\fR).

@@ -1,0 +1,15 @@
+Source: #PACKAGE#
+Section: lisp
+Priority: optional
+Maintainer: #USERNAME# <#EMAIL#>
+Build-Depends: #BUILD_DEPS#
+Standards-Version: #POLICY#
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Browser: https://salsa.debian.org/debian/#PACKAGE#
+#Vcs-Git: https://salsa.debian.org/debian/#PACKAGE#.git
+
+Package: #PACKAGE#
+Architecture: all
+Depends: ${misc:Depends}, emacsen-common (>= 2.0.8), emacs | emacsen,
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

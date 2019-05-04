@@ -1,0 +1,51 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: dh-make
+Source: https://salsa.debian.org/debian/dh-make
+
+Files: *
+Copyright: 1998-2018 Craig Small <csmall@debian.org>
+License: GPL-3.0+ with template exception
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this package; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-3'.
+ .
+ As a special exception, when the template files are copied by dh-make into 
+ dh-make output files, you may use those output files without restriction.
+ This special exception was added by Craig Small in version 0.37 of dh-make.
+
+Files: dh_makefont dh_makefont.1
+Copyright: 2012-2013 Vasudev Kamath <kamathvasudev@gmail.com>
+           2011-2012 Muneeb Shaikh <iammuneeb@gmail.com>
+           2011-2012 Shravan Aras <123.shravan@gmail.com>
+License: GPL-2.0+ with template exception
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+ .
+ As a special exception, when the template files are copied by dh-makefont into 
+ dh-makefont output files, you may use those output files without restriction.

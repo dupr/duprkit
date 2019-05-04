@@ -1,0 +1,960 @@
+dh-make (2.201802) unstable; urgency=medium
+
+  * dh_makefont call dh_make correctly Closes: #914564
+
+ -- Craig Small <csmall@debian.org>  Mon, 26 Nov 2018 22:27:40 +1100
+
+dh-make (2.201801) unstable; urgency=medium
+
+  * Change git URLs to salsa Closes: #900747
+  * Add ISC license Closes: #894546
+  * Update to debhelper 11
+  * Update to standards 4.1.3
+  * Fix --overlay option Closes: #880211
+  * Fix some of the print statements
+
+ -- Craig Small <csmall@debian.org>  Sat, 09 Jun 2018 08:11:05 +1000
+
+dh-make (2.201701) unstable; urgency=medium
+
+  [ Matthias Klose <doko@ubuntu.com> ]
+  * Port to Python3. Closes: #883152. LP: #1735357.
+
+  [ Craig Small ]
+  * Fix Vcs-Git URL Closes: #842995
+  * Make library template Multi-Arch: same Closes: #838037
+  * Update to standards 4.1.2
+  * Removed package.default.ex Closes: #847222
+  * Removed --with autotools_dev call to dh Closes:859344
+  * Fix some spelling Closes: #878309
+  * Update package and templates to use debhelper 10 Closes: #848833
+
+ -- Craig Small <csmall@debian.org>  Tue, 19 Dec 2017 18:59:14 +1100
+
+dh-make (2.201608) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Removed pre-wheezy versioned dependency from python-all
+  * python: Ignore .egg-info using extend-diff-ignore
+  * python: Suggest DPMT git repo instead of collab-maint
+  * python: Suggest autopkgtest-pkg-python testsuite
+  * python: Use pypi.debian.net for d/watch
+  * Removed trailing space before DH_ADDON
+  * Formatting nits
+
+  [ Craig Small ]
+  * Append doc control message to control not rules Closes: #837111
+  * Removed init.d example, that era has passed. Closes: #832764
+  * Change Vcs-Git URL to use https Closes: #830157
+
+ -- Craig Small <csmall@debian.org>  Sun, 11 Sep 2016 09:06:57 +1000
+
+dh-make (2.201606) unstable; urgency=medium
+
+  * strip newline from /etc/mailname  Closes:822867 Thanks to Jakub Wilk
+    for patch
+  * Update to standards v3.9.8
+  * Remove extra double quote from github watch example. Thanks to
+    Raphaël Halimi for patch. Closes: #818944
+
+ -- Craig Small <csmall@debian.org>  Sun, 08 May 2016 14:58:32 +1000
+
+dh-make (2.201605) unstable; urgency=medium
+
+  [ Craig Small ]
+  * fix -c mit option Closes: #814845 Thanks Yannick Roehlly for patch
+
+  [ Katsuhiko Nishimra <ktns.87@gmail.com> ]
+  * Generate debian/source/format Closes: #813937
+
+ -- Craig Small <csmall@debian.org>  Sat, 20 Feb 2016 07:41:37 +1100
+
+dh-make (2.201604) unstable; urgency=medium
+
+  * Depend on python-enum34 Closes: #811291
+
+ -- Craig Small <csmall@debian.org>  Mon, 25 Jan 2016 21:10:14 +1100
+
+dh-make (2.201603) unstable; urgency=medium
+
+  * fix error with debian directory Thanks to Rytis for the patch
+    Closes: #810581
+  * Fixed bad substitutes
+  * Make native package changelog have medium urgency too
+
+ -- Craig Small <csmall@debian.org>  Sun, 10 Jan 2016 17:18:48 +1100
+
+dh-make (2.201602) unstable; urgency=medium
+
+  [ Craig Small ]
+  * Fixed LGPL comment
+  * Added custom copyright template option
+
+  [ Ben Wiederhake ]
+  * Explain why version couldn't be parsed Closes: #799714
+  * Fix linebreaks (expect $pwd to be long)
+
+  [ Craig Small ]
+  * Update CVS-Browser entries Closes: #795852
+  * Update init.d.ex to new skeleton Closes: #711146
+  * watch.ex not installed on native packages Closes: #806672
+  * Added dh_makefont script Closes: #658154
+  * Changed program to python
+  * Dropped support for old and cdbs rules formats
+  * drop support for kernel patches
+  * drop support for kernel mods
+  * combine rules file into single file
+  * watch.ex same for all classes
+  * Update watch example to version 4
+  * Dropped multi package class, use --docs to get docs package
+  * prompts to change info by user Closes: #298248
+  * Added support for python packages Closes: #533117
+  * Initial changelog urgency medium (like dch)
+
+ -- Craig Small <csmall@debian.org>  Sat, 09 Jan 2016 11:57:34 +1100
+
+dh-make (1.20150601) unstable; urgency=medium
+
+  [ Paul Wise ]
+  * Add files named like NEWS.md to the docs too
+  * Use multi-arch paths in the library template
+  * Do not distribute static libraries by default since they lead to the
+    possiblity of GPL violation and are not needed in most cases.
+
+  [ Yann Dirson ]
+  * Fix sample Vcs-Browser URLs. Closes: #756332
+
+  [ Craig Small ]
+  * export DH_VERBOSE in rules Closes: #786459
+  * Update urls to use https where possible Closes: #775040
+  * Remove first person in templates Closes: #752120
+  * Fix awkward wording in license templates Closes: #754991
+  * improve emacs lisp handling Closes: #774545
+
+ -- Craig Small <csmall@debian.org>  Wed, 03 Jun 2015 22:03:52 +1000
+
+dh-make (1.20140617) unstable; urgency=medium
+
+  [ Craig Small ]
+  * New numbering scheme
+  * Updated to standards version 3.9.5 Closes: #748336
+  * fix lintian "vcs-field-not-canonical" warning Closes: #750005
+  * Update dh7 rules for dpkg >= 1.16.1 Closes: #737520
+  * Remove redundant section in control Closes: #743223
+  * Added misc:depends to library control Closes: #702835
+  * Update template to use dh compat 9 Closes: #730741
+
+ -- Craig Small <csmall@debian.org>  Tue, 17 Jun 2014 22:00:05 +1000
+
+dh-make (0.63) unstable; urgency=low
+
+  * Changed default priority to optional Closes: #706164
+  * README.source has timestamp Closes: #703910
+  * Removed boilerplate notice from rules Closes: #721849
+  * Update to debhelper compat 9 Closes: #721738
+  * Portable CWD, thanks Dominik George for patch Closes: #726653
+  * Merged init skeleton, thanks to Mathieu Parent Closes: #709479
+  * Added more lintian ignores
+
+ -- Craig Small <csmall@debian.org>  Sat, 02 Nov 2013 10:10:22 +1100
+
+dh-make (0.62) unstable; urgency=low
+
+  * MIT license uses MIT for debian/* files, to be consistent Closes: #683800
+  * options are case sensitive Closes: #684258
+  * Update to standard 3.9.4 Closes: 696728
+  * Added orig.tar.xz support Closes: #696729
+  * dh-make will use xz compression by default Closes: #696730
+  * don't install emacs by default Closes: #696793
+  * init.d template warns about interpreted daemons Closes: #643337
+
+ -- Craig Small <csmall@debian.org>  Sat, 02 Feb 2013 18:14:21 +1100
+
+dh-make (0.61) unstable; urgency=low
+
+  * Update to standards version 3.9.3
+  * Update to debhelper version 9
+  * debhelper v9 uses dpkg-buildflags Closes: #644486
+  * Remove ldap-utils conflict as that version is not even in stable
+  * Changed emacsen-startup script to debian-emacs-flavour Closes:
+    #662163
+  * Fixed emacsen-install from SamBs patch Closes: #665312
+  * emacsen-install uses relative symlinks Closes: #670409
+  * emacsen-install uses debian-pkg-add-load-path Closes: #672478
+  * Man page doesnt have discouraged AUTHORS section Closes: #672543
+  * Final version of 1.0 copyright file changed Closes: #665770
+  * Minor tweaks to license files Closes: #662192
+  * Rename x11 to mit license to follow SPDX list, same bug as above
+  * Add -y,--yes option to run non-interactively
+  * Add --packageclass,-C option to set class instead of -s,-i,-m etc
+  * Don't add missing when non .ex file exists Closes: #662888
+
+ -- Craig Small <csmall@debian.org>  Fri, 13 Jul 2012 21:26:38 +1000
+
+dh-make (0.60) unstable; urgency=low
+
+  * Added logname check Closes: #646294
+  * emacsen-install uses symlinks Closes: #653854
+  * add --with autotools-dev in rules when using autotools-dev Closes: #633347
+  * Refer to dh not debhelper(1) in man page Closes: #640822
+  * Minor envioment typo in xml manpage Closes: #639630
+  * Permit package version 0 Closes: #638276
+  * Added avoid more restrictive license recommendation Closes: #598411
+
+ -- Craig Small <csmall@debian.org>  Sun, 19 Feb 2012 15:04:09 +1100
+
+dh-make (0.59) unstable; urgency=low
+
+  * Uses debhelper version 8 Closes: #630537
+  * Fixed minor typo in dh_make.1 Closes: #611758
+  * Removed old clauses from license templates. Closes: #615924
+  * Output colons line up. Closes: #622245
+  * .la files not installed in libpackage-dev by default Closes: #620986
+  * License files use + on version to match text. Closes: #623305
+  * Update to policy version 3.9.2 - no changes
+
+ -- Craig Small <csmall@debian.org>  Sun, 19 Jun 2011 10:28:12 +1000
+
+dh-make (0.58) unstable; urgency=low
+
+  * Fixed v7/dh7 rulesformat problem Closes: #609260
+  * Changed licenses to DEP5 format
+
+ -- Craig Small <csmall@debian.org>  Mon, 17 Jan 2011 21:01:04 +1100
+
+dh-make (0.57) unstable; urgency=low
+
+  * Fixed createorig tar line to really make the file Closes: #580804
+  * x11 license option added Closes: #522897
+  * rulesformat option handling works Closes: #609260
+  * cdbs is a rules format not a package type, fixed options Closes: #609136
+
+ -- Craig Small <csmall@debian.org>  Sat, 08 Jan 2011 18:49:28 +1100
+
+dh-make (0.56) unstable; urgency=low
+
+  * cdbs is no longer a package type but a rules format
+  * New option rulesformat or -r which can be dh7, old or cdbs
+  * Changed from svn to git maintenance
+  * Updated to standards version 3.9.1 Closes: #599853
+  * make tar instead of directory for --createorig  Closes: #580804
+  * CMakeLists.txt not added to docs Closes: #587144
+  * dpatch option removed Closes: #589264
+  * BSD license has full copy Closes: #598409
+  * Debian packaging defaults to same license as package, where possible
+    Closes: #598411
+  * Updated man page to fit new/removed commands
+
+ -- Craig Small <csmall@debian.org>  Wed, 05 Jan 2011 14:11:03 +1100
+
+dh-make (0.55) unstable; urgency=low
+
+  * Put options last for dh $@ in rules file Closes: #583720
+  * Fixed load-path for emacsen-startup.ex Closes: #583529
+  * Changed docbook path from nwalsh to docbook-xsl Closes: #581846
+  * Added Independent package type description Closes: #581494
+
+ -- Craig Small <csmall@debian.org>  Mon, 31 May 2010 21:54:35 +1000
+
+dh-make (0.54) unstable; urgency=low
+
+  * Fixed problem with checking debian/source not source Closes: #576523
+  * Changed debhelper dependency to 7.0.50~ Closes: #577537
+
+ -- Craig Small <csmall@debian.org>  Sun, 25 Apr 2010 16:19:58 +1000
+
+dh-make (0.53) unstable; urgency=low
+
+  * Increased debhelper dependency to 7.0.50
+  * Removed quilt option and marked dpatch as deprecated
+  * Recover if debian/source doesnt exist Closes: #574918
+  * init.d template follows skeleton Closes: #552461
+  * Vcs example lines in template control files Closes: #574005
+
+ -- Craig Small <csmall@debian.org>  Fri, 26 Mar 2010 21:48:07 +1100
+
+dh-make (0.52) unstable; urgency=low
+
+  * Minor dh_make.1 improvements Closes: #572408
+  * fixed source/format output Closes: #572255
+
+ -- Craig Small <csmall@debian.org>  Mon, 08 Mar 2010 12:59:29 +1100
+
+dh-make (0.51) unstable; urgency=low
+
+  * Fixed environment typo in manpage Closes:554392
+  * Put debian/source/format Closes: #562713
+  * Fixed minor typo in gpl2 license template Closes: #546716
+  * Canoncialize layout of license files Closes: #560593
+  * Fixed kdist_clean target Closes: #432816
+  * Put sudo warning in dh_make.1 Closes: #483662
+  * Added support for bz2 and lzma source packages
+  * Removed check for name-version-orig.tar.gz Closes: #558373
+  * Updated debhelper dependency to 7
+
+ -- Craig Small <csmall@debian.org>  Mon, 01 Feb 2010 22:51:10 +1100
+
+dh-make (0.50) unstable; urgency=low
+
+  * DH_ADDON had " and not # Closes: #546026
+
+ -- Craig Small <csmall@debian.org>  Fri, 11 Sep 2009 07:44:49 +1000
+
+dh-make (0.49) unstable; urgency=low
+
+  [ Bernd Zeimetz ]
+  * Fixing dhusername comment in manpage.xml.ex to use existing
+    entities.
+
+  [ أحمد المحمودي (Ahmed El-Mahmoudy) ]
+  * Standards version now 3.8.3
+  * Simplified debhelper rules files.
+  * Added DH7_ADDON substitution variable
+  * For quilt patch system, BUILD_DEP on version 0.46-7~ to support debhelper 
+    7 addon system.
+
+  [ Craig Small ]
+  * Removed example dirs file Closes: #540370
+  * LSB example init.d exits 0 Closes: #531602
+  * Applied Ben's 'Debianize' patches Closes: #522363
+  * Removed dh_python from debiank rules, others gone already due to
+    simple rules Closes: #493888
+  * Fixed #PACKAGE typo in init.d.lsb.ex Closes: #531092
+  * SOURCE_FILE_BASE defined Closes: #446381
+  * Adjusted the notes in the license files and added README about it
+    Closes: #540740
+  * Added README.source example Closes: #543395
+
+ -- Craig Small <csmall@debian.org>  Sun, 06 Sep 2009 18:36:14 +1000
+
+dh-make (0.48) unstable; urgency=low
+
+  * Standards version now 3.8.1
+  * License will be version 3 of GPL/LGPL but has options to change it
+  * Closes: #513989
+  * All other GPLed files, including dh_make itself now GPL v3
+  * Fixed gpl template file Closes: #507060, #518162
+  * Added apache license template Closes: #516624
+  * Adjusted -p option so you can set version too Closes: #226025
+  * Templates for arch-indep added Closes: #209231
+
+ -- Craig Small <csmall@debian.org>  Sun, 15 Mar 2009 09:35:09 +1100
+
+dh-make (0.47) unstable; urgency=low
+
+  * Removed extra space out of dh_installdebconf line closes: #489193
+  * Man page changed but->and Closes: #490821
+  * tabs fixed in rules file Closes: #489193
+  * init.d.lsb.ex fixed start_daemon line Closes: #496639
+  * Removed trailing whitespace in example files Closes: #497731
+  * CMake support from Sune Vuorela Closes: #490940
+  * Added Quilt support from Sune Vuorela Closes: #390941
+  * Added support for kernel patch packages Closes: #491870, #304688
+  * License templates use copyright not (C) Closes: #497468
+  * Made package synposes lower case Closes: #465482
+  * kernel postinst uses invoke-rc.d Closes: #370494
+  * binary only depends on install Closes: #358722
+  * Replace dh_clean -k with dh_prep Closes: #502698
+  * dh_make.1 documents dpatch and other new options Closes: #497169
+  * Added Vcs fields to control file Closes: #502933
+  * Replace backtick with qx Closes: #502524
+  * Changed layout of GPL license template Closes: #502522
+  * Make the increment of version 2 GPL optional Closes: #400249
+  * Updated to standards version 3.8.0
+
+ -- Craig Small <csmall@debian.org>  Tue, 04 Nov 2008 12:03:43 +1100
+
+dh-make (0.46) unstable; urgency=low
+
+  * dh_make.1 uses correct orig file Closes: #487808
+  * cron.d.ex now checks -x Closes: #436241
+  * watch example for googlepages Closes: #447680
+  * Removed trailing whitespace Closes: #451479
+  * Updated debhelper compat to 7 Closes: #464949
+  * Fixed some problems in init.d.lsb.ex Closes: #485625
+  * Making init.d.lsb.ex more lsb correct Closes:  #450898
+
+ -- Craig Small <csmall@debian.org>  Fri, 27 Jun 2008 20:47:50 +1000
+
+dh-make (0.45) unstable; urgency=low
+
+  [ Craig Small ]
+  * Finally (I hope) fixed manpage.xml.ex Closes: #383495
+  * lib control uses binary:Version Closes: #428228
+  * Added Homepage: tag to control file Closes: #445678
+  * CMakeList.txt is not a document Closes: #422203
+  * Offering use of dpatch. Closes: #409694
+  * init.d.lsb fixes from JFS Closes: #445766, #445768, #445773
+  * Crosscompile patch added Closes: #423707
+  * init.d.lsb stop_server() errcode fixed Closes: #448854
+  * Fixed init.d.ex running Closes: #453896
+  * Typo in dh_make org -> orig Closes: #431316
+  * Changed package-default.ex to package.default.ex Closes: #424953
+  * Updated to debhelper version 6 in package and templates
+  * Added examples to man page Closes: #352017
+  * Fixed distclean target Closes: #432667
+  [ Tobias Toedter ]
+  * Fix typo in dh_make message. Closes: #431316
+  * Fix typo in init.d.lsb, thanks to Yauhen Kharuzhy. Closes: #448854
+  * Correct errors in init.d, thanks to Marcos Talau. Closes: #453896
+  * Ignore a missing Makefile in clean targets, but not other errors.
+    Thanks to Sune Vuorela. Closes: #468774
+  * Update to Standards-Version 3.7.3 in generated templates, thanks
+    to Nelson A. de Oliveira. Closes: #464948
+  * Use untranslated dates for manpages. Closes: #447752
+
+ -- Craig Small <csmall@debian.org>  Fri, 09 May 2008 22:41:38 +1000
+
+dh-make (0.44) unstable; urgency=low
+
+  * Locates bzip in multiple directories Closes: #40887
+  * Remove unsuded CFLAGS defs Closes: #353520
+  * Fixed typo in debianm/rules Closes: #439758
+  * Fixed up init.d and added an lsb example from JFS Closes: #439561
+  * Updated menu example Closes: #438907
+  * Changed 822-date to date -R Closes: #415795
+  * Remove 
+
+ -- Craig Small <csmall@debian.org>  Wed, 01 Aug 2007 09:56:02 +1000
+
+dh-make (0.43) unstable; urgency=low
+
+  * Used pwd environment so symlinks should be ok Closes: 311512, 328405
+  * debiank/rules target fixed Closes: 401069
+  * Naive packages can specify copyright Closes: #382336
+  * Removed duplicate author section from manpage.xml Closes: #376378
+  * watch examples use devscripts not debscripts as the name Closes:
+    #384541
+  * Emacsen uses /usr/share/info directory Closes: #396509
+  * Fixed exta typo in debiank control Closes: #401032
+  * config.* targets moved to reduce diff size Closes: #405764
+  * Removed duplicate cdbs build dep Closes: #399887
+  * License templates reformatted nicely Closes: #399820
+
+ -- Craig Small <csmall@debian.org>  Mon,  8 Jan 2007 10:22:39 +1100
+
+dh-make (0.42) unstable; urgency=low
+
+  * Stopped shiiping the kde examples (Closes: #372287)
+  * debiank/rules is executable (Closes: #372768)
+  * de-hypened man page (Closes: #372777)
+  * templates changed to use compat level 5 (Closes: #370468)
+  * Default priority extra in templates (Closes: #373603)
+  * MAKE install var=xx => MAKE var=xx install (Closes: #374175)
+  * Consitent formatting of maintainer script (Closes: #370488)
+  * Kernel module name consistent (Closes: #384085)
+  * bzip2 path was changed (Closes: #377523)
+  * fixes for cdbs template (Closes: #382042)
+  * Now supports ~ in upstream version number (Closes: #387465)
+  * fixed force-reload behaviour of init.d template to follow LSB
+    (Closes: #377292)
+  * README.Debian the same author line as in changelog (Closes: #379773)
+
+ -- Craig Small <csmall@debian.org>  Wed,  1 Nov 2006 08:30:21 +1100
+
+dh-make (0.41) unstable; urgency=low
+
+  * Kernel module rules use sname Closes: #350938, #354883
+  * Typo removed from kernel rules on line 67 Closes: #348299
+  * Removed conffiles.ex Closes: #345109
+  * example pre/post inst/rm have space removed from first line Closes: #325221
+  * Checks and bombs if there are extra options Closes: #337114
+  * touch in rules file uses $@ variable Closes: #344971
+  * updated jrv's email address Closes: #351432
+  * Manual page points to debhelper man page and not readme Closes: #353204
+  * both my source and examples to debhelper v5 Closes: #340223
+  * kernel-module requires build-dep on bzip2 Closes: #350935
+  * multi rules file uses -s not -a Closes: #351035
+  * kernel module copies compat file Closes: #351241
+  * Removed year from native copyright Closes: #351278
+  * Better error message when sourcefile not found Closes: #355019
+  * Better emacs-setup example Closes: #355814
+  * kernel module postinst doesnt call update-modules Closes: #355962
+  * Removed escape characters out of version checking Closes: #343969
+  * Some CFLAGS moved to LDFLAGS Closes: #338990
+  * Added note that directory format is only for dh_make Closes: #330734
+  * dh_python before dh_installinit Closes: #334812
+  * kernel rules use kdist_configure Closes: #342050
+  * Bruce Sass email change and customer to custom.
+  * Upgraded to standards version 3.7.2 Closes: #366697
+  * r option for creating orig file Closes: #364417
+  * example changelog changed Closes: #365953
+  * Updated copyright templates Closes: #360640
+  * Build-depends-indep is now build-depends
+
+ -- Craig Small <csmall@debian.org>  Fri,  2 Jun 2006 21:39:44 +1000
+
+dh-make (0.40) unstable; urgency=low
+
+  * Second time, first time died with my laptop disk drive
+  * -c option for copyright, -b for cdbs closes: #312030
+  * gzip found in right location for bz2 files Closes: #314875, #317398
+  * Policy version changed to 3.6.2 Closes: #316019
+  * Location of FSF updated Closes: #318632
+  * Fixes for cdbs Closes: #320636
+  * KDE example menu now a menu and not a directory list Closes: #309633
+  * KDE control file better formatted
+  * watch.ex uses new SF checking URL Closes: #319320, #316721
+  * Added CFLAGS="-Wl,-z,defs" for libraries Closes: #203035
+
+ -- Craig Small <csmall@debian.org>  Fri, 26 Aug 2005 11:14:13 +1000
+
+dh-make (0.39) unstable; urgency=low
+
+  * Has cdbs support closes: #269423
+  * Removed local variable from native changelog Closes: #292484
+  * module-assistant migration Closes: #241098
+  * Library control template uses libdevel section Closes: #293311
+  * Uses pre-existing orig.tar.gz if it exists Closes: #166849
+  * Converts bz2 original files into gz ones Closes: #292390
+  * lower case Release in changelog template Closes: #294408
+  * watch has an example of SF support Closes: #299840
+  * watch files are now version 3 Closes: #307032
+  * pkgconfig files installed for lib-dev package types Closes: #308944
+
+ -- Craig Small <csmall@debian.org>  Wed, 18 May 2005 21:39:50 +1000
+
+dh-make (0.38) unstable; urgency=low
+
+  * Now uses strict to be a bit cleaner, fixed some typos too!
+  * Build-Deps are now dynamically created
+  * Packages that use the autotools-dev will now build depend on
+    the package Closes: #287103
+  * Typo (lincense) fixed Closes: #275625
+  * License files now say Copyright Holders to make it clearer it is the
+    copyright. Closes: #286843
+  * Watch files have more examples and use new HTTP method Closes: #288681
+  * dh_make doesn't allow single letter package names Closes: #235460
+  * Removed -s option for stripping in debianl/rules Closes: #255463
+  * GPL template gives the option to use version > 2 Closes: #282839
+  * debiank/rules now refers to control.modules.in Closes: #284412
+  * Space at end of clean lines in rules file removed Closes: #286441
+  * debianl/control has Section line for source Closes: #290360
+  * Removed init call in preinst
+
+ -- Craig Small <csmall@debian.org>  Wed, 2 Mar 2005 08:32:57 +1100
+
+dh-make (0.37) unstable; urgency=low
+
+  * Copyright changed on output files to be bison-like.
+  * Removed / from files so old .la files dont get pulled in
+    Closes: #225966
+  * Closes: #230774: debiank/control missing build-dep
+  * debiank/control now has build-dep on debhelper
+  * Closes: #232480: debiank/rules should make use of $ROOT_CMD if
+    present
+  * debiank/rules uses ROOTCMD
+  * Closes: #244878: Prepares debian/*.files but does not use
+    dh_movefiles
+  * *.files renamed to *.install
+  * Closes: #255538: lib*-dev should be in libdevel now
+  * debianl/control has section libdev
+  * Standards version to 3.6.1 Closes: #265802, #270804, #271524
+  * Closes: #236186: should quote values in debian/menu
+  * menu example has quotes
+  * Closes: #254351: manpage template redundancy and suggestion
+  * Example man page has upstream author and removed DEbian info from
+    description
+  * Closes: #255462: dh-make shouldn't use absolute path for binaries
+  * Removed path from docbook-to-man
+  * Closes: #242710: debian/copyright template should distinguish
+    difference between copyright and license
+  * License file has copyright and license lines in right places
+  * Closes: #256095: Please change egrep to grep -E
+  * egrep changed to grep -E
+
+ -- Craig Small <csmall@debian.org>  Thu, 23 Sep 2004 15:05:02 +1000
+
+dh-make (0.36) unstable; urgency=low
+
+  * Fixed CFLAGS problem Closes: #211287, #213118, #223448
+  * Added manpage.xml.ex Closes: #213167
+  * Rearranged so that DEBEMAIL is done before ldap search Closes: #212563
+  * Removed policy quote from postinst.ex Closes: #215545
+  * Put lintian overrides in
+
+ -- Craig Small <csmall@debian.org>  Thu, 15 Jan 2004 08:56:09 +1100
+
+dh-make (0.35) unstable; urgency=low
+
+  * Changed manpage.sgml template to be GPL no GFDL Closes: #210939
+  * Added -f to debiank/rules Closes: #205293
+  * Removed suspicous lines from rules Closes: #200987
+  * Changed d_python to dh_python in debianl/rules Closes: #205412
+  * Added CFLAGS=$(CFLAGS) to configure line Closes: #211287
+  * Changed debhelper depends version to >= in templates Closes: #211294
+  * added -*- makefile -*- to rules templates Closes: #211276
+  * Added feature for default files in init Closes: #200957
+  * Added comma to control templates Closes: #211292
+  * getent correctly looks for username Closes: #211807
+
+ -- Craig Small <csmall@debian.org>  Wed, 24 Sep 2003 14:21:18 +1000
+	
+dh-make (0.34) unstable; urgency=low
+
+  * changed -a flag to -s Closes: #194357
+  * build-indep/arch-stamp now makes the stamp Closes: #194835
+  * preserve .orig files in archive Closes: #197337
+  * config-stamp in debianm/rules change to configure-stamp Closes: #194372
+  * Changes emacsen.startup in case of remove package Closes: #193595
+  * debiank/control.modules.in updated debhelper version to 4 Closes: #190408
+  * Added missing dh_shlibdeps to debianm/rules Closes: #187744
+  * Bumped standards to 3.5.9 Closes: #187416
+  * Reworked the -p flag so you can have strange dir names Closes: #180732
+
+ -- Craig Small <csmall@debian.org>  Thu, 26 Jun 2003 21:22:46 +1000
+
+dh-make (0.33) unstable; urgency=low
+
+  * Uses debian/compat and it is 4 Closes: #183067, #158537
+  * Uses dh_install instead of movefiles
+  * Added newline to debiank/control Closes: #177512
+  * Uses getent to get users name Closes: #176838
+  * Conflicts with ancient ldap utils Closes: #173062
+  * doc-base example uses package.doc-base.EX Closes: #138785
+  * Uses DESTDIR instead of prefix for automaked packages
+    Closes: #97811, #112548
+  * Better error messages Closes: #183053
+  * GNU/Linux has been removed, its just Debian now Closes: #182484
+
+ -- Craig Small <csmall@debian.org>  Wed, 5 Mar 2003 08:32:52 +1100
+
+dh-make (0.32) unstable; urgency=low
+
+  * Upgraded standards version to 3.5.8 Closes: #175403
+  * Removed split loops, whatever the hell they are Closes: #165537
+  * changed DEB_BUILD_OPTIONS Closes: #161796
+  * Upgraded init.d.ex to latest version Closes: #160878
+  * Changed clean target for config.* Closes: #160712
+  * Bad directory name message fixed Closes: #158066
+  * You can choose the name of the package, so things like hyphens or
+    other confusing stuff can be used Closes: #112821
+  * shlibs.local typo fixed Closes: #156069
+  * Message for library builds about renaming blahBROKEN was missing a
+    newline Closes: #151287
+  * SGML manpage example now uses gnu entities Closes: #144070
+  * Multi rules file gets an overhaul Closes: #170582
+  * DH_COMPAT bumped to 4 Closes: #158537
+  * Library dev files have libtool and pkgconfig files support, if they
+    exist. Closes: #153791
+
+ -- Craig Small <csmall@enc.com.au>  Mon, 6 Jan 2003 09:24:57 +1100
+
+dh-make (0.31) unstable; urgency=low
+
+  * Fixed problem in clean target for multi Closes: #150469, #140021
+  * Added /usr for library installs Closes: #148145
+  * Changed init.d example so it prints daemon name first Closes: #139466
+  * Manual page uses correct -c and -t flags Closes: #135405
+  * Example manual.sgml updated to 2002 Closes: #143980
+  * Changed watch.ex to use version=2 Closes: #139416
+  * Added kernel-module type Closes: #149833
+  * Added warning about libfoo1 for library type Closes: #144757
+  * Added build-essential to Suggests (not Depends) Closes: #144532
+
+ -- Craig Small <csmall@eye-net.com.au>  Thu, 20 Jun 2002 09:40:41 +1000
+
+dh-make (0.30) unstable; urgency=low
+
+  * Fixed expansion problem in clean target Closes: #134677
+    (Thanks to all submitters for clear reports and patches)
+  * Now I remember why doc-base is back to front, change it back
+    It has to be because dh_installdocs will install the ex file
+    Closes: #138554
+  * Installs libraries in right packages Closes: #132421
+  * Lots of configure work to remove redundant target Closes: #125981
+  * Removed libc6-dev out out debianl control file Closes: #134126
+  * dpkg-architecture only called on configure sources Closes: #136805
+
+ -- Craig Small <csmall@eye-net.com.au>  Mon, 18 Mar 2002 07:59:27 +1100
+
+dh-make (0.29) unstable; urgency=low
+
+  * For packages with configure, install into /usr not /
+    Closes: #97811, #113226, #133639, #128944
+  * Uses dpkg-architecture Closes: #112032
+  * If available, uses autotools-dev which updates config.guess, config.sub
+    if needed.
+  * lgpg is now lgpl in dh_make.1 Closes: #113228
+  * Multi rules file has two build targets Closes: #115569
+  * postrm.ex has missing exit 0 Closes: #126900
+  * Removed citations of Debian Packaging Manual Closes: #94890
+  * Fixed spelling error in rules files Closes: #97399
+  * Updated native copyright to 2002 Closes: #132913
+  * Renamed ex.doc-base.package to package.doc-base.ex Closes: #130721
+  * More and better ldap searching for name and email Closes: #129634
+  * Fixed control file for libs Closes: #113784
+  * Manual example now just uses Debian distribution Closes: #115567
+  * sgml manual example updated to docbook 4.1 Closes: #88134
+  * sgml manual example reminds about build-depends Closes: #95874
+  * added DEB_BUILD_OPTIONS handling Closes: #126537
+
+ -- Craig Small <csmall@eye-net.com.au>  Sat, 12 Jan 2002 08:50:51 +1100
+
+dh-make (0.28) unstable; urgency=low
+
+  * Changed custom option to templates also -c to -t so copyright option
+    has short option -c Closes: #126807
+  * Fixed minor speeeling error in description Closes: #124547
+  * Minor fix in man page spacing Closes: #107906
+
+ -- Craig Small <csmall@eye-net.com.au>  Sun, 30 Dec 2001 17:48:12 +1100
+
+dh-make (0.27) unstable; urgency=low
+
+  * Removed emacs stuff out of changelog template Closes: #93980
+  * Rules files can parellel make Closes: #95900
+  * -c means custom and -C copyright Closes: #97498, #113227
+  * INSTALL files do not get installed Closes: #101563
+  * init.d has an extra oknodo if daemon dies Closes: #109770, #111569
+  * pre/post example scripts exit1 with bad args Closes: #109836
+  * -e entry in dh_make.1 fixed Closes: #110815
+
+ -- Craig Small <csmall@eye-net.com.au>  Mon, 8 Oct 2001 11:55:17 +1000
+
+dh-make (0.26) unstable; urgency=low
+
+  * debhelper sync 3.0.9
+  * path in init.d fixed. Closes: #85922
+  * Removed all references to dh_testversion Closes: #89627
+  * Watch is not in native packages Closes: #85112
+  * Changed copyright year in native to 2001 Closes: #85429
+  * Debian library packages first use tmp then movefiles as this is
+    what debhelper wants. Closes: #75770, #85331
+  * Added generic template support Closes: #81120
+  * Use dh_installman Closes: #90097
+
+ -- Craig Small <csmall@debian.org>  Thu, 15 Mar 2001 08:24:47 +1100
+
+dh-make (0.25) unstable; urgency=low
+
+  * rules build in right directory Closes: #83623
+  * commented our calls to dh_suidregister Closes: #83225
+  * Added the dash line to README Closes: #79986
+  * deleted add-mail-log info line in changelog as it did evil things.
+    incidentally Closes: #83040
+
+ -- Craig Small <csmall@debian.org>  Tue, 6 Feb 2001 13:29:05 +1100
+
+dh-make (0.24) unstable; urgency=low
+
+  * New standards version
+  * changed debian/tmp to debian/PACKAGE Closes: #74485, #80935
+  * doesn't die when no /etc/mailname Closes: #74841
+  * variable length dashline Closes: #79986
+  * added an example conffile Closes: #64223
+  * added license option Closes: #72848
+  * checks that package name conforms to policy manual Closes: #75286
+
+ -- Craig Small <csmall@debian.org>  Sun, 31 Dec 2000 17:50:11 +1100
+
+dh-make (0.23) unstable; urgency=low
+
+  * Added configure to PHONY targets in makefiles, Closes: #64938
+  * Added Build-Depends lines to controls for 3.1.1, Closes: #64942, #65960
+  * Deleted update-menu line in postrm, Closes: #66168
+  * Fixed native copyright, and debianl.dirs to remove man3, Closes: #66637
+  * Created addmissing flag to re-add example files, Closes: #53111
+  * Adjusted emacs startup file Closes: #71774
+  * GECOS field is chopped when using NIS Closes: #72854
+  * Man page now says YP support is there Closes: #65003
+  * Man page now mentions the LOGNAME variable Closes: #67114
+  * Added an add-log-mailing-address to changelog example Closes: #72847
+  * DH_COMPAT version upped to 2 in rules templates, Closes: #72883
+
+ -- Craig Small <csmall@debian.org>  Fri, 7 Jul 2000 09:27:17 +1000
+
+dh-make (0.22) unstable; urgency=low
+
+  * Fixed tab problem in library rules Closes: #53726, #62210, #64557
+  * Removed ypmatch or ldapsearch newline Closes: #61944
+  * Upped the standards version, added Build-Depends: Closes: #64221
+  * Removed # from $(MAKE) in rules files
+  * Added configure-stamp Closes: #50221
+  * Added docbook manpage example Closes: #62951
+  * Changed native copyright to point to new place.
+  * Did a lot of /usr/doc -> /usr/share/doc changes.
+  * Tried to make a sensible Build-Depends line.
+
+ -- Craig Small <csmall@debian.org>  Wed, 24 May 2000 21:58:05 +1000
+
+dh-make (0.21) unstable; urgency=low
+
+  * Removed useless install-stamp Closes: #49576
+  * Added Jim's patch for infodir and example man page
+  * Closes: #51350, #51755
+  * Added Jim's patch for libraries Closes: #51580
+
+ -- Craig Small <csmall@debian.org>  Thu, 2 Dec 1999 09:58:31 +1100
+
+dh-make (0.20) unstable; urgency=low
+
+  * Fixed policy version Closes: #47152
+  * Changed mandir to /usr/share/man Closes: #46862
+
+ -- Craig Small <csmall@debian.org>  Fri, 15 Oct 1999 09:27:07 +1000
+
+dh-make (0.19) unstable; urgency=low
+
+  * Fixed typo for native packages Closes: #45746
+  * Updated rules files so they follow debhelper closer
+
+ -- Craig Small <csmall@debian.org>  Fri, 1 Oct 1999 11:03:06 +1000
+
+dh-make (0.18) unstable; urgency=low
+
+  * Now depends on dpkg-dev Closes: #41439
+  * Looks at $EMAIL Closes: #42573
+  * Gets the right info files Closes: #42649
+  * manpage example consistently doesn't use quotes Closes: #43451
+  * Removed old README file Closes: #41769
+  * Fixed rules file Closes: #42651
+  * Removes the old perl dependency
+
+ -- Craig Small <csmall@debian.org>  Mon, 6 Sep 1999 14:18:39 +1000
+
+dh-make (0.17) unstable; urgency=low
+
+  * Moved files to /usr/share, updated debhelper dep Closes: #41174
+  * Fixed postinst.ex file Closes: #41190
+  * Finds more makefiles Closes: #40979
+  * Added doc-base example Closes: #36986
+
+ -- Craig Small <csmall@debian.org>  Thu, 15 Jul 1999 12:34:59 +1000
+
+dh-make (0.16) unstable; urgency=low
+
+  * Fixed docs #DOCS# problem Closes: #40837
+  * changelog uses #DATE# Closes: #40865
+  * Now locates info files Closes: #35660
+
+ -- Craig Small <csmall@debian.org>  Thu, 8 Jul 1999 11:02:50 +1000
+
+dh-make (0.15) unstable; urgency=low
+
+  * Changed Perl dependency to perl5
+  * Misc file changes using supplied patch (Bug #40680)
+  * Added dh_perl lines to examples
+
+ -- Craig Small <csmall@debian.org>  Mon, 5 Jul 1999 08:57:42 +1000
+
+dh-make (0.14) unstable; urgency=low
+
+  * Fixed username guessing (Bug #40528 #40502)
+  * PWD now uses `pwd` (Bug #40583)
+  * Case insensitive checks on users input for package type
+  * dh_shlibdeps before gencontrol in libs type (Bug #39131)
+
+ -- Craig Small <csmall@debian.org>  Fri, 2 Jul 1999 17:13:30 +1000
+
+dh-make (0.13) unstable; urgency=low
+
+  * Fixed how dh_make looks at GECOS field (Bug #40268)
+  * Parse sample files properly (Bug #40272)
+  * Reversed native check so non-native builds orig directories
+
+ -- Craig Small <csmall@debian.org>  Mon, 28 Jun 1999 10:16:30 +1000
+
+dh-make (0.12) unstable; urgency=low
+
+  * Totally re-wrote dh_make binary to use perl
+  * dh_make less horribly broken (Bug #39985 )
+  * Updated man pages and other suggested files (Bug #37678 )
+  * Now use $LOGNAME instead of $USER (Bug #38797 )
+  * Swapped order of dh_gencontrol and dh_shlibdeps (Bug #39131 )
+  * Depends on debhelper >= 1.2.9
+  * Looks for makefile as well as Makefile (Bug #39763 )
+  * Added examples for {pre|post}{inst|rm} (Bug #36865 )
+  * Added sample emacsen scripts (Bug #36987 )
+
+ -- Craig Small <csmall@debian.org>  Wed, 23 Jun 1999 12:01:12 +1000
+
+dh-make (0.11) unstable; urgency=low
+
+  * Fixed stupid syntax error (Bug #37048 #37156)
+  * Added more patches to cleanup some code (Bug #37087 )
+
+ -- Craig Small <csmall@debian.org>  Thu, 6 May 1999 23:44:05 +1000
+
+dh-make (0.10) unstable; urgency=low
+
+  * Added DEBEMAIL option
+  * Fixed the DOCS problem (Bug #36057 #36142 #36605)
+  * Moved suid files message on rules (Bug #36641)
+  * Fixed the watch.ex file (Bug #36693 #36699)
+
+ -- Craig Small <csmall@debian.org>  Wed, 21 Apr 1999 11:31:26 +1000
+
+dh-make (0.9) unstable; urgency=low
+
+  * Changelog no longer adds emacs email address line (Bug #30649 )
+  * Added reminder to setuid some executables (Bug #33255 )
+  * Updated init.d scripts to new version (Bug #34540 )
+  * Added INSTALL and *.txt to documents (Bug #31456 )
+  * Added -*- makefile -*- to rules files for emacs people (Bug #31852 )
+  * Prettied up README and copyright (Bug #33253 )
+  * Dont install changelog twice (Bug #34232 )
+  * Added a LDAP search (Bug #33922 )
+  * Spelt Christoph's name correctly
+
+ -- Craig Small <csmall@debian.org>  Thu, 25 Mar 1999 15:03:11 +1100
+
+dh-make (0.8) unstable; urgency=low
+
+  * Remove examples of stuff that doesn't work with debhelper
+    (Bug #29466 #31413 )
+  * Fixed typo in single rules file (Bug #27749 )
+  * rules templates now follow debhelper examples (Bug #26415 )
+
+ -- Craig Small <csmall@debian.org>  Mon, 16 Nov 1998 10:13:24 +1100
+
+dh-make (0.7) unstable; urgency=low
+
+  * Fixed stupid (my stupidity) version bug (Bug #27113 #27177 )
+  * Changed make to $(MAKE) (Bug #27105 )
+
+ -- Craig Small <csmall@debian.org>  Mon, 28 Sep 1998 08:05:42 +1000
+
+dh-make (0.6) unstable; urgency=low
+
+  * Fixed problems with multi packages not using the -i and -a flags. 
+    (Bug #26415)
+  * Added upstream author into copyright template (Bug #25622 )
+  * Upstream changelogs handled by dh_installchangelogs rather than
+    dh_installdocs (Bug #25961 )
+  * Attempted at another go at the version guessing (Bug #22689 )
+
+ -- Craig Small <csmall@debian.org>  Wed, 12 Aug 1998 08:29:04 +1000
+
+dh-make (0.5) unstable; urgency=low
+
+  * New version as hamm is in the deep freeze
+
+ -- Craig Small <csmall@debian.org>  Tue, 16 Jun 1998 07:55:41 +1000
+
+dh-make (0.4) frozen unstable; urgency=low
+
+  * Fixed debianl/rules (Bug #22582)
+  * Now depends on make (stops lintian complaints)
+
+ -- Craig Small <csmall@debian.org>  Tue, 19 May 1998 09:18:30 +1000
+
+dh-make (0.3) frozen unstable; urgency=low
+
+  * Changed 8 spaces into tab in debianl Makefile (Bug #22257 )
+
+ -- Craig Small <csmall@debian.org>  Mon, 11 May 1998 11:33:09 +1000
+
+dh-make (0.2) unstable; urgency=low
+
+  * rules files now use O (oh) not 0 (zero) (Bug #20159 )
+  * Added a patch to fix some silly mistakes (Bug #19938 )
+
+ -- Craig Small <csmall@debian.org>  Wed, 15 Apr 1998 08:03:12 +1000
+
+dh-make (0.1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Craig Small <csmall@debian.org>  Thu, 5 Mar 1998 12:18:10 +1100
+
