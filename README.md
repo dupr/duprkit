@@ -15,7 +15,7 @@ Key words: k-NN, Bag-of-Words, n-Gram, Machine Learning, Computational Linguisti
 ## Known problems
 
 1. this toy is still not properly assessed. people on IRC suggested me test
-it against chromium, fpc, lazarus.
+it against chromium, fpc, lazarus, boost
 
 2. currently it works not quite well with very short license declarations,
 such as the one on the python script itself `:-(`.
@@ -24,8 +24,9 @@ such as the one on the python script itself `:-(`.
 
 ## Dependency
 
-Just pypy3. It is written in pure python and does not use anything outside
-the standard library.
+Just `pypy3`. The software is written in pure python and does not use anything
+outside the standard library. At this stage we just try to let it work
+correctly. Speed optimization? Not today.
 
 ## Automatic Training and Assessment on the training set
 
@@ -33,6 +34,8 @@ the standard library.
 make train
 make validate  # testing on training dataset generates a confusion matrix
 ```
+
+It takes about 1 seconds to train. Very fast.
 
 ## Manual training and prediction
 
@@ -52,6 +55,35 @@ Predict:
 
 It requires `./model.pkl` to be present.
 
+## Comparison to related works
+
+https://wiki.debian.org/CopyrightReviewTools
+
+Well, can I beat all of them? I have no answer currently.
+
+* licensecheck
+* scan-copyrights
+* cme
+* licensecheck2dep5
+* license-reconcile
+* debmake
+* decopy
+* license
+* check-all-the-things
+* cargo-lichking
+* python-debian
+* license finder
+* licensed
+* ninka
+* scancode
+* dlt
+* deb-pkg-tools
+* jninka
+* apache-rat
+* fossology
+* OSLCv3
+* https://github.com/nexB/scancode-toolkit
+
 ## FAQ
 
 1. it doesn't recognize XXX license.
@@ -69,3 +101,8 @@ improved with those tweaks.
 3. I want to compare xxx text files (or code) instead of license texts.
 
 Train with your custom text and predict any plain text with the model.
+
+4. why do you try writing such a tool?
+
+Firstly just for fun.
+Secondly as a part of the DUPR toolkit (https://github.com/dupr/duprkit)

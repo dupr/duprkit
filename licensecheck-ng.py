@@ -101,14 +101,14 @@ class BOWModel(object):
                 sep='\t')
 
 
-    def predict(self, path: str):
+    def predict(self, path: str, topK: int = 1):
         text = re.sub('\W', ' ', open(path).read()).lower()
         tokens = text.split()
         common_tokens = set(tokens).intersection(set(self.vocab_1gram.keys()))
         vector_raw = Counter(tokens)
         vector = {k: vector_raw[k] for k in common_tokens}
         scores = defaultdict(list)
-        print('1-Gram tokens:', len(vector.keys()))
+        #print('1-Gram tokens:', len(vector.keys()))
         for k, v in self.vectors_1gram.items():
             scores[k].append(self.cosSim(v, vector))
         vec2g = Counter()
@@ -116,15 +116,15 @@ class BOWModel(object):
             token2g = (tokens[i-1], tokens[i])
             if token2g in self.vocab_2gram.keys():
                 vec2g.update([token2g])
-        print('2-Gram tokens:', len(vec2g.keys()))
+        #print('2-Gram tokens:', len(vec2g.keys()))
         for k, v in self.vectors_2gram.items():
             scores[k].append(self.cosSim(v, vec2g))
 
         score_aggregated = sorted(
                 [(k, 0.5 * scores[k][0] + 0.5 * scores[k][1])
                     for k in self.vectors_2gram.keys()],
-                key=lambda x: x[1])
-        for k, s in reversed(score_aggregated[:10] + score_aggregated[-3:]):
+                key=lambda x: x[1], reverse=True)
+        for k, s in score_aggregated[:topK]:
             print(f'{k} similarity:'.rjust(42),
                 '%.3f' % s,
                 '1-gram', '%.3f' % scores[k][0],
@@ -158,10 +158,11 @@ if __name__ == '__main__':
             help='Train the model from the given directory')
     ag.add_argument('--predict', type=str, default='',
             help='Try to classify the given file')
+    ag.add_argument('--topk', type=int, default=1)
     ag = ag.parse_args()
 
     if ag.train:
         train(ag.train)
-    if ag.predict:
+    elif ag.predict:
         model = pickle.load(open('model.pkl', 'rb'))
-        model.predict(ag.predict)
+        model.predict(ag.predict, topK=ag.topk)
