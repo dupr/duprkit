@@ -46,8 +46,10 @@ sub flink_split (Str $PATH)
 {
 	$PATH.IO.f || die "Non-existent file [$PATH]!" ;
 	$PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
+	print "{$_C162}→ Splitting {$_C36} $PATH {$_C162}into";
+    say " {$_C36}.yaml {$_C162}and {$_C36}.hft {$_C162}...{$_c}";
 
-	my $fp_she := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+	my $fp_she := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
 	my $fp_hft := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.hft');
 	my $fp = $fp_she;
 	for $PATH.IO.lines {
@@ -59,8 +61,6 @@ sub flink_split (Str $PATH)
 
 sub flink_unfold (Str $PATH)
 {
-	print "{$_C162}→ Unfolding {$_C36} $PATH {$_C162}into";
-    say "{$_C36}.sh {$_C162}and {$_C36}.hft {$_C162}...{$_c}";
 	flink_split $PATH;
 	my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
 	my $hft_file = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
