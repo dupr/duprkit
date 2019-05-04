@@ -1,16 +1,13 @@
 # RCP version of: https://github.com/dupr/apt-nosync
-src="$(basename ${0%.sh})"
-version="0.git"
-description="Accelerate APT and DPKG with eatmydata"
-license="Expat/MIT"
-section="admin"
-maintainer="Anonymous <foobar@example.org>"
-dk_get_source () {
-	true
-}
-dk_prep_source () {
-	true
-}
+source: apt-nosync
+version: 0.git
+description: Accelerate apt/apt-get/aptitude with libeatmydata
+license: Expat/MIT
+section: admin
+maintainer: M. Zhou <lumin@debian.org>
+
+dk_get_source:
+dk_prep_source:
 ^ LICENSE
 MIT License
 Copyright (c) 2019 M. Zhou
