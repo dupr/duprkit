@@ -27,6 +27,7 @@ constant $DUPR_DEFCOLL = "$*HOME/.defcoll";
 constant $COLLECTOR = '/usr/bin/duprCollector';
 constant $GIT = '/usr/bin/git';
 constant $TEMPLATE = '/usr/share/doc/duprkit/examples/template.rcp';
+constant $PYTHON3 = '/usr/bin/python3';
 constant $_C162 = "\x1b[1;38;5;162m";
 constant $_C36  = "\x1b[1;36m";
 constant $_c    = "\x1b[0m";
@@ -57,6 +58,10 @@ sub flink_split (Str $PATH)
 		$fp.say: $_;
 	}
 	close $fp_she; close $fp_hft;
+	say 'Dumping YAML content:';
+	run $PYTHON3, '-c',
+	'import yaml,json,sys; print(json.dumps(yaml.load(open(sys.argv[1]).read()), indent=2))',
+	$PATH.IO.basename.subst(/\.rcp$/, '.yaml');
 }
 
 sub flink_unfold (Str $PATH)
