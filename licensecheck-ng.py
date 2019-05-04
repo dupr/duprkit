@@ -107,11 +107,16 @@ class BOWModel(object):
         print('2-Gram tokens:', len(vec2g.keys()))
         for k, v in self.vectors_2gram.items():
             scores[k].append(self.cosSim(v, vec2g))
-        for k, v in scores.items():
-            print(f'{k} similarity:'.rjust(36),
-                '%.3f' % (0.5 * v[0] + 0.5 * v[1]),
-                '1-gram', '%.3f' % v[0],
-                '2-gram', '%.3f' % v[1],
+
+        score_aggregated = sorted(
+                [(k, 0.5 * scores[k][0] + 0.5 * scores[k][1])
+                    for k in self.vectors_2gram.keys()],
+                key=lambda x: x[1])
+        for k, s in reversed(score_aggregated[:10] + score_aggregated[-3:]):
+            print(f'{k} similarity:'.rjust(42),
+                '%.3f' % s,
+                '1-gram', '%.3f' % scores[k][0],
+                '2-gram', '%.3f' % scores[k][1],
                 sep='\t')
 
 
