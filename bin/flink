@@ -50,16 +50,22 @@ sub flink_split (Str $PATH)
 	print "{$_C162}→ Splitting {$_C36} $PATH {$_C162}into";
     say " {$_C36}.yaml {$_C162}and {$_C36}.hft {$_C162}...{$_c}";
 
-	my $fp_she := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
-	my $fp_hft := open :w, $PATH.IO.basename.subst(/\.rcp$/, '.hft');
-	my $fp = $fp_she;
+	my $path_yml = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+	my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+	my $fp_yml := open :w, $path_yml;
+	my $fp_hft := open :w, $path_hft;
+	my $fp = $fp_yml;
 	for $PATH.IO.lines {
 		if m/^\^/ { $fp = $fp_hft; }
 		$fp.say: $_;
 	}
-	close $fp_she; close $fp_hft;
+	close $fp_yml; close $fp_hft;
 	say 'Dumping YAML content:';
-	run $FLINKH, 'dumpyaml', $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+	run $FLINKH, 'dumpyaml', $path_yml;
+	say "{$_C162}Replacing placeholders in YAML file...{$_c}";
+	run $FLINKH, 'subst', '--yaml', $path_yml, $path_yml;
+	say "{$_C162}Replacing placeholders in HFT file...{$_c}";
+	run $FLINKH, 'subst', '--yaml', $path_yml, $path_hft;
 }
 
 sub flink_unfold (Str $PATH)
@@ -159,6 +165,8 @@ Usage: {$*PROGRAM-NAME} action [args]
 Actions
    f|fetch                  Fetch the default DUPR collection.
    l|ls [keyword]           List/search packages in default collection
+   s|split <.rcp>           Split .rcp file into .yaml and .hft,
+                            and replace placeholders
    u|unfold <.rcp>          Unfold .rcp file into debianized source tree.
    c|create <name>          Create talky template file: <name>.rcp
    m|minimal <name>         Create minimal template: <name>.rcp

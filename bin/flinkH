@@ -18,6 +18,7 @@ def main_subst(argv):
     yml = yaml.load(open(ag.yaml, 'r').read())
     lines = open(ag.target, 'r').readlines()
     r_stub = re.compile('@[-\w\_]*?@')
+    updated_lines = []
     for (i, line) in enumerate(lines):
         stubs = r_stub.findall(line)
         if stubs:
@@ -29,7 +30,10 @@ def main_subst(argv):
                 value = yml[stub]
                 line = line.replace(f'@{stub}@',
                         str(value) if (value is not None) else ' ')
-        print(line.strip())
+                sys.stderr.write(f'line[{i}]: @{stub}@ -> {value}\n')
+        updated_lines.append(line)
+    with open(ag.target, 'w') as f:
+        f.writelines(updated_lines)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
