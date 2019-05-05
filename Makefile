@@ -9,6 +9,7 @@ VIM           ?= $(PREFIX)/share/vim/
 install: install-vim
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
+	install -Dm0755 bin/flinkH $(DESTDIR)/$(BINDIR)/flinkH
 	install -Dm0755 bin/duprCollector $(DESTDIR)/$(BINDIR)/duprCollector
 	install -Dm0644 lib/duprkit $(DESTDIR)/$(SHAREDIR)/duprkit
 	install -Dm0644 examples/template.rcp \

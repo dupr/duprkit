@@ -1,0 +1,18 @@
+#!/usr/bin/python3
+# Debian User Recipe Toolkit Helper
+# Copyright (C) 2019 M. Zhou <lumin@debian.org>
+import argparse, re, sys, os, json
+import yaml
+
+def main_dumpyaml(argv):
+    ag = argparse.ArgumentParser()
+    ag.add_argument('yaml', type=str, help='yaml file')
+    ag = ag.parse_args(argv)
+    print(json.dumps(yaml.load(open(ag.yaml).read()), indent=2))
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print(f'Usage: {__file__} <ACTION> [<ARGUMENTS>]')
+        print('Actions: dumpyaml')
+        exit(0)
+    eval(f'main_{sys.argv[1]}')(sys.argv[2:])
