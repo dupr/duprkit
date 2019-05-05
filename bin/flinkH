@@ -10,9 +10,31 @@ def main_dumpyaml(argv):
     ag = ag.parse_args(argv)
     print(json.dumps(yaml.load(open(ag.yaml).read()), indent=2))
 
+def main_subst(argv):
+    ag = argparse.ArgumentParser()
+    ag.add_argument('--yaml', type=str, help='source yaml file')
+    ag.add_argument('target', type=str, help='target file')
+    ag = ag.parse_args(argv)
+    yml = yaml.load(open(ag.yaml, 'r').read())
+    lines = open(ag.target, 'r').readlines()
+    r_stub = re.compile('@[-\w\_]*?@')
+    for (i, line) in enumerate(lines):
+        stubs = r_stub.findall(line)
+        if stubs:
+            #print(i, line.strip())
+            for stub in stubs:
+                stub = stub.replace('@', '')
+                if stub not in yml.keys():
+                    raise AttributeError(f"Invalid key '@{stub}@'")
+                value = yml[stub]
+                line = line.replace(f'@{stub}@',
+                        str(value) if (value is not None) else ' ')
+        print(line.strip())
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(f'Usage: {__file__} <ACTION> [<ARGUMENTS>]')
         print('Actions: dumpyaml')
         exit(0)
+    # NOTE: I don't like the subparsers (argparse).
     eval(f'main_{sys.argv[1]}')(sys.argv[2:])
