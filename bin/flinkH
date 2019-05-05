@@ -7,8 +7,14 @@ import yaml
 def main_dumpyaml(argv):
     ag = argparse.ArgumentParser()
     ag.add_argument('yaml', type=str, help='yaml file')
+    ag.add_argument('--output', type=str, default='',
+            help='redirect json dump to specifid file')
     ag = ag.parse_args(argv)
-    print(json.dumps(yaml.load(open(ag.yaml).read()), indent=2))
+    if not ag.output:
+        print(json.dumps(yaml.load(open(ag.yaml).read()), indent=2))
+    else:
+        with open(ag.output, 'w') as f:
+            f.write(json.dumps(yaml.load(open(ag.yaml).read()), indent=2))
 
 def main_subst(argv):
     ag = argparse.ArgumentParser()

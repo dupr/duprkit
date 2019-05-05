@@ -52,6 +52,7 @@ sub flink_split (Str $PATH)
 
 	my $path_yml = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
 	my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+	my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.json');
 	my $fp_yml := open :w, $path_yml;
 	my $fp_hft := open :w, $path_hft;
 	my $fp = $fp_yml;
@@ -60,12 +61,13 @@ sub flink_split (Str $PATH)
 		$fp.say: $_;
 	}
 	close $fp_yml; close $fp_hft;
-	say 'Dumping YAML content:';
-	run $FLINKH, 'dumpyaml', $path_yml;
 	say "{$_C162}Replacing placeholders in YAML file...{$_c}";
 	run $FLINKH, 'subst', '--yaml', $path_yml, $path_yml;
 	say "{$_C162}Replacing placeholders in HFT file...{$_c}";
 	run $FLINKH, 'subst', '--yaml', $path_yml, $path_hft;
+	say 'Dumping YAML content:';
+	run $FLINKH, 'dumpyaml', $path_yml;
+	run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
 }
 
 sub flink_unfold (Str $PATH)
