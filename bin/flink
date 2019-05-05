@@ -2,11 +2,9 @@
 =begin DESCRIPTION
 FLINK: Debian User Recipes
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
-=end DESCRIPTION
-# FIXME To be merged into flink
-constant $__version__ = '0.0j';
 
-=begin Recipe-Specification
+Recipe-Specification
+--------------------
 A .rcp file is a concatenation of a shell script and an HFT file.
 It defines how to get and prepare the source tree, as well as how to
 debianize the source tree.
@@ -20,8 +18,10 @@ Recipe Example
     11
     ^ debian/source/format
     3.0 (native)
-=end Recipe-Specification
+=end DESCRIPTION
+use YAMLish;
 
+constant $__version__ = '0.0j';
 constant $SH = '/bin/sh';
 constant $DUPR_DEFCOLL = "$*HOME/.defcoll";
 constant $COLLECTOR = '/usr/bin/duprCollector';
@@ -59,9 +59,10 @@ sub flink_split (Str $PATH)
 	}
 	close $fp_she; close $fp_hft;
 	say 'Dumping YAML content:';
-	run $PYTHON3, '-c',
-	'import yaml,json,sys; print(json.dumps(yaml.load(open(sys.argv[1]).read()), indent=2))',
-	$PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+	#run $PYTHON3, '-c',
+	#'import yaml,json,sys; print(json.dumps(yaml.load(open(sys.argv[1]).read()), indent=2))',
+	#$PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+	say load-yaml($PATH.IO.basename.subst(/\.rcp$/, '.yaml').IO.slurp);
 }
 
 sub flink_unfold (Str $PATH)

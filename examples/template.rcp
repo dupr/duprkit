@@ -31,16 +31,16 @@ Debhelper-Plugins:
 #- [opt] @SOURCE_FORMAT@                                 default="3.0 (native)"
 Source-Format:
 #- [opt]                                                        URI, see uri(7)
-Source-URL: https://example.org/{Source}_{Version}.tar.xz
+Source-URL: https://example.org/@Source@_@Version@.tar.xz
 #- [opt]                                                                33-char
 Hash-MD5: 66666666666666666666666666666666
 
 #- [*]
 Recipe-Prep-Source:
   # Prepare the source tree under directory {Source}.d
-  - mkdir {Source}.d
-  - flink cache '{Source-URL}' {Source}_{Version}.tar.xz {Hash-MD5}
-  - tar xf {Source}_{Version}.tar.xz --strip-components=1 -C {Source}.d
+  - mkdir @Source@.d
+  - flink cache @Source-URL@ @Source@_@Version@.tar.xz @Hash-MD5@
+  - tar xf @Source@_@Version@.tar.xz --strip-components=1 -C @Source@.d
 
 # [opt] FIXME: this looks like a fixed sequence. move it to flink.
 Recipe-Debianize:
@@ -50,22 +50,22 @@ Recipe-Debianize:
   - flinkH placeholder FLINK_YAML FLINK_HFT
 #- dkGenerate $dest tries to generate the debian/ directory with Meta info.
 #  It is smart enough to tell user what necessary variable might be missing.
-  - flink generate {FLINK_YAML} {Source}.d
+  - flink generate @FLINK_YAML@ @Source@.d
 #- Unfold the HFT part (if any) into the dir. (force overwrite with -F)
 #  Specifically, upon "flink s xxx.rcp" the xx.rcp file will be
 #  split into a shell script (xxx.sh) and an HFT file (xxx.hft).
-  - hft -v -F -u {FLINK_HFT} -d {Source}.d/
+  - hft -v -F -u @FLINK_HFT@ -d @Source@.d/
 
 # [opt]
-override_dh_auto_test:
+override_dh_auto_test: true
 
 # [opt]
-override_dh_auto_strip:
+override_dh_auto_strip: true
 
 ^# HFT -------------------------------------------------------- SPLIT LINE ----
 ^ debian/README.Debian
-README.Debian for the {Source} (= {Version}) package
-The source was downloaded from @SRCURL@ (md5= {MD5SUM})
+README.Debian for the @Source@ (= @Version@) package
+The source was downloaded from @SRCURL@ (md5= @MD5SUM@)
 The placeholders in this file will be replaced by dkSubst or dkSubst_
 ^# HFT -------------------------------------------------------- SPLIT LINE ----
 ^ bin/helloworld 0o755
