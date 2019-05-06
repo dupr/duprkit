@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-'''
-Hatless Folded Text: Lib, Utility
-=================================
+__HFT_SPEC__ = '''
+Hatless Folded Text (HFT)
+=========================
 Copyright (C) 2019 M. Zhou <lumin@debian.org>
 
 Typical Usage
@@ -14,25 +14,31 @@ Fold a directory of (hatless) plain files in verbose mode::
 Unfold an HFT file into the directory in verbose mode::
 
   hft -v -u debian.hft -d destdir
-'''
-import argparse
-import sys, os, re, stat, chardet
-from typing import *
 
-__VERSION__ = '0.0j'
-
-__HFT_SPEC__ = '''
 Hatless Folded Text (HFT) Specification
 ---------------------------------------
 
-Hatless Folded Text basically resembles sort of plain text 'tar'.
-An HFT file uses lines starting with "^" as special control messages,
-so it doesn't support "folding" any text file that contains a line
-starting with "^". HFT supports several kinds of control messages:
+Hatless Folded Text basically resembles sort of plain text 'tar'. An
+HFT file starts with an optional plain text header (in virtually any
+format, as long as there is no HFT control message), followed by a
+series of HFT control messages and file contents. All of the control
+messages defined by HFT start with a "hat" (^), so HFT doesn't expect
+any line that starts with the "hat" (^) in the optional header or
+file content. That's why HFT is called "Hatless" Folded Text.
 
-1. "^ FILENAME [MODE]"
-   Any following non-control messages are regarded as the content of
-   file FILENAME. MODE is the optional file mode of FILENAME in python
+HFT supports the following control messages:
+
+1. "^# COMMENT"
+   Single-line comment. Can be placed anywhere in an HFT file.
+
+   Example::
+
+       ^# This is a comment
+       ^#--------8<--------8<--------8<--------
+
+2. "^ FILENAME [MODE]"
+   Any non-control content following this line is regarded as the content
+   of file FILENAME. MODE is the optional file mode of FILENAME in python
    Octet literal form, e.g. "0o755".
 
    Example::
@@ -41,19 +47,29 @@ starting with "^". HFT supports several kinds of control messages:
        #!/bin/sh
        echo "Hello, world!"
 
-2. "^# COMMENT"
-   Single-line comment. Can be placed anywhere in an HFT file.
-
-3. "^ FILENAME -> TARGET"
-   A symbol link FILENAME pointing to TARGET.
-
-4. "^^ FILENAME"
+3. "^^ FILENAME"
    Similar to "^ FILENAME" but this opens FILENAME in APPEND mode.
 
-Note, HFT doesn't support embedding binary blobs, deliberately.
+   Example::
+
+       ^^ bin/helloworld
+       echo "Hello, world! Again."
+
+4. "^ FILENAME -> TARGET"
+   A symbol link FILENAME pointing to TARGET.
+
+   Example::
+
+       ^ bin/hello-world -> helloworld
+
+Note, HFT doesn't support binary files currently, although we can define
+a new control message "^B FILENAME [MODE]" that accepts base64 codes.
 '''
+import argparse
+import sys, os, re, stat, chardet
+from typing import *
 
-
+__VERSION__ = '0.0k'
 _C36  = "\x1b[1;36m"
 _c36  = "\x1b[0;36m"
 _C162 = "\x1b[1;38;5;162m"
@@ -111,7 +127,7 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
 
 
 def hft_unfold(hft: List[str], destdir:str='', *,
-        verbose:bool=False, force:bool=False) -> None:
+        verbose:bool=False, force:bool=False, skip_header:bool=False) -> None:
     '''
     Unfold an HFT file.
     '''
@@ -121,6 +137,8 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     r_file      = re.compile('^\^\s*([/\S]+)\s*$')
     r_file_ap   = re.compile('^\^\^\s*([/\S]+)\s*$')
     r_symlink   = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
+    while len(rest) > 0 and not rest[0].startswith('^'):
+        rest = rest[1:]
     while len(rest) > 0:
         curline, rest = rest[0], rest[1:]
         if r_comment.match(curline):
@@ -190,6 +208,8 @@ if __name__ == '__main__':
             help='destination directory when unfolding an HFT file')
     ag.add_argument('-F', '--force', action='store_true', required=False,
             help='force overwrite the output destination')
+    ag.add_argument('-H', '--skip-header', action='store_true', required=False,
+            help='skip the non-HFT header in an HFT file')
     ag.add_argument('-S', '--spec', action='store_true', required=False,
             help='print the Hatless Folded Text spec')
     ag.add_argument('-v', '--verbose', action='store_true', required=False,
