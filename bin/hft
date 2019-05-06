@@ -127,7 +127,7 @@ def hft_fold(path: str, *, verbose=False) -> List[str]:
 
 
 def hft_unfold(hft: List[str], destdir:str='', *,
-        verbose:bool=False, force:bool=False, skip_header:bool=False) -> None:
+        verbose:bool=False, force:bool=False) -> None:
     '''
     Unfold an HFT file.
     '''
@@ -137,8 +137,10 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     r_file      = re.compile('^\^\s*([/\S]+)\s*$')
     r_file_ap   = re.compile('^\^\^\s*([/\S]+)\s*$')
     r_symlink   = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
+    # Skip the header
     while len(rest) > 0 and not rest[0].startswith('^'):
         rest = rest[1:]
+    # Start handling the HFT
     while len(rest) > 0:
         curline, rest = rest[0], rest[1:]
         if r_comment.match(curline):
@@ -208,8 +210,6 @@ if __name__ == '__main__':
             help='destination directory when unfolding an HFT file')
     ag.add_argument('-F', '--force', action='store_true', required=False,
             help='force overwrite the output destination')
-    ag.add_argument('-H', '--skip-header', action='store_true', required=False,
-            help='skip the non-HFT header in an HFT file')
     ag.add_argument('-S', '--spec', action='store_true', required=False,
             help='print the Hatless Folded Text spec')
     ag.add_argument('-v', '--verbose', action='store_true', required=False,
