@@ -1,0 +1,30 @@
+Source: blis
+Section: math
+Version: 0.5.2
+Revision: 1
+Description: BLAS-like Library Instantiation Software Framework
+Source-URL: https://github.com/flame/blis/archive/0.5.2.tar.gz
+License: BSD-3-Clause
+Maintainer: M. Zhou <lumin@debian.org>
+Build-Depends: python3
+
+Binaries:
+  libblis2:
+    install: FIXME
+  libblis-dev:
+    install: FIXME
+
+override_dh_auto_configure: |
+  ./configure --prefix=/usr --enable-cblas --enable-static --enable-shared \
+      --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) -b 32 -i 32 -t openmp $(CONFIG)
+
+override_dh_auto_test: |
+  $(MAKE) check
+ 
+^^ debian/rules
+export PYTHON=/usr/bin/python3
+CONFIG_ppc64el = power9
+CONFIG_armhf   = auto
+CONFIG_amd64   = auto
+CONFIG_i386    = auto
+CONFIG         = $(word 1, $(CONFIG_$(DEB_HOST_ARCH)) generic)

@@ -1,0 +1,18 @@
+Source: rover
+Section: admin
+Version: 0.75+git
+Description: text-based light-weight frontend for update-alternatives
+Source-URL: https://salsa.debian.org/debian/rover/-/archive/master/rover-master.tar.gz
+License: GPL-3.0+
+Maintainer: M. Zhou <lumin@debian.org>
+Build-Depends: python3-termbox
+
+Recipe-Pre-Source: |
+  mkdir @Source@.d
+  flink cache @Source-URL@ @Source@_@Version@.tar.xz
+  tar xf @Source@_@Version@.tar.xz --strip-components=1 -C @Source@.d
+  rm -rf @Source@.d/debian
+
+Binaries:
+  rover:
+    install: rover usr/bin/
