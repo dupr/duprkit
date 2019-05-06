@@ -9,7 +9,7 @@ Typical Usage
 
 Fold a directory of (hatless) plain files in verbose mode::
 
-  hft -v -f debian -o debian.hft
+  hft -v -f debian -d debian.hft
 
 Unfold an HFT file into the directory in verbose mode::
 
@@ -202,12 +202,10 @@ if __name__ == '__main__':
     ag = argparse.ArgumentParser()
     ag.add_argument('-f', '--fold', type=str, default='', required=False,
             help='fold the given file or directory')
-    ag.add_argument('-o', '--output', type=str, default='', required=False,
-            help='specify output file of the folded result (incl. /dev/stdout)')
     ag.add_argument('-u', '--unfold', type=str, default='', required=False,
             help='unfold the given HFT file, (incl. /dev/stdin)')
-    ag.add_argument('-d', '--destdir', type=str, default='', required=False,
-            help='destination directory when unfolding an HFT file')
+    ag.add_argument('-d', '--dest', type=str, default='', required=False,
+            help='destination for fold/unfold an HFT file (/dev/stdout can be used when folding)')
     ag.add_argument('-F', '--force', action='store_true', required=False,
             help='force overwrite the output destination')
     ag.add_argument('-S', '--spec', action='store_true', required=False,
@@ -232,14 +230,14 @@ if __name__ == '__main__':
     elif all([ag.fold, ag.unfold]):
         raise ValueError("Both fold and unfold have been specified!")
     elif ag.fold:
-        if not ag.output:
-            ag.output = re.sub('/*$', '', ag.fold) + '.hft'
-        if os.path.exists(ag.output) and not ag.force:
-            raise Exception(f"{ag.output} already exists!")
+        if not ag.dest:
+            ag.dest = re.sub('/*$', '', ag.fold) + '.hft'
+        if os.path.exists(ag.dest) and not ag.force:
+            raise Exception(f"{ag.dest} already exists!")
         hft = hft_fold(ag.fold, verbose=ag.verbose)
-        with open(ag.output, 'w') as f:
+        with open(ag.dest, 'w') as f:
             f.writelines(hft)
     elif ag.unfold:
         with open(ag.unfold, 'r') as f:
             hft = f.readlines()
-        hft_unfold(hft, ag.destdir, verbose=ag.verbose, force=ag.force)
+        hft_unfold(hft, ag.dest, verbose=ag.verbose, force=ag.force)
