@@ -52,7 +52,7 @@ sub flink_split (Str $PATH)
 
 	my $path_yml = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
 	my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
-	my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.json');
+	my $path_json = $PATH.IO.basename.subst(/\.rcp$/, '.json');
 	my $fp_yml := open :w, $path_yml;
 	my $fp_hft := open :w, $path_hft;
 	my $fp = $fp_yml;
