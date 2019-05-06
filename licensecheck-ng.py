@@ -1,4 +1,4 @@
-#!/usr/bin/pypy3
+#!/usr/bin/python3
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
 # License: MIT/Expat
 from typing import *
@@ -13,7 +13,7 @@ from collections import Counter, defaultdict
 Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$ whose license type
 is unknown. We want to identify the license type $c$ from this sequence.
 We solve this problem with k-NN ($k=1$) based on $n$-gram bag-of-words text
-representations.
+representations. Specifically, we use unigram, bigram and trigram.
 
 Training: Given a set of $N$ known licenses $D=\{(C_i,T_i)\}_N, 1<=i<=N$
 where $C_i$ is the unique name of the license, and $t$ is the token sequence
@@ -42,10 +42,10 @@ class BOWModel(object):
     def __init__(self):
         self.vocab_1gram = Counter()
         self.vocab_2gram = Counter()
-        self.vocab_3gram = Counter() # not implemented
+        self.vocab_3gram = Counter()
         self.vectors_1gram = dict()
         self.vectors_2gram = dict()
-        self.vectors_3gram = dict() # not implemented
+        self.vectors_3gram = dict()
 
     def cosSim(self, vecA: Counter, vecB: Counter) -> float:
         '''
@@ -78,58 +78,73 @@ class BOWModel(object):
             vec2g = Counter()
             for i in range(1, len(v)):
                 vec2g.update([(v[i-1], v[i])])
-            self.vectors_2gram[k] = Counter(vec2g)
-            self.vocab_2gram.update(self.vectors_2gram[k])
-        # training stat
-        print('1-Gram | Training Data:'.rjust(42),
-                'size', len(self.vocab_1gram),
-                'total', sum(self.vocab_1gram.values()),
+            self.vectors_2gram[k] = vec2g
+            self.vocab_2gram.update(vec2g)
+            # 3-gram
+            vec3g = Counter()
+            for i in range(2, len(v)):
+                vec3g.update([(v[i-2],v[i-1],v[i])])
+            self.vectors_3gram[k] = vec3g
+            self.vocab_3gram.update(vec3g)
+        # training statistics
+        print('1-Gram | Training Data:',
+                f'{len(self.vocab_1gram)} vocabs',
+                f'{sum(self.vocab_1gram.values())} tally',
                 sep='\t')
-        for k, v in self.vectors_1gram.items():
-            print(f'1-Gram | {k}:'.rjust(42),
-                'size', len(v),
-                'total', sum(v.values()),
+        print('2-Gram | Training Data:',
+                f'{len(self.vocab_2gram)} vocabs',
+                f'{sum(self.vocab_2gram.values())} tally',
                 sep='\t')
-        print('2-Gram | Training Data:'.rjust(42),
-                'size', len(self.vocab_2gram),
-                'total', sum(self.vocab_2gram.values()),
+        print('3-Gram | Training Data:',
+                f'{len(self.vocab_3gram)} vocabs',
+                f'{sum(self.vocab_3gram.values())} tally',
                 sep='\t')
-        for k, v in self.vectors_2gram.items():
-            print(f'2-Gram | {k}:'.rjust(42),
-                'size', len(v),
-                'total', sum(v.values()),
-                sep='\t')
+        for k in data.keys():
+            print(f'{k}:'.rjust(42),
+                f'1-Gram[', '%6d'%len(self.vectors_1gram[k]), ']\t',
+                f'2-Gram[', '%6d'%len(self.vectors_2gram[k]), ']\t',
+                f'3-Gram[', '%6d'%len(self.vectors_3gram[k]), ']\t')
 
 
     def predict(self, path: str, topK: int = 1):
+        # tokenization
         text = re.sub('\W', ' ', open(path).read()).lower()
         tokens = text.split()
+        # 1-gram and score
         common_tokens = set(tokens).intersection(set(self.vocab_1gram.keys()))
         vector_raw = Counter(tokens)
         vector = {k: vector_raw[k] for k in common_tokens}
         scores = defaultdict(list)
-        #print('1-Gram tokens:', len(vector.keys()))
         for k, v in self.vectors_1gram.items():
             scores[k].append(self.cosSim(v, vector))
+        # 2-gram and score
         vec2g = Counter()
         for i in range(1, len(tokens)):
             token2g = (tokens[i-1], tokens[i])
             if token2g in self.vocab_2gram.keys():
                 vec2g.update([token2g])
-        #print('2-Gram tokens:', len(vec2g.keys()))
         for k, v in self.vectors_2gram.items():
             scores[k].append(self.cosSim(v, vec2g))
+        # 3-gram and score
+        vec3g = Counter()
+        for i in range(2, len(tokens)):
+            token3g = (tokens[i-2], tokens[i-1], tokens[i])
+            if token3g in self.vocab_3gram.keys():
+                vec3g.update([token3g])
+        for k, v in self.vectors_3gram.items():
+            scores[k].append(self.cosSim(v, vec3g))
 
+        # aggregation
         score_aggregated = sorted(
-                [(k, 0.5 * scores[k][0] + 0.5 * scores[k][1])
+                [(k, 0.33*scores[k][0] + 0.33*scores[k][1] + 0.34*scores[k][2])
                     for k in self.vectors_2gram.keys()],
                 key=lambda x: x[1], reverse=True)
         for k, s in score_aggregated[:topK]:
             print(f'{k} similarity:'.rjust(42),
-                '%.3f' % s,
-                '1-gram', '%.3f' % scores[k][0],
-                '2-gram', '%.3f' % scores[k][1],
-                sep='\t')
+                '\t%.3f\t' % s,
+                '1-Gram[', '%.3f' % scores[k][0], ']\t,',
+                '2-Gram[', '%.3f' % scores[k][1], ']\t,',
+                '3-Gram[', '%.3f' % scores[k][2], ']')
 
 
 def train(datadir: str):
@@ -140,6 +155,7 @@ def train(datadir: str):
     files = glob.glob('data/*')
     data = dict()
     for f in files:
+        # tokenization
         text = re.sub('\W', ' ', open(f).read()).lower()
         tokens = text.split()
         print(f'{len(tokens)} ', end='')
