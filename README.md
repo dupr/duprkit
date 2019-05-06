@@ -67,6 +67,9 @@ Well, can I beat all of them? I have no answer currently.
 * licensecheck2dep5
 * license-reconcile
 * debmake
+
+Many thanks to Osamu Aoki who provided many training data in debmake's source.
+
 * decopy
 * license
 * check-all-the-things
@@ -83,6 +86,9 @@ Well, can I beat all of them? I have no answer currently.
 * fossology
 * OSLCv3
 * https://github.com/nexB/scancode-toolkit
+
+The core algorithm is similar to what scancode-toolkit called "match set":
+https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/match_set.py
 
 ## FAQ
 

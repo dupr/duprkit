@@ -4,7 +4,7 @@
 from typing import *
 import argparse, re, os, sys, json, glob, pickle, math
 from collections import Counter, defaultdict
-# NOTE: we don't use non-standard python libraries because of pypy (JIT)
+# NOTE: we don't use non-standard python libraries so pypy (JIT) can run
 
 
 '''latex
@@ -28,10 +28,6 @@ then the similarity score $S$ is defined as:
 $$ S = 0.5*cos(v_{i,1gram}, v_{j,1gram}) + 0.5*cos(v_{i,2gram}, v_{j,2gram}) $$
 The score $S$ will fall in the range $[0,1]$. And the higher the score is,
 the more similar the two sequences are.
-
-\section{Thanks}
-
-Many thanks to Osamu Aoki who provided many training data in debmake's source.
 '''
 
 
