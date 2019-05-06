@@ -21,12 +21,9 @@ packaging. The following tools are provided by this toolkit:
 2. [DUPR Main Utility: flink](./bin/flink). The top-level utility used to build `.deb`,
    `.dsc` or debianized source tree from a given recipe file.
 
-# DISCLAIMER
+# Highlights
 
-This project is totoally unrelated to  OFFICIAL Debian development.  Debian
-Project is not responsible for any consequence incured by utilizing the
-toolkit.  Please Take your own risk and please review every line of code before
-execution.
+TODO
 
 # Documentations
 
@@ -44,6 +41,13 @@ This Toolkit and the [DefaultCollection](https://github.com/dupr/DefaultCollecti
 are still experimental projects. If you can fully understand what's going on
 here and be willing to participate, please feel free to submit a PR or
 request for membership by opening an issue.
+
+# DISCLAIMER
+
+This project is totoally unrelated to  OFFICIAL Debian development.  Debian
+Project is not responsible for any consequence incured by utilizing the
+toolkit.  Please Take your own risk and please review every line of code before
+execution.
 
 # LICENSE
 
