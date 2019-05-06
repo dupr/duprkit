@@ -31,7 +31,7 @@ the more similar the two sequences are.
 '''
 
 
-class BOWModel(object):
+class Model(object):
     '''
     Model that leverages Bag-of-Words Representation
     '''
@@ -158,7 +158,7 @@ def train(datadir: str):
         data[os.path.basename(f)] = tokens
     print()
     print('Training model ...')
-    model = BOWModel()
+    model = Model()
     model.train(data)
     pickle.dump(model, open('model.pkl', 'wb'))
     print('Model saved to model.pkg')
