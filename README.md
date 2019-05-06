@@ -1,4 +1,4 @@
-Debian User Recipe Toolkit (Work-In-Progress)
+Debian User Recipe Toolkit (Work-In-Progress; pre-alpha)
 ===
 
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
@@ -30,20 +30,20 @@ execution.
 
 # Documentations
 
-* [Motivation](./doc/motivation.md)
-* [Targeted Software](./doc/targets.md)
-* [Usage Instructions](./doc/instructions.md)
-* [Examples and Templates](./examples)
-* [Specification: Hatless Folded Text (HFT, .hft)](./bin/hft)
-* [Specification: Recipe (.rcp)](./bin/flink)
-* [Specification: Collection](./doc/collection.md)
-* [DUPR General Recommendations](./doc/general-recommendations.rst)
-* [Related Projects](./doc/related.md)
+* [Motivation, Targeted Software, and Related Projects](./doc/motivation.md)
+* [Usage Instructions and Examples](./doc/instructions.md)
 * [FAQ](./doc/faq.md)
 
 # List of Known Collections
 
 * https://github.com/dupr/DefaultCollection
+
+# Contributing
+
+This Toolkit and the [DefaultCollection](https://github.com/dupr/DefaultCollection)
+are still experimental projects. If you can fully understand what's going on
+here and be willing to participate, please feel free to submit a PR or
+request for membership by opening an issue.
 
 # LICENSE
 
