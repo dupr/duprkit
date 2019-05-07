@@ -23,7 +23,11 @@ packaging. The following tools are provided by this toolkit:
 
 # Highlights
 
-TODO
+* Declarative Automatic Source Debianization based on a light-weight DSL which
+combines YAML and HFT. This toolkit is expected to eeduce time cost for the
+Debianization Process.
+
+* More.
 
 # Documentations
 
