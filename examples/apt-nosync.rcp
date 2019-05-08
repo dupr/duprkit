@@ -1,31 +1,27 @@
-# RCP version of: https://github.com/dupr/apt-nosync
-source: apt-nosync
-version: 0.git
-description: Accelerate apt/apt-get/aptitude with libeatmydata
-license: Expat/MIT
-section: admin
-maintainer: M. Zhou <lumin@debian.org>
+Source: apt-nosync
+Section: admin
+Version: 0.exp
+Description: |
+  Accelerate apt/apt-get/aptitude with libeatmydata
 
-dk_get_source:
-dk_prep_source:
-^ LICENSE
-MIT License
-Copyright (c) 2019 M. Zhou
-^ README.md
-apt-nosync
-==========
+  This package will divert apt and dpkg executables and replace them with
+  eatmydata-based wrapper scripts. This would result in significantly faster apt
+  and dpkg actions, and some side effects.
+License: Expat/MIT, Copyright (C) M. Zhou
+Maintainer: M. Zhou <lumin@debian.org>
 
-Accelerate APT and DPKG with eatmydata
+Recipe-Prep-Source:
 
-This package will divert apt and dpkg executables and replace them with
-eatmydata-based wrapper scripts. This would result in significantly faster apt
-and dpkg actions, and some side effects.
+Recipe-Packages:
+  apt-nosync:
+    Architecture: all
+    Depends: eatmydata,
+    install: bin/* usr/bin/
+    lintian-overrides: |
+      binary-without-manpage usr/bin/apt
+      binary-without-manpage usr/bin/apt-get
+      binary-without-manpage usr/bin/aptitude-curses
 
-## Building
-
-```
-dpkg-buildpackage -us -uc
-```
 ^ bin/aptitude-curses 0o755
 #!/bin/sh
 eatmydata -- /usr/bin/aptitude-curses.real $@
@@ -47,10 +43,6 @@ fi
 
 #DEBHELPER#
 exit 0
-^ debian/apt-nosync.lintian-overrides
-binary-without-manpage usr/bin/apt
-binary-without-manpage usr/bin/apt-get
-binary-without-manpage usr/bin/aptitude-curses
 ^ debian/apt-nosync.preinst
 #!/bin/sh
 set -e
@@ -61,11 +53,3 @@ dpkg-divert --divert /usr/bin/aptitude-curses.real --rename /usr/bin/aptitude-cu
 
 #DEBHELPER#
 exit 0
-^ debian/install
-bin/* usr/bin/
-^ debian/tests/control
-Test-Command: apt --help
-
-Test-Command: apt-get --help
-
-Test-Command: aptitude --help

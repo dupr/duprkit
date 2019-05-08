@@ -8,7 +8,7 @@ License: BSD-3-Clause
 Maintainer: M. Zhou <lumin@debian.org>
 Build-Depends: python3
 
-Binaries:
+Recipe-Binaries:
   libblis2:
     install: FIXME
   libblis-dev:
