@@ -8,6 +8,7 @@ Recipe-Prep-Source:
 
 Binaries:
   fdfind-as-usr-bin-fd:
+    Depends: fd-find,
     install: fd usr/bin/
 
 ^ fd -> fdfind
