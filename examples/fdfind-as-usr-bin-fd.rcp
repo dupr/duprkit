@@ -1,0 +1,13 @@
+Source: fdfind-as-usr-bin-fd
+Section: admin
+Version: 0
+Description: Point /usr/bin/fd to fd-find
+License: Expat/MIT
+Maintainer: M. Zhou <lumin@debian.org>
+Recipe-Prep-Source:
+
+Binaries:
+  fdfind-as-usr-bin-fd:
+    install: fd usr/bin/
+
+^ fd -> fdfind
