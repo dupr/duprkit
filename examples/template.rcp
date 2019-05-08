@@ -35,6 +35,8 @@ Debhelper-Compat: 12
 Debhelper-Buildsystem:
 # [?]
 Debhelper-Plugins:
+# [?]
+Patches:
 
 # [?] Prepare the source tree under directory @Source@.d
 Recipe-Prep-Source:
