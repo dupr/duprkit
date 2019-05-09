@@ -15,3 +15,6 @@ highlight hftPathMode term=bold ctermbg=green
 
 syntax region hftAppend oneline start="^\^\^\s*\w\+" end="$"
 highlight hftAppend term=bold ctermbg=magenta
+
+syntax region hftVariable oneline start="^\^\$" end="$"
+highlight hftVariable term=bold ctermbg=yellow

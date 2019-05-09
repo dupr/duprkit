@@ -62,6 +62,17 @@ HFT supports the following control messages:
 
        ^ bin/hello-world -> helloworld
 
+5. [NotImplemented] "^$ VARNAME <STRING_LITERAL|CMD_LINE>"
+   Define a variable "VARNAME". HFT will replace "@VARNAME@" placeholders
+   in the file content with the given string literal, or the stdout of a
+   given command line.
+
+   Example::
+
+       ^$ CC gcc-5
+       ^$ FOOBAR "quotation marks will be copied as well"
+       ^$ DEB_HOST_MULTIARCH `dpkg-architecture -qDEB_HOST_MULTIARCH`
+
 Note, HFT doesn't support binary files currently, although we can define
 a new control message "^B FILENAME [MODE]" that accepts base64 codes.
 '''
@@ -132,11 +143,13 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     Unfold an HFT file.
     '''
     curline, rest, fp, fmode, wmode = None, hft, None, None, 'w'
-    r_comment   = re.compile('^\^#.*$')
-    r_file_mode = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
-    r_file      = re.compile('^\^\s*([/\S]+)\s*$')
-    r_file_ap   = re.compile('^\^\^\s*([/\S]+)\s*$')
-    r_symlink   = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
+    r_comment     = re.compile('^\^#.*$')
+    r_file_mode   = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
+    r_file        = re.compile('^\^\s*([/\S]+)\s*$')
+    r_file_ap     = re.compile('^\^\^\s*([/\S]+)\s*$')
+    r_symlink     = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
+    r_var_literal = re.compile('^\^\$\s*(\S+)\s+([^`].*)\s*$')
+    r_var_cmd     = re.compile('^\^\$\s*(\S+)\s+`(.*?)`\s*$')
     # Skip the header
     while len(rest) > 0 and not rest[0].startswith('^'):
         rest = rest[1:]
@@ -146,6 +159,12 @@ def hft_unfold(hft: List[str], destdir:str='', *,
         if r_comment.match(curline):
             # A COMMENT LINE
             continue
+        elif r_var_literal.match(curline):
+            varname, literal = r_var_literal.match(curline).groups()
+            raise NotImplementedError(f'HFT Variable still not implemented: {varname}, {literal}')
+        elif r_var_cmd.match(curline):
+            varname, cmd = r_var_cmd.match(curline).groups()
+            raise NotImplementedError(f'HFT Variable still not implemented: {varname}, {cmd}')
         elif any([r_file.match(curline), r_file_mode.match(curline),
                   r_file_ap.match(curline)]):
             # A PATH-MODE LINE
