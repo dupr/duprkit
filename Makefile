@@ -21,16 +21,6 @@ install-vim:
 	install -Dm0644 vim/hft-rcp.yaml $(DESTDIR)/$(VIM)/registry/hft-rcp.yaml
 
 test:
-	@echo "[48;5;92mhft-sanity[m"
-	python3 bin/hft --version
-	python3 bin/hft --help
-	@echo "[48;5;92mhft-fold[m"
-	./bin/hft -f bin -o bin.hft -v
-	@echo "[48;5;92mhft-unfold[m"
-	./bin/hft -u bin.hft -d junk -v
-	@echo "[48;5;92mdupr-sanity[m"
-	./bin/flink
-	@echo "[48;5;92mLIB-TEST[m"
 	$(MAKE) -Ctests
 
 fmt:
