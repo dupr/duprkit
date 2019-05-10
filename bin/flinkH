@@ -32,7 +32,8 @@ def main_subst(argv):
             for stub in stubs:
                 stub = stub.replace('@', '')
                 if stub not in yml.keys():
-                    raise AttributeError(f"Invalid key '@{stub}@'")
+                    print(f"flinkH-warn: Ignoring invalid key '@{stub}@'")
+                    continue
                 value = yml[stub]
                 line = line.replace(f'@{stub}@',
                         str(value) if (value is not None) else ' ')
