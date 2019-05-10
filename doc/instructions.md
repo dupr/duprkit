@@ -42,6 +42,19 @@ the comments in the template, use `flink m foobar`.
 
 * Optionally submit the `.rcp` to your favorite collection.
 
+## How Things Work
+
+#### flink split foobar.rcp
+
+input: a .rcp file
+output: a .yaml file and a .hft file, within which the "@FOOBAR@" placeholders are replaced.
+
+#### flink cache foobar-0.0.tar.xz https://example.org/v0.0.tar.xz
+
+input: file name and url
+output: file will be downloaded to cachedir. a copy will be created
+under current working directory.
+
 ## Examples
 
 1. Default template, self-documented: https://github.com/dupr/duprkit/blob/master/examples/template.rcp
