@@ -26,7 +26,7 @@ hft-unfold:
 
 hft-variable:
 	@echo "[48;5;92mhft-variable[m"
-	echo "^$$ HFT:UNAME "uname -r"" >> junk3.hft
+	echo "^$$ HFT:UNAME 'uname -r'" >> junk3.hft
 	echo "^$$ HFT:UNAME `uname -r`" >> junk3.hft
 	$(HFT) -v -u junk3.hft
 	-$(RM) junk3.hft
