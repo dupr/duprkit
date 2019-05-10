@@ -14,22 +14,22 @@ hft-sanity:
 
 hft-fold:
 	@echo "[48;5;92mhft-fold[m"
-	$(HFT) -v -f ../debian -d junk.hft
-	-$(RM) -rf junk.hft
+	$(HFT) -v -f ../vim -d junk1.hft
+	-$(RM) -rf junk1.hft
 
 hft-unfold:
 	@echo "[48;5;92mhft-unfold[m"
-	$(HFT) -v -f ../debian -d junk.hft
-	$(HFT) -v -u junk.hft -d junk/junk
-	$(HFT) -v -u junk.hft -d junk/junk -F
-	-$(RM) -rf junk.hft junk
+	$(HFT) -v -f ../vim -d junk2.hft
+	$(HFT) -v -u junk2.hft -d junk/junk
+	$(HFT) -v -u junk2.hft -d junk/junk -F
+	-$(RM) -rf junk2.hft junk
 
 hft-variable:
 	@echo "[48;5;92mhft-variable[m"
-	echo "^$$ HFT:UNAME "uname -r"" > junk.hft
-	echo "^$$ HFT:UNAME `uname -r`" > junk.hft
-	$(HFT) -v -u junk.hft
-	-$(RM) junk.hft
+	echo "^$$ HFT:UNAME "uname -r"" >> junk3.hft
+	echo "^$$ HFT:UNAME `uname -r`" >> junk3.hft
+	$(HFT) -v -u junk3.hft
+	-$(RM) junk3.hft
 
 flink-sanity:
 	@echo "[48;5;92mflink-sanity[m"
