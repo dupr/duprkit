@@ -28,6 +28,7 @@ constant $GIT = '/usr/bin/git';
 constant $TEMPLATE = '/usr/share/doc/duprkit/examples/template.rcp';
 constant $PYTHON3 = '/usr/bin/python3';
 constant $FLINKH = '/usr/bin/flinkH';
+constant $CACHEDIR = "$*HOME/.duprkit/distfiles/";
 constant $_C162 = "\x1b[1;38;5;162m";
 constant $_C36  = "\x1b[1;36m";
 constant $_c    = "\x1b[0m";
@@ -68,6 +69,17 @@ sub flink_split (Str $PATH)
 	say 'Dumping YAML content:';
 	run $FLINKH, 'dumpyaml', $path_yml;
 	run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
+}
+
+sub flink_cache (Str $PKG, Str $URL, Str $HASH = '')
+{
+	#FIXME HASH support is not implemented
+	my $cache = $CACHEDIR ~ '/' ~ $PKG;
+	$CACHEDIR.IO.mkdir if not $CACHEDIR.IO.d;
+	if not $cache.IO.r {
+		run 'wget', $URL, '-O', $cache;
+	}
+	run 'cp', '-v', $cache, $PKG;
 }
 
 sub flink_unfold (Str $PATH)
@@ -119,7 +131,7 @@ sub flink_sbuild (Str $PATH)
 	run 'sbuild', '--no-clean-source';
 }
 
-sub MAIN ( Str $ACTION, Str $TARGET = "" )
+sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "" )
 {
 	given $ACTION {
 		when 'f' | 'fetch' {
@@ -134,6 +146,9 @@ sub MAIN ( Str $ACTION, Str $TARGET = "" )
 		}
 		when 's' | 'split' {
 			flink_split $TARGET;
+		}
+		when 'cache' {
+			flink_cache $TARGET, $ARGV3;
 		}
 		when 'u' | 'unfold' {
 			flink_unfold $TARGET;
