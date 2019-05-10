@@ -1,6 +1,9 @@
 Debian User Recipe Toolkit (Work-In-Progress; pre-alpha)
 ===
 
+Everything on master branch is broken due to the on-going re-design.
+Use the latest release if you want try out the old design.
+
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
 
 DUR Toolkit (durkit) is a set of tools designed for creating and utilizing user
