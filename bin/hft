@@ -2,7 +2,7 @@
 __HFT_SPEC__ = '''
 Hatless Folded Text (HFT)
 =========================
-Copyright (C) 2019 M. Zhou <lumin@debian.org>
+Copyright (C) 2019 M. Zhou <lumin@debian.org>, MIT LICENSE.
 
 Typical Usage
 -------------
@@ -62,7 +62,7 @@ HFT supports the following control messages:
 
        ^ bin/hello-world -> helloworld
 
-5. [NotImplemented] "^$ VARNAME <STRING_LITERAL|CMD_LINE>"
+5. "^$ VARNAME <STRING_LITERAL|CMD_LINE>"
    Define a variable "VARNAME". HFT will replace "@VARNAME@" placeholders
    in the file content with the given string literal, or the stdout of a
    given command line.
@@ -71,16 +71,20 @@ HFT supports the following control messages:
 
        ^$ CC gcc-5
        ^$ FOOBAR "quotation marks will be copied as well"
+       ^$ HFT:FOOBAR "punctuations such as colon also form valid varname"
        ^$ DEB_HOST_MULTIARCH `dpkg-architecture -qDEB_HOST_MULTIARCH`
+       ^$ HOSTNAME `hostname`
+       ^$ UNAME `uname -a`
 
 Note, HFT doesn't support binary files currently, although we can define
 a new control message "^B FILENAME [MODE]" that accepts base64 codes.
 '''
+__VERSION__ = '0.0k'
 import argparse
-import sys, os, re, stat, chardet
+import sys, os, re, subprocess, shlex
+import chardet
 from typing import *
 
-__VERSION__ = '0.0k'
 _C36  = "\x1b[1;36m"
 _c36  = "\x1b[0;36m"
 _C162 = "\x1b[1;38;5;162m"
@@ -142,7 +146,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     '''
     Unfold an HFT file.
     '''
-    curline, rest, fp, fmode, wmode = None, hft, None, None, 'w'
+    curline, rest, fp, fmode, wmode, hftvars = None, hft, None, None, 'w', {}
     r_comment     = re.compile('^\^#.*$')
     r_file_mode   = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
     r_file        = re.compile('^\^\s*([/\S]+)\s*$')
@@ -150,6 +154,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     r_symlink     = re.compile('^\^\s*([/\S]+)\s*->\s*([/\S]+)\s*$')
     r_var_literal = re.compile('^\^\$\s*(\S+)\s+([^`].*)\s*$')
     r_var_cmd     = re.compile('^\^\$\s*(\S+)\s+`(.*?)`\s*$')
+    r_placeholder = re.compile('@(\S+)@')
     # Skip the header
     while len(rest) > 0 and not rest[0].startswith('^'):
         rest = rest[1:]
@@ -161,10 +166,16 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             continue
         elif r_var_literal.match(curline):
             varname, literal = r_var_literal.match(curline).groups()
-            raise NotImplementedError(f'HFT Variable still not implemented: {varname}, {literal}')
+            hftvars[varname] = literal
+            if verbose: print(f'{_C162}HFT-variable:{_c}',
+                    f'{_C36}{varname}{_c}', '=', literal)
         elif r_var_cmd.match(curline):
             varname, cmd = r_var_cmd.match(curline).groups()
-            raise NotImplementedError(f'HFT Variable still not implemented: {varname}, {cmd}')
+            cmdout = subprocess.Popen(shlex.split(cmd),
+                    stdout=subprocess.PIPE).stdout.read().decode().strip()
+            hftvars[varname] = cmdout
+            if verbose: print(f'{_C162}HFT-variable:{_c}',
+                    f'{_C36}{varname}{_c}', '=', cmdout)
         elif any([r_file.match(curline), r_file_mode.match(curline),
                   r_file_ap.match(curline)]):
             # A PATH-MODE LINE
@@ -211,6 +222,14 @@ def hft_unfold(hft: List[str], destdir:str='', *,
         else:  # NORMAL CONTENT
             if fp is None:
                 raise SyntaxError(f"SyntaxError: {curline}")
+            if r_placeholder.match(curline):
+                placeholders = r_placeholder.findall(curline)
+                for pl in placeholders:
+                    if hftvars.get(pl, None) is None and verbose:
+                        if verbose: print(f'HFT-warn:',
+                                'Ignoring undefined variable', f'[{pl}]')
+                        continue
+                    curline = curline.replace(f'@{pl}@', str(hftvars.get(pl)))
             fp.write(curline)
     if fp is not None: fp.close()
     return
