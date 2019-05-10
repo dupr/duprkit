@@ -21,11 +21,6 @@ jobs:
               make test
               git clean -xdf
       - run:
-          make: lib-test
-          command: |
-              cd lib; make test
-              git clean -xdf
-      - run:
           name: build package
           command: |
               dpkg-buildpackage -us -uc
