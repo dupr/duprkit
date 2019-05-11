@@ -1,23 +1,22 @@
 Source: py3-as-usr-bin-python
 Section: admin
-Version: dangerous.dont.install.it.0
+Version: 0.dangerous.dont.install
 Description: Point /usr/bin/python to python3 (VERY DANGEROUS!)
 License: Expat/MIT
 Maintainer: M. Zhou <lumin@debian.org>
-Recipe-Prep-Source:
 
-Binaries:
+Recipe-Binaries:
   py3-as-usr-bin-python:
     install: python usr/bin/
 
 ^ python -> python3
-^ debian/apt-nosync.preinst
+^ debian/py3-as-usr-bin-python.preinst
 #!/bin/sh
 set -e
 dpkg-divert --divert /usr/bin/python.real --rename /usr/bin/python
 #DEBHELPER#
 exit 0
-^ debian/apt-nosync.postrm
+^ debian/py3-as-usr-bin-python.postrm
 #!/bin/sh
 set -e
 if [ "$1" != "upgrade" ]; then
