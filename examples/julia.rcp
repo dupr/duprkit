@@ -1,0 +1,19 @@
+Source: julia
+Version: 1.1.0
+Description: The Julia Programming Language
+Section: math
+Source-URL: "https://julialang-s3.julialang.org/bin/linux/x64/1.1/julia-1.1.0-linux-x86_64.tar.gz"
+License: Expat/MIT
+
+override_dh_strip:
+
+override_dh_dwz:
+
+override_dh_shlibdeps:
+
+^ debian/julia.install
+include usr/
+share   usr/
+lib     usr/
+lib     usr/
+etc
