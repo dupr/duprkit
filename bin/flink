@@ -150,13 +150,17 @@ sub flink_guess () {
 			my $tmp = 'LICENSE'.IO.slurp;
 			if $tmp ~~ /MIT/ {
 				say 'License: ', 'MIT';
+				say 'Copyright-Autoscan: False';
 			}
 		} elsif 'COPYING'.IO.f {
 			my $tmp = 'LICENSE'.IO.slurp;
 			if $tmp ~~ /MIT/ {
 				say 'License: ', 'MIT';
+				say 'Copyright-Autoscan: False';
 			}
 		}
+	} else {
+		say 'Copyright-Autoscan: True';
 	}
 	# /usr/share/perl5/Debian/Debhelper/Buildsystem/
 	if "CMakeLists.txt".IO.f {
