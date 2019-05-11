@@ -5,6 +5,8 @@ DOCDIR        ?= $(PREFIX)/share/doc/duprkit/
 EXAMPLEDIR    ?= $(DOCDIR)/examples/
 VIM           ?= $(PREFIX)/share/vim/
 
+all:
+
 install: install-vim install-bin install-examples
 
 install-bin:

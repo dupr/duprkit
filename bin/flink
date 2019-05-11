@@ -28,6 +28,7 @@ constant $GIT = '/usr/bin/git';
 constant $TEMPLATE = '/usr/share/doc/duprkit/examples/template.rcp';
 constant $PYTHON3 = '/usr/bin/python3';
 constant $FLINKH = '/usr/bin/flinkH';
+constant $FLINK = '/usr/bin/flink';
 constant $CACHEDIR = "$*HOME/.cache/duprkit/distfiles/";
 constant $_C162 = "\x1b[1;38;5;162m";
 constant $_C36  = "\x1b[1;36m";
@@ -203,6 +204,11 @@ sub flink_guess () {
 	}
 }
 
+sub flink_boldguess () {
+	shell 'flink guess > flinkBoldGuess.rcp';
+	shell 'flinkH gen_debian -y flinkBoldGuess.rcp -d .';
+}
+
 sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
 {
 	given $ACTION {
@@ -243,6 +249,9 @@ sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
 		when 'g' | 'guess' {
 			flink_guess;
 		}
+		when 'bg' | 'boldguess' {
+			flink_boldguess;
+		}
 		default {
 			die "Unknown action???"
 		}
@@ -263,7 +272,8 @@ Actions
    c|create <name>          Create talky template file: <name>.rcp
    m|minimal <name>         Create minimal template: <name>.rcp
    g|guess                  Guess recipe for the current source tree,
-                            or just print a minimal template.
+                            or just print a minimal template
+   bg|boldguess             Guess and directly generate debian directory
    deb <.rcp>               Shortcut: Build .deb files from .rcp
    dsc <.rcp>               Shortcut: Build .dsc files from .rcp
 EOH
