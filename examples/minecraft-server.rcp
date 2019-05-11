@@ -1,0 +1,24 @@
+Source: minecraft-server
+Version: 1.14
+Description: "Minecraft Server: Java Edition"
+License: "Minecraft EULA: https://jfmsu.minecraft.net/terms"
+Section: game
+Source-URL: "https://launcher.mojang.com/v1/objects/f1a0073671057f01aa843443fef34330281333ce/server.jar"
+Homepage: "https://www.minecraft.net/en-us/download/server/"
+
+Recipe-Prep-Source: |
+    flink cache @Source@_@Version@.jar @Source-URL@
+    mkdir -p @Source@/
+    cp -v @Source@_@Version@.jar @Source@/@Source@.jar
+
+override_dh_strip:
+
+override_dh_strip_nondeterminism:
+
+^ debian/install
+minecraft-server.jar  usr/share/java/
+minecraft-server      usr/bin/
+^ minecraft-server 0o755
+#!/bin/sh
+set -e
+java -Xmx1024M -Xms1024M -jar /usr/share/java/minecraft-server.jar nogui $@
