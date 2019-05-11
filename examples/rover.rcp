@@ -7,12 +7,12 @@ License: GPL-3.0+
 Maintainer: M. Zhou <lumin@debian.org>
 Build-Depends: python3-termbox
 
-Recipe-Pre-Source: |
-  mkdir @Source@.d
-  flink cache @Source-URL@ @Source@_@Version@.tar.xz
-  tar xf @Source@_@Version@.tar.xz --strip-components=1 -C @Source@.d
-  rm -rf @Source@.d/debian
+Recipe-Prep-Source: |
+  flink cache @Source@_@Version@.tar.gz @Source-URL@
+  mkdir -p @Source@
+  tar xvf @Source@_@Version@.tar.gz --strip-components=1 -C @Source@
+  rm -rf @Source@/debian
 
-Binaries:
+Recipe-Binaries:
   rover:
     install: rover usr/bin/
