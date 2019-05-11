@@ -169,27 +169,27 @@ sub flink_guess () {
 	}
 	say '';
 	say 'Recipe-Binaries:';
-    say '  ', '.'.IO.absolute.IO.basename, ':';
+    say ' ' x 4, '.'.IO.absolute.IO.basename, ':';
 	if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
-		say ' ' x 4, 'docs: |';
-		say(' ' x 6, 'README.md') if 'README.md'.IO.f;
-		say(' ' x 6, 'doc/*') if 'doc'.IO.d;
-		say(' ' x 6, 'docs/*') if 'docs'.IO.d;
+		say ' ' x 8, 'docs: |';
+		say(' ' x 12, 'README.md') if 'README.md'.IO.f;
+		say(' ' x 12, 'doc/*') if 'doc'.IO.d;
+		say(' ' x 12, 'docs/*') if 'docs'.IO.d;
 	}
 	if 'example'.IO.d || 'examples'.IO.d {
-		say ' ' x 4, 'examples: |';
-		say(' ' x 6, 'example/*') if 'example'.IO.d;
-		say(' ' x 6, 'examples/*') if 'examples'.IO.d;
+		say ' ' x 8, 'examples: |';
+		say(' ' x 12, 'example/*') if 'example'.IO.d;
+		say(' ' x 12, 'examples/*') if 'examples'.IO.d;
 	}
 	if 'bin'.IO.d {
-		say ' ' x 4, 'install: |';
-		say(' ' x 6, 'bin/* usr/bin/') if 'bin'.IO.d;
+		say ' ' x 8, 'install: |';
+		say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
 	}
 	say '';
 	if 'CMakeLists.txt'.IO.f {
 		say 'override_dh_auto_configure: |';
-		say ' ' x 2, 'dh_auto_configure -- \\';
-		say ' ' x 4, '-DCMAKE_BUILD_TYPE=Release';
+		say ' ' x 4, 'dh_auto_configure -- \\';
+		say ' ' x 8, '-DCMAKE_BUILD_TYPE=Release';
 	}
 }
 
