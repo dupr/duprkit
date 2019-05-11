@@ -1,3 +1,0 @@
-dh_make usr/bin
-dh_makefont usr/bin
-lib/* usr/share/debhelper/dh_make
