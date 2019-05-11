@@ -142,8 +142,9 @@ def main_gen_debian_rules(argv):
     for override in (x for x in meta.keys() if x.startswith('override_')):
         f.write('\n')
         f.write(f'{override}:\n')
-        for line in meta[override].strip().split('\n'):
-            f.write(f'\t{line}\n')
+        if meta[override]:
+            for line in meta[override].strip().split('\n'):
+                f.write(f'\t{line}\n')
         print(f'flinkH: {path} | wrote {override}')
     f.close()
     os.chmod(path, 0o755)

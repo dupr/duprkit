@@ -1,0 +1,13 @@
+Source: tq
+Version: 0.4.5
+Section: utils
+Description: Command Line Batch Job Manager/Scheduler
+License: Expat/MIT
+Maintainer: M. Zhou <lumin@debian.org>
+Source-URL: "https://github.com/cdluminate/tq/archive/0.4.5.tar.gz"
+Hash-MD5: 88e86dc792ba0dc1f81ce424d950748a
+Homepage: "https://github.com/cdluminate/tq"
+Debhelper-Buildsystem: pybuild
+Debhelper-Plugins: python3
+
+override_dh_auto_test:
