@@ -343,6 +343,7 @@ def main_pipeline_sh(argv):
     f.write('mkdir -p $Source/\n')
     f.write(f'flinkH gen_debian -y {ag.yaml} -d $Source/\n')
     f.write(f'hft -v -F -u {hftpath} -d $Source/\n')
+    f.write('cd $Source/; wrap-and-sort -v; cd ..\n')
     f.write('# END Debianization #\n')
     f.close()
     os.chmod(shpath, 0o755)
