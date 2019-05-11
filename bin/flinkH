@@ -107,6 +107,47 @@ def main_gen_debian_changelog(argv):
     print(f'flinkH: {path} | {maintainer} @ {stamp}')
 
 
+def main_gen_debian_rules(argv):
+    '''
+    Generate debian/rules. Debhelper-Buildsystem, Debhelper-Plugins will
+    be used to tweak the rules content. The content of override_* keys
+    in YAML will be copied to rules literally.
+    '''
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-y', '--yaml', type=str, required=True)
+    ag.add_argument('-d', '--dest', type=str, default=None)
+    ag = ag.parse_args(argv)
+    # generate
+    path = './debian/rules' if (ag.dest is None) else os.path.join(
+            ag.dest, 'debian/rules')
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
+    meta = yaml.load(open(ag.yaml).read())
+    f = open(path, 'w')
+    f.write('#!/usr/bin/make -f\n')
+    f.write('export DEB_BUILD_MAINT_OPTIONS = hardening=+all\n')
+    f.write('\n')
+    f.write('%:\n')
+    f.write('\tdh $@')
+    buildsystem = meta.get('Debhelper-Buildsystem', None)
+    if buildsystem is not None:
+        f.write(' -S' + meta['Debhelper-Buildsystem'])
+    plugins = meta.get('Debhelper-Plugins', None)
+    if plugins is not None:
+        plugins = ','.join(plugins.replace(',',' ').split())
+        f.write(' --with ' + plugins)
+    f.write('\n')
+    print(f'flinkH: {path} | -S{buildsystem} --with {plugins}')
+    for override in (x for x in meta.keys() if x.startswith('override_')):
+        f.write('\n')
+        f.write(f'{override}:\n')
+        for line in meta[override].strip().split('\n'):
+            f.write(f'\t{line}\n')
+        print(f'flinkH: {path} | wrote {override}')
+    f.close()
+    os.chmod(path, 0o755)
+
+
 def _gen_debian(dst, meta):
     '''
 test -n "$1" || (echo "missing dest dir"; false)
@@ -169,33 +210,6 @@ def _gen_debian_copyright(dst, meta):
 		if test -z "$license"; then echo "DK: Please define 'license'"; false; fi
 		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/copyright"; fi
 		mkdir -p $1/debian; echo "$license" > $1/debian/copyright
-	fi
-    '''
-    pass
-
-def _gen_debian_rules(dst, meta):
-    '''
-    	if ! test -r $1/debian/rules; then
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/rules"; fi
-		if test -n "$dh_with"; then
-			dh_with_="--with $dh_with"
-		fi
-		if test -n "$dh_buildsystem"; then
-			dh_buildsystem_="-S$dh_buildsystem"
-		fi
-		mkdir -p $1/debian
-		cat > $1/debian/rules <<EOF
-#!/usr/bin/make -f
-%:
-	dh \$@ $dh_buildsystem_ $dh_with_
-EOF
-		if test -n "$dk_skip"; then
-			for item in $dk_skip; do
-				echo "" >> $1/debian/rules
-				echo "override_$item:" >> $1/debian/rules
-			done
-		fi
-		chmod +x $1/debian/rules
 	fi
     '''
     pass
