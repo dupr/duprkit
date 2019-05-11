@@ -1,60 +1,45 @@
-Debian User Recipe Toolkit (Work-In-Progress; pre-alpha)
+Debian User Recipe Toolkit (WIP)
 ===
-
-Everything on master branch is broken due to the on-going re-design.
-Use the latest release if you want try out the old design.
 
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
 
-DUR Toolkit (durkit) is a set of tools designed for creating and utilizing user
-packaging recipe, which aims to simplify the source tree debianization process.
-A recipe defines how to get the source package and how to debianize the source
-tree, and can be transformed into a `debianized` source tree, `.dsc` files, or
-`.deb` files directly, at user's option.  A set of recipe files form a
-Collection, namely a Debian User Repository.
+**Everything on the master branch is broken due to the ongoing redesign.
+Use the latest release if you want try out the old design.**
 
-This toolkit try to provide an experience resembles AUR's PKGBUILD or Gentoo's
-ebuild, although it still requires a good knowledge about traditional Debian
-packaging. The following tools are provided by this toolkit:
-
-1. [Hatless Folded Text (HFT) utility](./bin/hft). HFT is in fact sort of
-   "plain text tar format", which allows one to squash multiple text files into
-   a single file, or restore the multiple files from a single HFT file.
-
-2. [DUPR Main Utility: flink](./bin/flink). The top-level utility used to build `.deb`,
-   `.dsc` or debianized source tree from a given recipe file.
+DUPR Toolkit (duprkit) provides a set of tools for creating and utilizing user
+packaging recipe, aiming at reducing the source tree debianization workload.
+A recipe can be directly translated into a `debian/` directory, and helper
+utilities are provided to directly build `.deb` or `.dsc` from a recipe file.
 
 # Highlights
 
-* Declarative Automatic Source Debianization based on a light-weight DSL which
-combines YAML and HFT. This toolkit is expected to eeduce time cost for the
-Debianization Process.
+* Recipe is a light-weight DSL (Domain Specific Language) combining YAML and HFT.
 
 * More.
 
 # Documentations
 
 * [Motivation, Targeted Software, and Related Projects](./doc/motivation.md)
-* [Usage Instructions and Examples](./doc/instructions.md)
-* [FAQ](./doc/faq.md)
+* [Usage Instructions, Examples, FAQ](./doc/instructions.md)
 
 # List of Known Collections
 
-* https://github.com/dupr/DefaultCollection
+* Miscellaneous: https://github.com/dupr/DefaultCollection
+* Source-based Recipe: https://github.com/dupr/DefaultCookbook
+* Binary-based Recipe: https://github.com/dupr/DefaultRepacks
+* Pure-Trick Recipe: https://github.com/dupr/DefaultTricks
 
 # Contributing
 
-This Toolkit and the [DefaultCollection](https://github.com/dupr/DefaultCollection)
-are still experimental projects. If you can fully understand what's going on
-here and be willing to participate, please feel free to submit a PR or
-request for membership by opening an issue.
+This Toolkit is still a highly experimental project.
+If you can fully understand what's going on here and be willing to participate,
+please feel free to submit a PR or request for membership by opening an issue.
 
 # DISCLAIMER
 
-This project is totoally unrelated to  OFFICIAL Debian development.  Debian
-Project is not responsible for any consequence incured by utilizing the
-toolkit.  Please Take your own risk and please review every line of code before
-execution.
+This project is unrelated to OFFICIAL Debian development.  Debian Project is
+not responsible for any consequence incured by utilizing the toolkit.  Please
+take your own risk and review every line of code before execution.
 
 # LICENSE
 

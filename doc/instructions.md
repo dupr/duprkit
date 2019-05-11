@@ -1,4 +1,4 @@
-# Instructions / Usage Guides
+# Usage Guide
 
 DUPR toolkit introduces two new concepts: HFT and Recipe. It's recommended
 to grasp them before starting to use this toolkit.
@@ -132,3 +132,28 @@ List of Debian Packaging Documentations:
 * https://www.debian.org/doc/devel-manuals#debmake-doc
 * https://www.debian.org/doc/devel-manuals#maint-guide
 * https://www.debian.org/doc/devel-manuals#packaging-tutorial
+
+# FAQ
+
+* I'm a Ubuntu (or LinuxMint, Kali, Deepin) user, can I use this?
+
+Of course. Theoretically the whole Debian family can use this.
+
+* Where is the resulting `.deb` files?
+
+DUPR, or .rcp are not designed to deliver `.deb` files. It's recommended
+to build everything locally after careful review.
+
+* Why is this project hosted on GitHub instead of Debian's Salsa server?
+
+Only 1000~2000 people on this earth have salsa account. More than a million
+people have their Github accounts. Hosting this project on github makes access
+and contributing easy.
+
+* I dislike the HFT format...
+
+HFT is not mandatory. Please carefully read the documentations and templates.
+
+* Where can I submit my `.rcp` file?
+
+Submit a PR to a collection pointed by README. Or just setup your own collection.
