@@ -295,28 +295,54 @@ def main_gen_debian(argv):
     main_gen_debian_control(argv)
 
 
-def main_prep_source(argv):
+def main_pipeline_sh(argv):
     '''
-    	if test -d $src; then
-		echo "DK: Could you please remove $src/ directory first?"
-		exit 1
-	fi
-	mkdir $src;
-	if test $(tar tf ${src}_${version}.tar.* | awk -F/ '{m=9} NF<m{m=NF} END{print m}') = 1; then
-		tar xf ${src}_${version}.tar.* -C $src/
-	else
-		tar xf ${src}_${version}.tar.* --strip-components=1 -C $src/
-	fi
+    Genreate a shell script for Debianization pipeline.
     '''
-    pass
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-y', '--yaml', type=str, required=True)
+    ag = ag.parse_args(argv)
+    meta = yaml.load(open(ag.yaml).read())
+    shpath = re.sub('\.yaml$', '.sh', ag.yaml)
+    hftpath = re.sub('\.yaml$', '.hft', ag.yaml)
+    f = open(shpath, 'w')
+    f.write('#!/bin/sh -e\n')
+    f.write('# Automatically Generated File\n\n')
 
-def main_debianize(argv):
-    '''
-    	dkGenerate $src
-	dkSubst_ ${0%.sh}.hft
-	hft -v -u ${0%.sh}.hft -d $src/ -F
-    '''
-    pass
+    # shell variables
+    f.write(f'Source=\'{meta.get("Source")}\'\n')
+    f.write(f'Version=\'{meta.get("Version")}\'\n')
+    f.write('\n')
+
+    # Recipe-Prep-Source
+    f.write('# BEGIN Recipe-Prep-Source #\n')
+    if meta.get('Recipe-Prep-Source', None) is not None:
+        # user-defined prep-source
+        prep = meta.get('Recipe-Prep-Source', None)
+        if isinstance(prep, list):
+            for line in prep:
+                f.write(line.strip() + '\n')
+        elif isinstance(prep, str):
+            for line in prep.strip().split('\n'):
+                f.write(line.strip() + '\n')
+    elif meta.get('Source-URL', None) is not None:
+        # default prep-source
+        f.write('flink cache ${Source}_${Version}.tar.gz \"' + 
+                meta.get('Source-URL') + '\"\n')
+        f.write('mkdir -p $Source/\n')
+        f.write('tar xf ${Source}_${Version}.tar.xz --strip-components=1 -C ${Source}/\n')
+    else:
+        # no source tarball.
+        f.write('true\n')
+    f.write('# END Recipe-Prep-Source #\n')
+
+    # Debianization
+    f.write('# BEGIN Debianization #\n')
+    f.write(f'flinkH gen_debian -y {ag.yaml} -d $Source/\n')
+    f.write(f'hft -v -F -u {hftpath} -d $Source/\n')
+    f.write('# END Debianization #\n')
+    f.close()
+    os.chmod(shpath, 0o755)
 
 
 if __name__ == '__main__':
