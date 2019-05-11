@@ -79,6 +79,21 @@ HFT supports the following control messages:
 Note, HFT doesn't support binary file content, as it violates the principle
 that HFT should be fully human-readable. If you must store binary content in
 HFT, use non-binary codings such as BASE64.
+
+HFT Example
+-----------
+
+The following example is a valid HFT, with a plain text header::
+
+    This HFT file can be unfolded into an executable shell script `bin/hello`,
+    and a symbol link `bin/hello` pointing to the executable `hello`.
+    ^$ HFT:WHOAMI `whoami`
+    ^$ HFT:HOSTNAME `hostname`
+    ^$ HFT:KERNEL `uname -s`
+    ^ bin/hello 0o755
+    #!/bin/sh -e
+    echo "Hello, @HFT:WHOAMI@! I'm @HFT:HOSTNAME@, a machine running @HFT:KERNEL@.";
+    ^ bin/hi -> hello
 '''
 __VERSION__ = '0.0k'
 import argparse
@@ -224,7 +239,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
         else:  # NORMAL CONTENT
             if fp is None:
                 raise SyntaxError(f"SyntaxError: {curline}")
-            if r_placeholder.match(curline):
+            if r_placeholder.search(curline):
                 placeholders = r_placeholder.findall(curline)
                 for pl in placeholders:
                     if hftmarks.get(pl, None) is None and verbose:
