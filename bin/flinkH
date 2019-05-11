@@ -45,6 +45,32 @@ def main_subst(argv):
         f.writelines(updated_lines)
 
 
+def main_gen_debian_source_format(argv):
+    '''
+    Generate debian/source/format
+    '''
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-y', '--yaml', type=str, required=True)
+    ag.add_argument('-d', type=str, default=None)
+    ag = ag.parse_args(argv)
+    # probe file
+    fpath = './debian/source/format' if (ag.d is None) else os.path.join(
+            ag.d, 'debian/source/format')
+    if os.path.exists(fpath):
+        raise Exception(f'{fpath} already exists!')
+    # generate file
+    if not os.path.exists(os.path.dirname(fpath)):
+        os.makedirs(os.path.dirname(fpath))
+    meta = yaml.load(open(ag.yaml).read())
+    with open(fpath, 'w') as f:
+        if 'Revision' in meta.keys():
+            f.write('3.0 (quilt)\n')
+            print(f'flinkH: {fpath} | 3.0 (quilt)')
+        else:
+            f.write('3.0 (native)\n')
+            print(f'flinkH: {fpath} | 3.0 (native)')
+
+
 def _gen_debian(dst, meta):
     '''
 test -n "$1" || (echo "missing dest dir"; false)
@@ -153,19 +179,6 @@ EOF
 			done
 		fi
 		chmod +x $1/debian/rules
-	fi
-    '''
-    pass
-
-def _gen_debian_source_format(dst, meta):
-    '''
-    	if ! test -r $1/debian/source/format; then
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/source/format"; fi
-		if test -z "$source_format"; then
-			mkdir -p $1/debian/source; echo "3.0 (native)" > $1/debian/source/format
-		else
-			mkdir -p $1/debian/source; echo "$source_format" > $1/debian/source/format
-		fi
 	fi
     '''
     pass
