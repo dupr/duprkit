@@ -10,13 +10,13 @@ Section: utils
 # [?]
 Homepage: https://example.org
 # [?]
-Source-URL: https://example.org/@Source@_@Version@.tar.xz
+#Source-URL: https://example.org/@Source@_@Version@.tar.xz
 # [?]
-Hash-md5: 66666666666666666666666666666666
+#Hash-md5: 66666666666666666666666666666666
 # [*]
 Version: 0
 # [?]
-Revision: 0
+#Revision: 0
 # [?]
 License: Expat/MIT
 # [?] DEBFULLNAME <DEBEMAIL>
@@ -39,22 +39,15 @@ Debhelper-Plugins:
 Patches:
 
 # [?] Prepare the source tree under directory @Source@.d
-Recipe-Prep-Source:
-  - mkdir @Source@.d
-  - flink cache @Source-URL@ @Source@_@Version@.tar.xz @Hash-md5@
-  - tar xf @Source@_@Version@.tar.xz --strip-components=1 -C @Source@.d
+#Recipe-Prep-Source:
+#  - flink cache @Source-URL@ @Source@_@Version@.tar.xz @Hash-md5@
+#  - mkdir @Source@.d
+#  - tar xf @Source@_@Version@.tar.xz --strip-components=1 -C @Source@.d
 
 Recipe-Binaries:
   hello-world:
     Architecture: all
     install: bin/helloworld usr/bin/
-
-# [FIXME]
-Recipe-Unfold:
-  - flinkH placeholder FLINK_YAML FLINK_YAML
-  - flinkH placeholder FLINK_YAML FLINK_HFT
-  - flink generate FLINK_YAML @Source@.d
-  - hft -v -F -u FLINK_HFT -d @Source@.d/
 
 # [?]
 override_dh_auto_configure: |

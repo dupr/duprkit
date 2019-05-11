@@ -66,9 +66,12 @@ sub flink_split (Str $PATH)
 	run $FLINKH, 'subst', '--yaml', $path_yml, $path_yml;
 	say "{$_C162}Replacing placeholders in HFT file...{$_c}";
 	run $FLINKH, 'subst', '--yaml', $path_yml, $path_hft;
+	say "{$_C162}Dumping YAML content into JSON file...{$_c}";
+	run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
+	say "{$_C162}Creating pipeline shell script...{$_c}";
+	run $FLINKH, 'pipeline_sh', '--yaml', $path_yml;
 	say 'Dumping YAML content:';
 	run $FLINKH, 'dumpyaml', $path_yml;
-	run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
 }
 
 sub flink_cache (Str $PKG, Str $URL, Str $HASH = '')
