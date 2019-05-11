@@ -1,12 +1,11 @@
 Source: fdfind-as-usr-bin-fd
 Section: admin
 Version: 0
-Description: Point /usr/bin/fd to fd-find
+Description: Point /usr/bin/fd to fd-find. Doing that manually is a bad, right?
 License: Expat/MIT
 Maintainer: M. Zhou <lumin@debian.org>
-Recipe-Prep-Source:
 
-Binaries:
+Recipe-Binaries:
   fdfind-as-usr-bin-fd:
     Depends: fd-find,
     install: fd usr/bin/
