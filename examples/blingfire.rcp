@@ -1,0 +1,15 @@
+Source: blingfire
+Version: 0.git
+Description: lightning fast Finite State machine and REgular expression manipulation library
+License: Expat/MIT
+Section: science
+Maintainer: M. Zhou <lumin@debian.org>
+Source-URL: "https://github.com/Microsoft/BlingFire/archive/master.tar.gz"
+Build-Depends: cmake, dh-python, python3-all
+Debhelper-Buildsystem: cmake
+
+override_dh_dwz:
+
+^ debian/install
+obj-*/libblingfiretokdll.so  usr/lib/python3/dist-packages/
+scripts/blingfiretok.py      usr/lib/python3/dist-packages/
