@@ -141,7 +141,7 @@ sub flink_buildpackage (Str $PATH, Str $OPTS)
 sub flink_guess () {
 	say "Source: ", '.'.IO.absolute.IO.basename;
 	say "Section: ", 'utils';
-	say "Version: ", '0.git';
+	say "Version: ", '.git/config'.IO.f ?? qx/git describe --tags/.chomp !! '0';
 	say "Description: ", '.'.IO.absolute.IO.basename;
 	if '.git/config'.IO.f {
 		say 'Homepage: ', qx/git remote get-url origin/.chomp;
