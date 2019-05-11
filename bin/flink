@@ -142,6 +142,9 @@ sub flink_guess () {
 	say "Section: ", 'utils';
 	say "Version: ", '0.git';
 	say "Description: ", '.'.IO.absolute.IO.basename;
+	if '.git/config'.IO.f {
+		say 'Homepage: ', qx/git remote get-url origin/.chomp;
+	}
 	if 'LICENSE'.IO.f || 'COPYING'.IO.f {
 		if 'LICENSE'.IO.f {
 			my $tmp = 'LICENSE'.IO.slurp;
@@ -166,6 +169,9 @@ sub flink_guess () {
 		say "Debhelper-Buildsystem: ", "makefile";
 	} else {
 		# Well, I don't know.
+	}
+	if '.git/config'.IO.f {
+		say 'Uscan: ', qx/git remote get-url origin/.chomp;
 	}
 	say '';
 	say 'Recipe-Binaries:';
