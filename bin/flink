@@ -20,7 +20,7 @@ Recipe Example
     3.0 (native)
 =end DESCRIPTION
 
-constant $__version__ = '0.0j';
+constant $__version__ = '0.1a';
 constant $SH = '/bin/sh';
 constant $DUPR_DEFCOLL = "$*HOME/.defcoll";
 constant $COLLECTOR = '/usr/bin/duprCollector';

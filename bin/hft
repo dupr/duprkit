@@ -95,7 +95,7 @@ The following example is a valid HFT, with a plain text header::
     echo "Hello, @HFT:WHOAMI@! I'm @HFT:HOSTNAME@, a machine running @HFT:KERNEL@.";
     ^ bin/hi -> hello
 '''
-__VERSION__ = '0.0k'
+__VERSION__ = '0.1a'
 import argparse
 import sys, os, re, subprocess, shlex
 import chardet
