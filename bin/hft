@@ -62,8 +62,8 @@ HFT supports the following control messages:
 
        ^ bin/hello-world -> helloworld
 
-5. "^$ VARNAME <STRING_LITERAL|CMD_LINE>"
-   Define a variable "VARNAME". HFT will replace "@VARNAME@" placeholders
+5. "^$ MARK <STRING_LITERAL|CMD_LINE>"
+   Define a placeholder "MARK". HFT will replace "@MARK@" placeholders
    in the file content with the given string literal, or the stdout of a
    given command line.
 
@@ -76,8 +76,9 @@ HFT supports the following control messages:
        ^$ HOSTNAME `hostname`
        ^$ UNAME `uname -a`
 
-Note, HFT doesn't support binary files currently, although we can define
-a new control message "^B FILENAME [MODE]" that accepts base64 codes.
+Note, HFT doesn't support binary file content, as it violates the principle
+that HFT should be fully human-readable. If you must store binary content in
+HFT, use non-binary codings such as BASE64.
 '''
 __VERSION__ = '0.0k'
 import argparse
@@ -85,8 +86,9 @@ import sys, os, re, subprocess, shlex
 import chardet
 from typing import *
 
+_C33  = "\x1b[1;33m"
+_C35  = "\x1b[1;35m"
 _C36  = "\x1b[1;36m"
-_c36  = "\x1b[0;36m"
 _C162 = "\x1b[1;38;5;162m"
 _c    = "\x1b[0;m"
 
@@ -146,7 +148,7 @@ def hft_unfold(hft: List[str], destdir:str='', *,
     '''
     Unfold an HFT file.
     '''
-    curline, rest, fp, fmode, wmode, hftvars = None, hft, None, None, 'w', {}
+    curline, rest, fp, fmode, wmode, hftmarks = None, hft, None, None, 'w', {}
     r_comment     = re.compile('^\^#.*$')
     r_file_mode   = re.compile('^\^\s*([/\S]+)\s+([o\d]+)\s*$')
     r_file        = re.compile('^\^\s*([/\S]+)\s*$')
@@ -166,16 +168,16 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             continue
         elif r_var_literal.match(curline):
             varname, literal = r_var_literal.match(curline).groups()
-            hftvars[varname] = literal
-            if verbose: print(f'{_C162}HFT-variable:{_c}',
-                    f'{_C36}{varname}{_c}', '=', literal)
+            hftmarks[varname] = literal
+            if verbose: print(f'{_C162}HFT-mark:{_c}',
+                    f'{_C33}{varname}{_c}', '=>', f'{_C35}{literal}{_c}')
         elif r_var_cmd.match(curline):
             varname, cmd = r_var_cmd.match(curline).groups()
             cmdout = subprocess.Popen(shlex.split(cmd),
                     stdout=subprocess.PIPE).stdout.read().decode().strip()
-            hftvars[varname] = cmdout
-            if verbose: print(f'{_C162}HFT-variable:{_c}',
-                    f'{_C36}{varname}{_c}', '=', cmdout)
+            hftmarks[varname] = cmdout
+            if verbose: print(f'{_C162}HFT-mark:{_c}',
+                    f'{_C33}{varname}{_c}', '=>', f'{_C35}{cmdout}{_c}')
         elif any([r_file.match(curline), r_file_mode.match(curline),
                   r_file_ap.match(curline)]):
             # A PATH-MODE LINE
@@ -225,11 +227,11 @@ def hft_unfold(hft: List[str], destdir:str='', *,
             if r_placeholder.match(curline):
                 placeholders = r_placeholder.findall(curline)
                 for pl in placeholders:
-                    if hftvars.get(pl, None) is None and verbose:
+                    if hftmarks.get(pl, None) is None and verbose:
                         if verbose: print(f'HFT-warn:',
-                                'Ignoring undefined variable', f'[{pl}]')
+                                'Ignoring undefined mark', f'[{pl}]')
                         continue
-                    curline = curline.replace(f'@{pl}@', str(hftvars.get(pl)))
+                    curline = curline.replace(f'@{pl}@', str(hftmarks.get(pl)))
             fp.write(curline)
     if fp is not None: fp.close()
     return
