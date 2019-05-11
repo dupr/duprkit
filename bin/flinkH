@@ -148,16 +148,43 @@ def main_gen_debian_rules(argv):
     os.chmod(path, 0o755)
 
 
-def _gen_debian(dst, meta):
+def main_gen_debian_copyright(argv):
     '''
-test -n "$1" || (echo "missing dest dir"; false)
-dkGen_debian_changelog $1
-dkGen_debian_control $1
-dkGen_debian_copyright $1
-dkGen_debian_rules $1
-dkGen_debian_source_format $1
+    Generate debian/copyright. Will copy the 'License' field from YAML.
+    If that field doesn't exist, we call external copyright scanners
+    such as debmake or licensecheck, etc.
     '''
-    pass
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-y', '--yaml', type=str, required=True)
+    ag.add_argument('-d', '--dest', type=str, default=None)
+    ag = ag.parse_args(argv)
+    # generate
+    path = './debian/copyright' if (ag.dest is None) else os.path.join(
+            ag.dest, 'debian/copyright')
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
+    meta = yaml.load(open(ag.yaml).read())
+    if 'License' not in meta.keys():
+        raise NotImplementedError("calling external license scanner has not been implemented yet.")
+    f = open(path, 'w')
+    f.write(meta['License'] + '\n')
+    f.close()
+    print(f'flinkH: {path} | {meta["License"]}')
+
+
+def main_gen_debian(argv):
+    '''
+    Generate the debian/ directory.
+    '''
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-y', '--yaml', type=str, required=True)
+    ag.add_argument('-d', '--dest', type=str, default=None)
+    ag = ag.parse_args(argv)
+    # call the other helpers
+    main_gen_debian_source_format(argv)
+    main_gen_debian_changelog(argv)
+    main_gen_debian_rules(argv)
+    main_gen_debian_copyright(argv)
 
 
 def _gen_debian_control(dst, meta):
@@ -203,16 +230,6 @@ EOF
     '''
     pass
 
-
-def _gen_debian_copyright(dst, meta):
-    '''
-    	if ! test -r $1/debian/copyright; then
-		if test -z "$license"; then echo "DK: Please define 'license'"; false; fi
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/copyright"; fi
-		mkdir -p $1/debian; echo "$license" > $1/debian/copyright
-	fi
-    '''
-    pass
 
 def main_prep_source(argv):
     '''
