@@ -89,10 +89,8 @@ sub flink_unfold (Str $PATH)
 {
 	flink_split $PATH;
 	my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
-	my $hft_file = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
 	say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
 	run $SH, $shell_file;
-	$shell_file.IO.unlink; $hft_file.IO.unlink;
 }
 
 sub flink_create (Str $NAME)
@@ -110,20 +108,27 @@ sub flink_minimal (Str $NAME)
 	}
 }
 
-sub flink_deb (Str $PATH)
+sub flink_buildpackage (Str $PATH, Str $OPTS)
 {
-	flink_unfold $PATH;
-	my $workdir = $PATH.IO.basename.subst(/\.rcp$/, '.d');
-	chdir $workdir;
-	run 'dpkg-buildpackage', '-us', '-uc';
-}
-
-sub flink_dsc (Str $PATH)
-{
-	flink_unfold $PATH;
-	my $workdir = $PATH.IO.basename.subst(/\.rcp$/, '.d');
-	chdir $workdir;
-	run 'dpkg-buildpackage', '-us', '-uc', '-nc', '-S';
+	flink_split $PATH;
+	my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+	my $hft_file = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+	my $yaml_file = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+	my $json_file = $PATH.IO.basename.subst(/\.rcp$/, '.json');
+	# add something to the pipeline before execution
+	my $fp_shell = open :a, $shell_file;
+	$fp_shell.say: '# Automatically appended by FLINK';
+	$fp_shell.say: 'cd $Source';
+	$fp_shell.say: "dpkg-buildpackage $OPTS";
+	$fp_shell.close;
+	# execute shell script now
+	say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
+	run $SH, $shell_file;
+	# cleanup files
+	$shell_file.IO.unlink;
+	$hft_file.IO.unlink;
+	$yaml_file.IO.unlink;
+	$json_file.IO.unlink;
 }
 
 sub flink_sbuild (Str $PATH)
@@ -163,10 +168,10 @@ sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "" )
 			flink_minimal $TARGET;
 		}
 		when 'dsc' {
-			flink_dsc $TARGET;
+			flink_buildpackage $TARGET, '-nc -us -uc -S';
 		}
 		when 'deb' {
-			flink_deb $TARGET;
+			flink_buildpackage $TARGET, '-nc -us -uc';
 		}
 		when 'sb' | 'sbuild' {
 			flink_sbuild $TARGET;
@@ -183,15 +188,14 @@ sub USAGE() {
 Usage: {$*PROGRAM-NAME} action [args]
 
 Actions
-   f|fetch                  Fetch the default DUPR collection.
+   f|fetch                  Fetch the recipe collections defined in config
    l|ls [keyword]           List/search packages in default collection
-   s|split <.rcp>           Split .rcp file into .yaml and .hft,
-                            and replace placeholders
+   s|split <.rcp>           Split .rcp file into: .yaml, .hft, .json and .sh
+                            with an extra placeholder processing step.
    u|unfold <.rcp>          Unfold .rcp file into debianized source tree.
    c|create <name>          Create talky template file: <name>.rcp
    m|minimal <name>         Create minimal template: <name>.rcp
-   deb <.rcp>               Build .deb files from .rcp
-   dsc <.rcp>               Build .dsc files from .rcp
-   sb <.rcp> [sbuild-opts]  Sbuild in unfolded source tree from .rcp
+   deb <.rcp>               Shortcut: Build .deb files from .rcp
+   dsc <.rcp>               Shortcut: Build .dsc files from .rcp
 EOH
 }
