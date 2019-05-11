@@ -207,6 +207,7 @@ sub flink_guess () {
 sub flink_boldguess () {
 	shell 'flink guess > flinkBoldGuess.rcp';
 	shell 'flinkH gen_debian -y flinkBoldGuess.rcp -d .';
+	'flinkBoldGuess.rcp'.IO.unlink;
 }
 
 sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
