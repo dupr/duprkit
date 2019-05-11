@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # Debian User Recipe Toolkit Helper
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
-import argparse, re, sys, os, json
+import argparse, re, sys, os, json, time, getpass, socket
 import yaml
 
 
@@ -47,28 +47,64 @@ def main_subst(argv):
 
 def main_gen_debian_source_format(argv):
     '''
-    Generate debian/source/format
+    Generate debian/source/format. When key 'Revision' exists in the YAML
+    file, we use quilt format instead of native format.
     '''
     ag = argparse.ArgumentParser()
     ag.add_argument('-y', '--yaml', type=str, required=True)
-    ag.add_argument('-d', type=str, default=None)
+    ag.add_argument('-d', '--dest', type=str, default=None)
     ag = ag.parse_args(argv)
-    # probe file
-    fpath = './debian/source/format' if (ag.d is None) else os.path.join(
-            ag.d, 'debian/source/format')
-    if os.path.exists(fpath):
-        raise Exception(f'{fpath} already exists!')
-    # generate file
-    if not os.path.exists(os.path.dirname(fpath)):
-        os.makedirs(os.path.dirname(fpath))
+    # generate
+    path = './debian/source/format' if (ag.dest is None) else os.path.join(
+            ag.dest, 'debian/source/format')
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
     meta = yaml.load(open(ag.yaml).read())
-    with open(fpath, 'w') as f:
-        if 'Revision' in meta.keys():
-            f.write('3.0 (quilt)\n')
-            print(f'flinkH: {fpath} | 3.0 (quilt)')
-        else:
-            f.write('3.0 (native)\n')
-            print(f'flinkH: {fpath} | 3.0 (native)')
+    f = open(path, 'w')
+    if 'Revision' in meta.keys():
+        f.write('3.0 (quilt)\n')
+        print(f'flinkH: {path} | 3.0 (quilt)')
+    else:
+        f.write('3.0 (native)\n')
+        print(f'flinkH: {path} | 3.0 (native)')
+    f.close()
+
+
+def main_gen_debian_changelog(argv):
+    '''
+    Generate debian/changelog. When 'Maintainer' is not defined, we read
+    environment variables 'DEBFULLNAME' and 'DEBEMAIL'. If they don't exist
+    as well, we use "USER <USER@HOSTNAME>" as the maintainer.
+    '''
+    ag = argparse.ArgumentParser()
+    ag.add_argument('-y', '--yaml', type=str, required=True)
+    ag.add_argument('-d', '--dest', type=str, default=None)
+    ag = ag.parse_args(argv)
+    # generate
+    path = './debian/changelog' if (ag.dest is None) else os.path.join(
+            ag.dest, 'debian/changelog')
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
+    meta = yaml.load(open(ag.yaml).read())
+    if not all(x in meta.keys() for x in ['Source', 'Version']):
+        raise Exception("'Source' and 'Version' are required.")
+    f = open(path, 'w')
+    v = str(meta['Version']) + (f'-{meta["Revision"]}' if 'Revision' in meta else '')
+    f.write(f'{meta["Source"]} ({v}) Custom; urgency=low\n')
+    f.write('\n')
+    f.write('  * Built From Debian User Recipe.\n')
+    f.write('\n')
+    maintainer = meta.get('Maintainer', None)
+    stamp = time.strftime('%a, %d %b %Y %H:%M:%S %z')
+    if maintainer is None:
+        fullname, email = os.getenv('DEBFULLNAME'), os.getenv('DEBEMAIL')
+        if fullname is None or email is None:
+            fullname = getpass.getuser()
+            email = socket.gethostname()
+        maintainer = f'{fullname} <{email}>'
+    f.write(f' - {maintainer}  {stamp}')
+    f.close()
+    print(f'flinkH: {path} | {maintainer} @ {stamp}')
 
 
 def _gen_debian(dst, meta):
@@ -82,25 +118,6 @@ dkGen_debian_source_format $1
     '''
     pass
 
-def _gen_debian_changelog(dst, meta):
-    '''
-if ! test -r $1/debian/changelog; then
-		if test -z "$src"; then echo "DK: Please define 'src'"; false; fi
-		if test -z "$version"; then echo "DK: Please define 'version'"; false; fi
-		if test -z "$maintainer"; then echo "DK: Please define 'maintainer'"; false; fi
-		if test -n "$DK_VERBOSE"; then echo "DK: Generating $1/debian/changelog"; fi
-		mkdir -p $1/debian
-		cat > $1/debian/changelog <<EOF
-$src ($version) experimental; urgency=low
-
-  * Unofficial D**ian User Repo Release.
-  * Built on $(uname -a)
-
- -- $maintainer  $(date -R)
-EOF
-	fi
-    '''
-    pass
 
 def _gen_debian_control(dst, meta):
     '''

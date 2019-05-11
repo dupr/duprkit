@@ -19,7 +19,7 @@ Version: 0
 Revision: 0
 # [?]
 License: Expat/MIT
-# [*]
+# [?] DEBFULLNAME <DEBEMAIL>
 Maintainer: Anonymous <foobar@example.org>
 # [?]
 Standards-Version: 4.3.0
