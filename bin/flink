@@ -74,15 +74,20 @@ sub flink_split (Str $PATH)
 	run $FLINKH, 'dumpyaml', $path_yml;
 }
 
-sub flink_cache (Str $PKG, Str $URL, Str $HASH = '')
+sub flink_cache (Str $PKG, Str $URL)
 {
-	#FIXME HASH support is not implemented
 	my $cache = $CACHEDIR ~ '/' ~ $PKG;
 	$CACHEDIR.IO.mkdir if not $CACHEDIR.IO.d;
 	if not $cache.IO.r {
 		run 'wget', $URL, '-O', $cache;
 	}
 	run 'cp', '-v', $cache, $PKG;
+}
+
+sub flink_checksum (Str $FILE, Str $TYPE, Str $HASH)
+{
+	#FIXME
+	say "NotImplemented";
 }
 
 sub flink_unfold (Str $PATH)
@@ -132,15 +137,26 @@ sub flink_buildpackage (Str $PATH, Str $OPTS)
 	$json_file.IO.unlink;
 }
 
-sub flink_sbuild (Str $PATH)
-{
-	flink_unfold $PATH;
-	my $workdir = $PATH.IO.basename.subst(/\.rcp$/, '.d');
-	chdir $workdir;
-	run 'sbuild', '--no-clean-source';
+sub flink_guess () {
+	say "Source: ", '.'.IO.absolute.IO.basename;
+	say "Section: ", 'utils';
+	say "Version: ";
+	say "Description: ";
+	# /usr/share/perl5/Debian/Debhelper/Buildsystem/
+	if "Makefile".IO.f {
+		say "Debhelper-Buildsystem: ", "makefile";
+	} elsif "CMakeLists.txt".IO.f {
+		say "Debhelper-Buildsystem: ", "cmake";
+	} elsif "setup.py".IO.f {
+		say "Debhelper-Buildsystem: ", "pybuild";
+	} elsif "configure".IO.f {
+		say "Debhelper-Buildsystem: ", "autoconf";
+	} else {
+		True  # Well, I don't know.
+	}
 }
 
-sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "" )
+sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
 {
 	given $ACTION {
 		when 'f' | 'fetch' {
@@ -159,6 +175,9 @@ sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "" )
 		when 'cache' {
 			flink_cache $TARGET, $ARGV3;
 		}
+		when 'checksum' {
+			flink_checksum $TARGET, $ARGV3, $ARGV4;
+		}
 		when 'u' | 'unfold' {
 			flink_unfold $TARGET;
 		}
@@ -174,8 +193,8 @@ sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "" )
 		when 'deb' {
 			flink_buildpackage $TARGET, '-nc -us -uc';
 		}
-		when 'sb' | 'sbuild' {
-			flink_sbuild $TARGET;
+		when 'g' | 'guess' {
+			flink_guess;
 		}
 		default {
 			die "Unknown action???"
@@ -196,6 +215,8 @@ Actions
    u|unfold <.rcp>          Unfold .rcp file into debianized source tree.
    c|create <name>          Create talky template file: <name>.rcp
    m|minimal <name>         Create minimal template: <name>.rcp
+   g|guess                  Guess recipe for the current source tree,
+                            or just print a minimal template.
    deb <.rcp>               Shortcut: Build .deb files from .rcp
    dsc <.rcp>               Shortcut: Build .dsc files from .rcp
 EOH
