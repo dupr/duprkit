@@ -118,7 +118,7 @@ sub flink_buildpackage (Str $PATH, Str $OPTS)
 	# add something to the pipeline before execution
 	my $fp_shell = open :a, $shell_file;
 	$fp_shell.say: '# Automatically appended by FLINK';
-	$fp_shell.say: 'export $PATH=/usr/lib/ccache:$PATH';
+	$fp_shell.say: 'export PATH=/usr/lib/ccache:$PATH';
 	$fp_shell.say: 'cd $Source';
 	$fp_shell.say: "dpkg-buildpackage $OPTS";
 	$fp_shell.close;

@@ -1,7 +1,6 @@
 Source: blis
 Section: math
 Version: 0.5.2
-Revision: 1
 Description: BLAS-like Library Instantiation Software Framework
 Source-URL: https://github.com/flame/blis/archive/0.5.2.tar.gz
 License: BSD-3-Clause
@@ -10,9 +9,14 @@ Build-Depends: python3
 
 Recipe-Binaries:
   libblis2:
-    install: FIXME
+    install: |
+      usr/lib/*/libblis.so.*
   libblis-dev:
-    install: FIXME
+    install: |
+      usr/lib/*/libblis.so
+      usr/lib/*/libblis.a
+      usr/include
+      usr/share
 
 override_dh_auto_configure: |
   ./configure --prefix=/usr --enable-cblas --enable-static --enable-shared \
