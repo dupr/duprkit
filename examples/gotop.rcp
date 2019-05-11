@@ -1,0 +1,17 @@
+Source: gotop
+Description: A terminal based graphical activity monitor inspired by gtop and vtop
+Section: utils
+Version: 3.0.0
+Source-URL: "https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.tgz"
+License: AGPL-3.0
+Maintainer: M. Zhou <lumin@debian.org>
+
+Recipe-Prep-Source: |
+    flink cache @Source@_@Version@.tar.gz @Source-URL@
+    mkdir -p @Source@
+    tar xvf @Source@_@Version@.tar.gz -C @Source@/
+
+override_dh_dwz:
+
+^ debian/gotop.install
+gotop  usr/bin/
