@@ -22,12 +22,12 @@ utilities are provided to directly build `.deb` or `.dsc` from a recipe file.
 * [Motivation, Targeted Software, and Related Projects](./doc/motivation.md)
 * [Usage Instructions, Examples, FAQ](./doc/instructions.md)
 
-# List of Known Collections
+# List of Known Recipe Collections
 
-* Miscellaneous: https://github.com/dupr/DefaultCollection
-* Source-based Recipe: https://github.com/dupr/DefaultCookbook
-* Binary-based Recipe: https://github.com/dupr/DefaultRepacks
-* Pure-Trick Recipe: https://github.com/dupr/DefaultTricks
+* [DefaultCollection - Miscellaneous Recipe](https://github.com/dupr/DefaultCollection): Submissions are not carefully reviewed here. (Just like AUR)
+* [DefaultCookBook - Curated Source Builds](https://github.com/dupr/DefaultCookbook): Selected recipes that need to be compiled locally.
+* [DefaultBinaryRepacks - Curated Binary Repacks](https://github.com/dupr/DefaultRepacks): Selected recipes that repack upstream binary release.
+* [DefaultTricks - Curated Tricks](https://github.com/dupr/DefaultTricks): Manage Source-less tricks with apt/dpkg.
 
 # Contributing
 
