@@ -377,5 +377,7 @@ if __name__ == '__main__':
         model.save(ag.savepath, verbose=ag.verbose)
     if ag.predict:
         model = Model()
+        if not os.path.exists(ag.model):
+            ag.model = '/usr/share/doc/duprkit/examples/license-cls-knn.json'
         model.load(ag.model, verbose=ag.verbose)
         model.predict(ag.predict, topK=ag.topk, reject=ag.reject)
