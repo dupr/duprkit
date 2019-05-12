@@ -215,6 +215,19 @@ sub flink_guess () {
 		say ' ' x 8, 'install: |';
 		say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
 	}
+	if qx/find . -maxdepth 2 -type d -name include/.chomp.chars > 0 {
+		say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '0', ':';
+		say ' ' x 8, 'install: |';
+		say ' ' x 12, 'usr/lib/*.so.*';
+		say ' ' x 12, 'usr/lib/*/*.so.*';
+		say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '-dev', ':';
+		say ' ' x 8, 'install: |';
+		say ' ' x 12, 'usr/lib/*.so';
+		say ' ' x 12, 'usr/lib/*.a';
+		say ' ' x 12, 'usr/lib/*/*.so';
+		say ' ' x 12, 'usr/lib/*/*.a';
+		say ' ' x 12, 'usr/include';
+	}
 	say '';
 	if 'CMakeLists.txt'.IO.f {
 		say 'override_dh_auto_configure: |';
