@@ -167,8 +167,6 @@ sub flink_guess () {
 	# /usr/share/perl5/Debian/Debhelper/Buildsystem/
 	if "CMakeLists.txt".IO.f {
 		say "Debhelper-Buildsystem: ", "cmake";
-	} elsif "configure".IO.f {
-		say "Debhelper-Buildsystem: ", "autoconf";
 	} elsif "setup.py".IO.f {
 		# NOTE Don't ever use the deprecated python_distutils build system
 		say "Debhelper-Buildsystem: ", "pybuild";
@@ -186,10 +184,13 @@ sub flink_guess () {
 		say "Debhelper-Buildsystem: ", "perl_build";
 	} elsif "Makefile.PL".IO.f {
 		say "Debhelper-Buildsystem: ", "perl_makemaker";
-	} elsif "Makefile".IO.f {
-		say "Debhelper-Buildsystem: ", "makefile";
 	} elsif "BUILD".IO.f || "WORKSPACE".IO.f {
 		say "Debhelper-Buildsystem: ", "bazel (Not Yet Supported)";
+	} elsif "configure".IO.f {
+		say "Debhelper-Buildsystem: ", "autoconf";
+	} elsif "Makefile".IO.f {
+		# XXX The most common one is last checked
+		say "Debhelper-Buildsystem: ", "makefile";
 	} else {
 		# Well, I don't know.
 	}
