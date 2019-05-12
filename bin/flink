@@ -188,6 +188,8 @@ sub flink_guess () {
 		say "Debhelper-Buildsystem: ", "perl_makemaker";
 	} elsif "Makefile".IO.f {
 		say "Debhelper-Buildsystem: ", "makefile";
+	} elsif "BUILD".IO.f || "WORKSPACE".IO.f {
+		say "Debhelper-Buildsystem: ", "bazel (Not Yet Supported)";
 	} else {
 		# Well, I don't know.
 	}
