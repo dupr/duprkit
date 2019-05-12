@@ -11,8 +11,9 @@ install: install-vim install-bin install-examples
 
 install-bin:
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
-	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
 	install -Dm0755 bin/flinkH $(DESTDIR)/$(BINDIR)/flinkH
+	install -Dm0755 bin/flinkV $(DESTDIR)/$(BINDIR)/flinkV
+	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
 
 install-examples:
 	install -Dm0644 examples/template.rcp $(DESTDIR)/$(EXAMPLEDIR)/template.rcp
