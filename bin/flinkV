@@ -3,9 +3,9 @@
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
 # License: MIT/Expat
 from typing import *
-import argparse, re, os, sys, json, glob, pickle, math
+import argparse, re, os, sys, json, glob, math
 from collections import Counter, defaultdict
-# NOTE: we don't use non-standard python libraries so pypy (JIT) can run
+import numpy as np
 '''
 Licensecheck-NG
 ===============
@@ -149,17 +149,136 @@ the more similar the two sequences are.
 
 class Model(object):
     '''
-    Model that leverages Bag-of-Words Representation
+    Model that leverages N-gram Bag-of-Words Representation. Vectors are
+    compared with k-NN (k=1) with cosine distance as the metric.
     '''
     def __init__(self):
-        self.vocab_1gram = Counter()
-        self.vocab_2gram = Counter()
-        self.vocab_3gram = Counter()
+        # n-gram vocab lists. ordered lists of (strings, or list of strings).
+        self.vocab_1gram = list()
+        self.vocab_2gram = list()
+        self.vocab_3gram = list()
+        # bag-of-words vectors for licenses. maps a license-name to a vector.
         self.vectors_1gram = dict()
         self.vectors_2gram = dict()
         self.vectors_3gram = dict()
 
-    def cosSim(self, vecA: Counter, vecB: Counter) -> float:
+    def save(self, path: str):
+        '''
+        save the model to <path>
+        '''
+        learned = dict()
+        learned['vocab_1gram'] = self.vocab_1gram
+        learned['vocab_2gram'] = self.vocab_2gram
+        learned['vocab_3gram'] = self.vocab_3gram
+        learned['vectors_1gram'] = self.vectors_1gram
+        learned['vectors_2gram'] = self.vectors_2gram
+        learned['vectors_3gram'] = self.vectors_3gram
+        with open(path, 'wt') as f:
+            json.dump(learned, f)
+
+    def load(self, path: str):
+        '''
+        load the model from <path>
+        '''
+        with open(path, 'rt') as f:
+            learned = json.load(f)
+        self.vocab_1gram = learned['vocab_1gram']
+        self.vocab_2gram = learned['vocab_2gram']
+        self.vocab_3gram = learned['vocab_3gram']
+        self.vectors_1gram = leanred['vectors_1gram']
+        self.vectors_2gram = leanred['vectors_2gram']
+        self.vectors_3gram = leanred['vectors_3gram']
+
+    def train(self, data: Dict):
+        '''
+        train model from the given dataset. dataset format:
+        Dict(
+            License-Name -> Token-Sequence
+        )
+        '''
+        # Collect vocabulary and Memorize vectors
+        dc1g, dc2g, dc3g = dict(), dict(), dict()  # d(ict)c(ounter)
+        vo1g, vo2g, vo3g = set(), set(), set()  # vo(cab)
+        # go through data
+        for k, v in data.items():
+            if len(v) < 3:
+                raise Exception('Token sequence too short!')
+            c1g, c2g, c3g = Counter(), Counter(), Counter()
+            for i in range(2, len(v)):
+                unigram, bigram = [v[i]], [v[i-1], v[i]]
+                trigram = [v[i-2], v[i-1], v[i]]
+                c1g.update(unigram)
+                c2g.update(bigram)
+                c3g.update(trigram)
+                vo1g.update(unigram)
+                vo2g.update(bigram)
+                vo3g.update(trigram)
+            dc1g[k], dc2g[k], dc3g[k] = c1g, c2g, c3g
+        # finalize vocabulary list
+        self.vocab_1gram = list(sorted(vo1g))
+        self.vocab_2gram = list(sorted(vo2g))
+        self.vocab_3gram = list(sorted(vo3g))
+        # finalize bag-of-words vectors
+        dv1g, dv2g, dv3g = dict(), dict(), dict()  # d(ict)v(ector)
+        for k in data.keys():
+            v1g, v2g, v3g = [0]*len(vo1g), [0]*len(vo2g), [0]*len(vo3g)
+            for (i, word) in enumerate(self.vocab_1gram):
+                v1g[i] = dc1g[k].get(word, 0)
+            for (i, word) in enumerate(self.vocab_2gram):
+                v2g[i] = dc2g[k].get(word, 0)
+            for (i, word) in enumerate(self.vocab_3gram):
+                v3g[i] = dc3g[k].get(word, 0)
+            dv1g[k], dv2g[k], dv3g[k] = v1g, v2g, v3g
+        self.vectors_1gram = dv1g
+        self.vectors_2gram = dv2g
+        self.vectors_3gram = dv3g
+        # statistics
+        print('Vocabulary Size:',
+                '1-Gram[', len(self.vocab_1gram), ']',
+                '2-Gram[', len(self.vocab_2gram), ']',
+                '3-Gram[', len(self.vocab_3gram), ']')
+        for k in data.keys():
+            print(k)
+            print('\t1-Gram |',
+                'Sum[', np.sum(self.vectors_1gram[k]), ']',
+                'Max[', np.max(self.vectors_1gram[k]), ']',
+                'Mean[', np.mean(self.vectors_1gram[k]), ']')
+            print('\t2-Gram |',
+                'Sum[', np.sum(self.vectors_2gram[k]), ']',
+                'Max[', np.max(self.vectors_2gram[k]), ']',
+                'Mean[', np.mean(self.vectors_2gram[k]), ']')
+            print('\t3-Gram |',
+                'Sum[', np.sum(self.vectors_3gram[k]), ']',
+                'Max[', np.max(self.vectors_3gram[k]), ']',
+                'Mean[', np.mean(self.vectors_3gram[k]), ']')
+
+    def readTokens(self, path: str) -> List:
+        '''
+        read a text file and turn it into a token sequence.
+        the tokenization could be improved.
+        '''
+        with open(path, 'rt') as f:
+            text = re.sub('\W', ' ', f.read()).lower()
+        tokens = text.split()
+        return tokens
+
+    def train_datadir(self, datadir: str, savepath: str = 'model.json'):
+        '''
+        Train the model from the given directory
+        '''
+        print(f'Collecting data from {datadir}/* ...')
+        files, data = glob.glob(f'{datadir}/*'), dict()
+        for f in files:
+            tokens = self.readTokens(f)
+            data[os.path.basename(f)] = tokens
+            print(f'{len(tokens)} ', end='')
+        print()
+        print('Training model ...')
+        self.train(data)
+        self.save(savepath)
+        print(f'Model saved to {savepath}')
+
+    def XcosSim(self, vecA: Counter, vecB: Counter) -> float:
         '''
         cosine similarity
         '''
@@ -172,51 +291,6 @@ class Model(object):
             vB.append(vecB.get(k, 0) / float(denomB))
         dot = [vA[i]*vB[i] for i in range(len(vA))]
         return sum(dot)
-
-    def train(self, data: Dict):
-        '''
-        train model from the given dataset
-        dataset format:
-        Dict(
-            License name -> Tokens
-        )
-        '''
-        # Collect vocabulary and Memorize vectors
-        for k, v in data.items():
-            # 1-gram
-            self.vectors_1gram[k] = Counter(v)
-            self.vocab_1gram.update(self.vectors_1gram[k])
-            # 2-gram
-            vec2g = Counter()
-            for i in range(1, len(v)):
-                vec2g.update([(v[i-1], v[i])])
-            self.vectors_2gram[k] = vec2g
-            self.vocab_2gram.update(vec2g)
-            # 3-gram
-            vec3g = Counter()
-            for i in range(2, len(v)):
-                vec3g.update([(v[i-2],v[i-1],v[i])])
-            self.vectors_3gram[k] = vec3g
-            self.vocab_3gram.update(vec3g)
-        # training statistics
-        print('1-Gram | Training Data:',
-                f'{len(self.vocab_1gram)} vocabs',
-                f'{sum(self.vocab_1gram.values())} tally',
-                sep='\t')
-        print('2-Gram | Training Data:',
-                f'{len(self.vocab_2gram)} vocabs',
-                f'{sum(self.vocab_2gram.values())} tally',
-                sep='\t')
-        print('3-Gram | Training Data:',
-                f'{len(self.vocab_3gram)} vocabs',
-                f'{sum(self.vocab_3gram.values())} tally',
-                sep='\t')
-        for k in data.keys():
-            print(f'{k}:'.rjust(42),
-                f'1-Gram[', '%6d'%len(self.vectors_1gram[k]), ']\t',
-                f'2-Gram[', '%6d'%len(self.vectors_2gram[k]), ']\t',
-                f'3-Gram[', '%6d'%len(self.vectors_3gram[k]), ']\t')
-
 
     def predict(self, path: str, topK: int = 1):
         # tokenization
@@ -259,27 +333,6 @@ class Model(object):
                 '3-Gram[', '%.3f' % scores[k][2], ']')
 
 
-def train(datadir: str):
-    '''
-    Train the model from the given directory
-    '''
-    print('Collecting data from ./data ...')
-    files = glob.glob('data/*')
-    data = dict()
-    for f in files:
-        # tokenization
-        text = re.sub('\W', ' ', open(f).read()).lower()
-        tokens = text.split()
-        print(f'{len(tokens)} ', end='')
-        data[os.path.basename(f)] = tokens
-    print()
-    print('Training model ...')
-    model = Model()
-    model.train(data)
-    pickle.dump(model, open('model.pkl', 'wb'))
-    print('Model saved to model.pkg')
-
-
 if __name__ == '__main__':
     ag = argparse.ArgumentParser()
     ag.add_argument('--train', type=str, default='',
@@ -289,8 +342,11 @@ if __name__ == '__main__':
     ag.add_argument('--topk', type=int, default=1)
     ag = ag.parse_args()
 
+    if ag.train and ag.predict:
+        raise Exception('cannot do both at the same time')
     if ag.train:
-        train(ag.train)
-    elif ag.predict:
+        model = Model()
+        model.train_datadir(ag.train)
+    if ag.predict:
         model = pickle.load(open('model.pkl', 'rb'))
         model.predict(ag.predict, topK=ag.topk)
