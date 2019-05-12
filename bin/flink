@@ -30,18 +30,36 @@ constant $PYTHON3 = '/usr/bin/python3';
 constant $FLINKH = '/usr/bin/flinkH';
 constant $FLINK = '/usr/bin/flink';
 constant $CACHEDIR = "$*HOME/.cache/duprkit/distfiles/";
+constant $CONFIG = "$*HOME/.cache/duprkit/config";
+constant $CACHE = "$*HOME/.cache/duprkit/";
 constant $_C162 = "\x1b[1;38;5;162m";
 constant $_C36  = "\x1b[1;36m";
 constant $_c    = "\x1b[0m";
+constant $COLLECTIONS = qq :heredoc/EOH/;
+https://github.com/dupr/DefaultCollection
+https://github.com/dupr/DefaultCookbook
+https://github.com/dupr/DefaultRepacks
+https://github.com/dupr/DefaultTricks
+EOH
 
 sub flink_fetch () {
-	if $DUPR_DEFCOLL.IO.d {
-		say "{$_C162}→ Cloning {$_C36}DefaultCollection{$_C162} ...{$_c}";
-		chdir $DUPR_DEFCOLL;
-		run $GIT, 'pull';
-	} else {
-		say "{$_C162}→ Pulling {$_C36}DefaultCollection{$_C162} ...{$_c}";
-		run $GIT, 'clone', 'https://github.com/dupr/DefaultCollection',  $DUPR_DEFCOLL;
+	# check config file
+	if not $CONFIG.IO.f {
+		$CONFIG.IO.dirname.IO.mkdir;
+		$CONFIG.IO.spurt($COLLECTIONS);
+	}
+	chdir $CACHE;
+	for 'config'.IO.lines {
+		my $collname = $_.IO.basename;
+		if $collname.IO.d {
+			say "{$_C162}→ Pulling {$_C36}{$_}{$_C162} ...{$_c}";
+			chdir $collname;
+			run $GIT, 'pull';
+			chdir '..';
+		} else {
+			say "{$_C162}→ Cloning {$_C36}{$_}{$_C162} ...{$_c}";
+			run $GIT, 'clone', $_, $collname;
+		}
 	}
 }
 
