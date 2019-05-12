@@ -139,28 +139,44 @@ sub flink_buildpackage (Str $PATH, Str $OPTS)
 }
 
 sub flink_guess () {
-	say "Source: ", '.'.IO.absolute.IO.basename;
-	say "Section: ", 'utils';
-	say "Version: ", '.git/config'.IO.f ?? qx!git describe --tags 2>/dev/null!.chomp !! '0';
-	say "Description: ", '.'.IO.absolute.IO.basename;
+	# detection
+	my $source = '.'.IO.absolute.IO.basename;
+	my $version = '0.0';
 	if '.git/config'.IO.f {
-		my $homepage = qx/git remote get-url origin/.chomp
-			.subst(':', '/').subst('git@', 'https://');
-		say 'Homepage: ', $homepage;
+		if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
+			$version ~= '~git.'~qx!git describe --tags 2>/dev/null!.chomp;
+		} else {
+			$version ~= '~git.master';
+		}
 	}
+	my $homepage = '';
+	if '.git/config'.IO.f {
+		$homepage = qx/git remote get-url origin/.chomp
+			.subst(':', '/').subst('git@', 'https://');
+	}
+	my $license = '';
 	if 'LICENSE'.IO.f || 'COPYING'.IO.f {
 		# FIXME use flinkV
 		if 'LICENSE'.IO.f {
 			my $tmp = 'LICENSE'.IO.slurp;
 			if $tmp ~~ /MIT/ {
-				say 'License: ', 'MIT';
+				$license = 'MIT';
 			}
 		} elsif 'COPYING'.IO.f {
 			my $tmp = 'LICENSE'.IO.slurp;
 			if $tmp ~~ /MIT/ {
-				say 'License: ', 'MIT';
+				$license = 'MIT';
 			}
 		}
+	}
+	# let's guess
+	say "Source: ", $source;
+	say "Section: ", 'utils';
+	say "Version: ", $version;
+	say "Description: ", $source;
+	say 'Homepage: ', $homepage;
+	if 'LICENSE'.IO.f || 'COPYING'.IO.f {
+		say 'License: ', $license;
 	} else {
 		# FIXME call autoscanner
 	}
@@ -195,7 +211,7 @@ sub flink_guess () {
 		# Well, I don't know.
 	}
 	if '.git/config'.IO.f {
-		say 'Uscan: ', qx/git remote get-url origin/.chomp;
+		say 'Uscan: ', $homepage;
 	}
 	say '';
 	say 'Recipe-Binaries:';
@@ -237,9 +253,14 @@ sub flink_guess () {
 }
 
 sub flink_boldguess () {
-	shell 'flink guess > flinkBoldGuess.rcp';
+	shell 'flink guess | tee flinkBoldGuess.rcp';
 	shell 'flinkH gen_debian -y flinkBoldGuess.rcp -d .';
 	'flinkBoldGuess.rcp'.IO.unlink;
+}
+
+sub flink_reckless () {
+	flink_boldguess;
+	shell 'dpkg-buildpackage -nc -us -uc;';
 }
 
 sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
@@ -285,6 +306,9 @@ sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
 		when 'bg' | 'boldguess' {
 			flink_boldguess;
 		}
+		when 'reckless' {
+			flink_reckless;
+		}
 		default {
 			die "Unknown action???"
 		}
@@ -307,6 +331,7 @@ Actions
    g|guess                  Guess recipe for the current source tree,
                             or just print a minimal template
    bg|boldguess             Guess and directly generate debian directory
+   reckless                 Bold guess and trigger dpkg-buildpackage
    deb <.rcp>               Shortcut: Build .deb files from .rcp
    dsc <.rcp>               Shortcut: Build .dsc files from .rcp
 EOH
