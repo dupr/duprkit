@@ -3,7 +3,7 @@
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
 # License: MIT/Expat
 from typing import *
-import argparse, re, os, sys, json, glob, math
+import argparse, re, os, sys, json, glob, math, random, pprint
 from collections import Counter, defaultdict
 import numpy as np
 '''
@@ -162,11 +162,18 @@ class Model(object):
         self.vectors_2gram = dict()
         self.vectors_3gram = dict()
 
-    def save(self, path: str):
+    def save(self, path: str, verbose: bool = False):
         '''
         save the model to <path>
         '''
         learned = dict()
+        if verbose:
+            print('Random 1-Gram samples')
+            pprint.pprint(random.sample(self.vocab_1gram, 10))
+            print('Random 2-Gram samples')
+            pprint.pprint(random.sample(self.vocab_2gram, 10))
+            print('Random 3-Gram samples')
+            pprint.pprint(random.sample(self.vocab_3gram, 10))
         learned['vocab_1gram'] = self.vocab_1gram
         learned['vocab_2gram'] = self.vocab_2gram
         learned['vocab_3gram'] = self.vocab_3gram
@@ -174,20 +181,27 @@ class Model(object):
         learned['vectors_2gram'] = self.vectors_2gram
         learned['vectors_3gram'] = self.vectors_3gram
         with open(path, 'wt') as f:
-            json.dump(learned, f)
+            json.dump(learned, f, indent=2)
 
-    def load(self, path: str):
+    def load(self, path: str, verbose: bool = False):
         '''
         load the model from <path>
         '''
         with open(path, 'rt') as f:
             learned = json.load(f)
         self.vocab_1gram = learned['vocab_1gram']
-        self.vocab_2gram = learned['vocab_2gram']
-        self.vocab_3gram = learned['vocab_3gram']
-        self.vectors_1gram = leanred['vectors_1gram']
-        self.vectors_2gram = leanred['vectors_2gram']
-        self.vectors_3gram = leanred['vectors_3gram']
+        self.vocab_2gram = list(tuple(x) for x in learned['vocab_2gram'])
+        self.vocab_3gram = list(tuple(x) for x in learned['vocab_3gram'])
+        self.vectors_1gram = learned['vectors_1gram']
+        self.vectors_2gram = learned['vectors_2gram']
+        self.vectors_3gram = learned['vectors_3gram']
+        if verbose:
+            print('Random 1-Gram samples')
+            pprint.pprint(random.sample(self.vocab_1gram, 10))
+            print('Random 2-Gram samples')
+            pprint.pprint(random.sample(self.vocab_2gram, 10))
+            print('Random 3-Gram samples')
+            pprint.pprint(random.sample(self.vocab_3gram, 10))
 
     def train(self, data: Dict):
         '''
@@ -205,8 +219,8 @@ class Model(object):
                 raise Exception('Token sequence too short!')
             c1g, c2g, c3g = Counter(), Counter(), Counter()
             for i in range(2, len(v)):
-                unigram, bigram = [v[i]], [v[i-1], v[i]]
-                trigram = [v[i-2], v[i-1], v[i]]
+                unigram, bigram = [v[i]], [(v[i-1], v[i])]
+                trigram = [(v[i-2], v[i-1], v[i])]
                 c1g.update(unigram)
                 c2g.update(bigram)
                 c3g.update(trigram)
@@ -262,7 +276,7 @@ class Model(object):
         tokens = text.split()
         return tokens
 
-    def train_datadir(self, datadir: str, savepath: str = 'model.json'):
+    def train_datadir(self, datadir: str):
         '''
         Train the model from the given directory
         '''
@@ -275,8 +289,6 @@ class Model(object):
         print()
         print('Training model ...')
         self.train(data)
-        self.save(savepath)
-        print(f'Model saved to {savepath}')
 
     def XcosSim(self, vecA: Counter, vecB: Counter) -> float:
         '''
@@ -292,54 +304,69 @@ class Model(object):
         dot = [vA[i]*vB[i] for i in range(len(vA))]
         return sum(dot)
 
-    def predict(self, path: str, topK: int = 1):
-        # tokenization
-        text = re.sub('\W', ' ', open(path).read()).lower()
-        tokens = text.split()
-        # 1-gram and score
-        common_tokens = set(tokens).intersection(set(self.vocab_1gram.keys()))
-        vector_raw = Counter(tokens)
-        vector = {k: vector_raw[k] for k in common_tokens}
-        scores = defaultdict(list)
-        for k, v in self.vectors_1gram.items():
-            scores[k].append(self.cosSim(v, vector))
-        # 2-gram and score
-        vec2g = Counter()
-        for i in range(1, len(tokens)):
-            token2g = (tokens[i-1], tokens[i])
-            if token2g in self.vocab_2gram.keys():
-                vec2g.update([token2g])
-        for k, v in self.vectors_2gram.items():
-            scores[k].append(self.cosSim(v, vec2g))
-        # 3-gram and score
-        vec3g = Counter()
+    def predict(self, path: str, topK: int = 1, reject: float = 0.8):
+        '''
+        compare the given file with the learned data.
+        unseen words will simply be discarded.
+        '''
+        if not self.vocab_1gram:
+            raise Exception("An un-trained model cannot predict.")
+        tokens = self.readTokens(path)
+        if len(tokens) < 3:
+            raise Exception("Token sequence too short!")
+        v1g = np.zeros(len(self.vocab_1gram))
+        v2g = np.zeros(len(self.vocab_2gram))
+        v3g = np.zeros(len(self.vocab_3gram))
         for i in range(2, len(tokens)):
-            token3g = (tokens[i-2], tokens[i-1], tokens[i])
-            if token3g in self.vocab_3gram.keys():
-                vec3g.update([token3g])
-        for k, v in self.vectors_3gram.items():
-            scores[k].append(self.cosSim(v, vec3g))
-
-        # aggregation
-        score_aggregated = sorted(
-                [(k, 0.33*scores[k][0] + 0.33*scores[k][1] + 0.34*scores[k][2])
-                    for k in self.vectors_2gram.keys()],
-                key=lambda x: x[1], reverse=True)
-        for k, s in score_aggregated[:topK]:
-            print(f'{k} similarity:'.rjust(42),
-                '\t%.3f\t' % s,
-                '1-Gram[', '%.3f' % scores[k][0], ']\t,',
-                '2-Gram[', '%.3f' % scores[k][1], ']\t,',
-                '3-Gram[', '%.3f' % scores[k][2], ']')
+            unigram, bigram = tokens[i], (tokens[i-1], tokens[i])
+            trigram = (tokens[i-2], tokens[i-1], tokens[i])
+            if unigram in self.vocab_1gram:
+                v1g[self.vocab_1gram.index(unigram)] += 1
+            if bigram in self.vocab_2gram:
+                v2g[self.vocab_2gram.index(bigram)] += 1
+            if trigram in self.vocab_3gram:
+                v3g[self.vocab_3gram.index(trigram)] += 1
+        # put the vector onto the unit hypersphere
+        v1g = v1g / np.sqrt(np.power(v1g, 2).sum())
+        v2g = v2g / np.sqrt(np.power(v2g, 2).sum())
+        v3g = v3g / np.sqrt(np.power(v3g, 2).sum())
+        # get the training set matrices and put them onto the hypersphere
+        licenses = list(sorted(self.vectors_1gram.keys()))
+        t1g = np.vstack([self.vectors_1gram[k] for k in licenses])
+        t1g = t1g / np.sqrt(np.power(t1g, 2).sum(1).reshape(t1g.shape[0], 1))
+        t2g = np.vstack([self.vectors_2gram[k] for k in licenses])
+        t2g = t2g / np.sqrt(np.power(t2g, 2).sum(1).reshape(t2g.shape[0], 1))
+        t3g = np.vstack([self.vectors_3gram[k] for k in licenses])
+        t3g = t3g / np.sqrt(np.power(t3g, 2).sum(1).reshape(t3g.shape[0], 1))
+        # let's aggregate and compare
+        scores1g = t1g @ v1g
+        scores2g = t2g @ v2g
+        scores3g = t3g @ v3g
+        scores = (scores1g + scores2g + scores3g)/3.0
+        sims = (scores * 100).astype(np.int)
+        # do we reject?
+        if scores.max() < reject:
+            print(f'Unknown (Rejected; Max Similarity {sims.max()}%)')
+        # report topK results
+        for i in scores.argsort()[::-1][:topK]:
+            print(licenses[i], f'(Similarity: {sims[i]}%)')
 
 
 if __name__ == '__main__':
     ag = argparse.ArgumentParser()
     ag.add_argument('--train', type=str, default='',
             help='Train the model from the given directory')
+    ag.add_argument('--savepath', type=str, default='model.json',
+            help='Where to store the trained model (json)')
     ag.add_argument('--predict', type=str, default='',
             help='Try to classify the given file')
-    ag.add_argument('--topk', type=int, default=1)
+    ag.add_argument('--model', type=str, default='model.json',
+            help='Location of pre-trained model (json)')
+    ag.add_argument('--topk', type=int, default=1,
+            help='Print top-K similar results')
+    ag.add_argument('--reject', type=float, default=0.8,
+            help='Threshold under which the model rejects to classify')
+    ag.add_argument('--verbose', action='store_true')
     ag = ag.parse_args()
 
     if ag.train and ag.predict:
@@ -347,6 +374,8 @@ if __name__ == '__main__':
     if ag.train:
         model = Model()
         model.train_datadir(ag.train)
+        model.save(ag.savepath, verbose=ag.verbose)
     if ag.predict:
-        model = pickle.load(open('model.pkl', 'rb'))
-        model.predict(ag.predict, topK=ag.topk)
+        model = Model()
+        model.load(ag.model, verbose=ag.verbose)
+        model.predict(ag.predict, topK=ag.topk, reject=ag.reject)
