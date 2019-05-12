@@ -11,16 +11,17 @@ packaging recipe, aiming at reducing the source tree debianization workload.
 A recipe can be directly translated into a `debian/` directory, and helper
 utilities are provided to directly build `.deb` or `.dsc` from a recipe file.
 
+More info about motivation, targeted software, and related projects can be found
+[HERE](./doc/motivation.md).
+
+Documentations such as usage instruction, examples and FAQ can be found
+[HERE](./doc/instructions.md).
+
 # Highlights
 
 * Recipe is a light-weight DSL (Domain Specific Language) combining YAML and HFT.
 
 * More.
-
-# Documentations
-
-* [Motivation, Targeted Software, and Related Projects](./doc/motivation.md)
-* [Usage Instructions, Examples, FAQ](./doc/instructions.md)
 
 # List of Known Recipe Collections
 
