@@ -159,7 +159,7 @@ sub flink_buildpackage (Str $PATH, Str $OPTS)
 sub flink_guess () {
     # detection
     my $source = '.'.IO.absolute.IO.basename;
-    my $version = '0.0';
+    my $version = '0';
     if '.git/config'.IO.f {
         if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
             $version ~= '~git.'~qx!git describe --tags 2>/dev/null!.chomp;
@@ -233,22 +233,29 @@ sub flink_guess () {
     }
     say '';
     say 'Recipe-Binaries:';
+    # what can be installed in the main package?
     say ' ' x 4, '.'.IO.absolute.IO.basename, ':';
-    if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
-        say ' ' x 8, 'docs: |';
-        say(' ' x 12, 'README.md') if 'README.md'.IO.f;
-        say(' ' x 12, 'doc/*') if 'doc'.IO.d;
-        say(' ' x 12, 'docs/*') if 'docs'.IO.d;
-    }
-    if 'example'.IO.d || 'examples'.IO.d {
-        say ' ' x 8, 'examples: |';
-        say(' ' x 12, 'example/*') if 'example'.IO.d;
-        say(' ' x 12, 'examples/*') if 'examples'.IO.d;
-    }
     if 'bin'.IO.d {
         say ' ' x 8, 'install: |';
         say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
     }
+	# what can be installed in the doc package?
+    if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f ||
+	   'example'.IO.d || 'examples'.IO.d {
+        say ' ' x 4, '.'.IO.absolute.IO.basename, '-doc:';
+		if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
+			say ' ' x 8, 'docs: |';
+			say(' ' x 12, 'README.md') if 'README.md'.IO.f;
+			say(' ' x 12, 'doc/*') if 'doc'.IO.d;
+			say(' ' x 12, 'docs/*') if 'docs'.IO.d;
+		}
+		if 'example'.IO.d || 'examples'.IO.d {
+			say ' ' x 8, 'examples: |';
+			say(' ' x 12, 'example/*') if 'example'.IO.d;
+			say(' ' x 12, 'examples/*') if 'examples'.IO.d;
+		}
+    }
+	# if the tree looks like something producing shared objects
     if qx/find . -maxdepth 2 -type d -name include/.chomp.chars > 0 {
         say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '0', ':';
         say ' ' x 8, 'install: |';
@@ -262,6 +269,7 @@ sub flink_guess () {
         say ' ' x 12, 'usr/lib/*/*.a';
         say ' ' x 12, 'usr/include';
     }
+	# provide possible overrides
     say '';
     if 'CMakeLists.txt'.IO.f {
         say 'override_dh_auto_configure: |';
