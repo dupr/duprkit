@@ -200,8 +200,6 @@ if __name__ == '__main__':
             help='Train the model from the given directory')
     ag.add_argument('--savename', type=str, default='model',
             help='Where to store the trained model (json,npz)')
-    ag.add_argument('--predict', type=str, default='',
-            help='Try to classify the given file')
     ag.add_argument('--model', type=str, default='model',
             help='Location of pre-trained model (json,npz)')
     ag.add_argument('--topk', type=int, default=1,
@@ -209,17 +207,17 @@ if __name__ == '__main__':
     ag.add_argument('--reject', type=float, default=0.8,
             help='Threshold under which the model rejects to classify')
     ag.add_argument('--verbose', action='store_true')
+    ag.add_argument('target', type=str, default='', nargs='?',
+            help='Try to predict label of the given file')
     ag = ag.parse_args()
 
-    if ag.train and ag.predict:
-        raise Exception('cannot do both at the same time')
     if ag.train:
         model = Model()
         model.train_datadir(ag.train)
         model.save(ag.savename)
-    if ag.predict:
+    if ag.target:
         model = Model()
         if not os.path.exists(ag.model + '.json'):
             ag.model = '/usr/share/doc/duprkit/examples/license-cls-knn'
         model.load(ag.model)
-        model.predict(ag.predict, topK=ag.topk, reject=ag.reject)
+        model.predict(ag.target, topK=ag.topk, reject=ag.reject)

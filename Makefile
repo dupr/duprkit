@@ -26,6 +26,7 @@ install-vim:
 
 install-pretrained: train
 	install -Dm0644 license-cls-knn.json $(DESTDIR)/$(EXAMPLEDIR)/license-cls-knn.json
+	install -Dm0644 license-cls-knn.npz $(DESTDIR)/$(EXAMPLEDIR)/license-cls-knn.npz
 
 train:
 	$(MAKE) -Cdata training
