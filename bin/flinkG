@@ -1,0 +1,135 @@
+#!/usr/bin/perl6
+=begin DESCRIPTION
+  flinkG: Debian User Recipe Guesser
+  Copyright (C) 2019 M. Zhou <lumin@debian.org>
+  
+  flinkG is able to guess "how to cook the source tree under the current
+  working directory", treating Recipe/HFT as sort of intermediate
+  representation of Debian packaging files.
+
+  Usage: flinkG
+=end DESCRIPTION
+constant $__version__ = '0.1a';
+
+sub MAIN ()
+{
+    # detection
+    my $source = '.'.IO.absolute.IO.basename;
+    my $version = '0';
+    if '.git/config'.IO.f {
+        if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
+            $version ~= '~git.'~qx!git describe --tags 2>/dev/null!.chomp;
+        } else {
+            $version ~= '~git.master';
+        }
+    }
+    my $homepage = '';
+    if '.git/config'.IO.f {
+        $homepage = qx/git remote get-url origin/.chomp
+            .subst(':', '/').subst('git@', 'https://');
+    }
+    my $license = '';
+    if 'LICENSE'.IO.f || 'COPYING'.IO.f {
+        # FIXME use flinkV
+        if 'LICENSE'.IO.f {
+            my $tmp = 'LICENSE'.IO.slurp;
+            if $tmp ~~ /MIT/ {
+                $license = 'MIT';
+            }
+        } elsif 'COPYING'.IO.f {
+            my $tmp = 'LICENSE'.IO.slurp;
+            if $tmp ~~ /MIT/ {
+                $license = 'MIT';
+            }
+        }
+    }
+    # let's guess
+    say "Source: ", $source;
+    say "Section: ", 'utils';
+    say "Version: ", $version;
+    say "Description: ", $source;
+    say 'Homepage: ', $homepage;
+    if 'LICENSE'.IO.f || 'COPYING'.IO.f {
+        say 'License: ', $license;
+    } else {
+        # FIXME call autoscanner
+    }
+    # /usr/share/perl5/Debian/Debhelper/Buildsystem/
+    if "CMakeLists.txt".IO.f {
+        say "Debhelper-Buildsystem: ", "cmake";
+    } elsif "setup.py".IO.f {
+        # NOTE Don't ever use the deprecated python_distutils build system
+        say "Debhelper-Buildsystem: ", "pybuild";
+    } elsif "build.rs".IO.f || "Cargo.toml".IO.f {
+        say "Debhelper-Buildsystem: ", "cargo";
+    } elsif "go.mod".IO.f || "main.go".IO.f {
+        say "Debhelper-Buildsystem: ", "golang";
+    } elsif "build.xml".IO.f {
+        say "Debhelper-Buildsystem: ", "ant";
+    } elsif "meson.build".IO.f {
+        say "Debhelper-Buildsystem: ", "meson";
+    } elsif "build.ninja".IO.f {
+        say "Debhelper-Buildsystem: ", "ninja";
+    } elsif "Build.PL".IO.f {
+        say "Debhelper-Buildsystem: ", "perl_build";
+    } elsif "Makefile.PL".IO.f {
+        say "Debhelper-Buildsystem: ", "perl_makemaker";
+    } elsif "BUILD".IO.f || "WORKSPACE".IO.f {
+        say "Debhelper-Buildsystem: ", "bazel (Not Yet Supported)";
+    } elsif "configure".IO.f {
+        say "Debhelper-Buildsystem: ", "autoconf";
+    } elsif "Makefile".IO.f {
+        # XXX The most common one is last checked
+        say "Debhelper-Buildsystem: ", "makefile";
+    } else {
+        # Well, I don't know.
+    }
+    if '.git/config'.IO.f {
+        say 'Uscan: ', $homepage;
+    }
+    say '';
+    say 'Recipe-Binaries:';
+    # what can be installed in the main package?
+    say ' ' x 4, '.'.IO.absolute.IO.basename, ':';
+    if 'bin'.IO.d {
+        say ' ' x 8, 'install: |';
+        say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
+    }
+	# what can be installed in the doc package?
+    if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f ||
+	   'example'.IO.d || 'examples'.IO.d {
+        say ' ' x 4, '.'.IO.absolute.IO.basename, '-doc:';
+		if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
+			say ' ' x 8, 'docs: |';
+			say(' ' x 12, 'README.md') if 'README.md'.IO.f;
+			say(' ' x 12, 'doc/*') if 'doc'.IO.d;
+			say(' ' x 12, 'docs/*') if 'docs'.IO.d;
+		}
+		if 'example'.IO.d || 'examples'.IO.d {
+			say ' ' x 8, 'examples: |';
+			say(' ' x 12, 'example/*') if 'example'.IO.d;
+			say(' ' x 12, 'examples/*') if 'examples'.IO.d;
+		}
+    }
+	# if the tree looks like something producing shared objects
+    if qx/find . -maxdepth 2 -type d -name include/.chomp.chars > 0 {
+        say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '0', ':';
+        say ' ' x 8, 'install: |';
+        say ' ' x 12, 'usr/lib/*.so.*';
+        say ' ' x 12, 'usr/lib/*/*.so.*';
+        say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '-dev', ':';
+        say ' ' x 8, 'install: |';
+        say ' ' x 12, 'usr/lib/*.so';
+        say ' ' x 12, 'usr/lib/*.a';
+        say ' ' x 12, 'usr/lib/*/*.so';
+        say ' ' x 12, 'usr/lib/*/*.a';
+        say ' ' x 12, 'usr/include';
+    }
+	# provide possible overrides
+    say '';
+    if 'CMakeLists.txt'.IO.f {
+        say 'override_dh_auto_configure: |';
+        say ' ' x 4, 'dh_auto_configure -- \\';
+        say ' ' x 8, '-DCMAKE_BUILD_TYPE=Release';
+    }
+}

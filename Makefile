@@ -13,6 +13,7 @@ install-bin:
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/flinkH $(DESTDIR)/$(BINDIR)/flinkH
 	install -Dm0755 bin/flinkV $(DESTDIR)/$(BINDIR)/flinkV
+	install -Dm0755 bin/flinkG $(DESTDIR)/$(BINDIR)/flinkG
 	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
 
 install-examples:
