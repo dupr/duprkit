@@ -112,7 +112,7 @@ sub MAIN ()
 		}
     }
 	# if the tree looks like something producing shared objects
-    if qx/find . -maxdepth 2 -type d -name include/.chomp.chars > 0 {
+    if qx/fdfind -d 3 -t d -F include/.chomp.chars > 0 {
         say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '0', ':';
         say ' ' x 8, 'install: |';
         say ' ' x 12, 'usr/lib/*.so.*';
