@@ -88,7 +88,7 @@ class Model(object):
         '''
         with open(name + '.json', 'wt') as f:
             json.dump({'vocab': self.vocab, 'labels': self.labels}, f, indent=2)
-        sparse.save_npz(name + '.npz', self.bow)
+        np.savez(name + '.npz', bow=self.bow.todense())
 
     def load(self, path: str):
         '''
@@ -98,69 +98,45 @@ class Model(object):
             learned = json.load(f)
         self.vocab = list(tuple(x) for x in learned['vocab'])
         self.labels = learned['labels']
+        self.bow = np.load(path + '.npz')['bow']
 
     def train(self, data: Dict):
         '''
         train model from the given dataset. dataset format:
         Dict(
-            License-Name -> Token-Sequence
+            Label -> Token-Sequence
         )
         '''
-        # Collect vocabulary and Memorize vectors
-        dc1g, dc2g, dc3g = dict(), dict(), dict()  # d(ict)c(ounter)
-        vo1g, vo2g, vo3g = set(), set(), set()  # vo(cab)
-        # go through data
-        for k, v in data.items():
-            if len(v) < 3:
-                raise Exception('Token sequence too short!')
-            c1g, c2g, c3g = Counter(), Counter(), Counter()
-            for i in range(2, len(v)):
-                unigram, bigram = [v[i]], [(v[i-1], v[i])]
-                trigram = [(v[i-2], v[i-1], v[i])]
-                c1g.update(unigram)
-                c2g.update(bigram)
-                c3g.update(trigram)
-                vo1g.update(unigram)
-                vo2g.update(bigram)
-                vo3g.update(trigram)
-            dc1g[k], dc2g[k], dc3g[k] = c1g, c2g, c3g
-        # finalize vocabulary list
-        self.vocab_1gram = list(sorted(vo1g))
-        self.vocab_2gram = list(sorted(vo2g))
-        self.vocab_3gram = list(sorted(vo3g))
+        # Collect global vocabulary and setup per-label counters
+        vocab, allwc = Counter(), dict()
+        for label, sequence in data.items():
+            wc = Counter()
+            for ngram in nltk.everygrams(sequence, max_len=3):
+                vocab.update((ngram,))
+                wc.update((ngram,))
+            allwc[label] = wc
+        self.vocab = list(sorted(vocab.keys()))
+        self.labels = list(sorted(data.keys()))
         # finalize bag-of-words vectors
-        dv1g, dv2g, dv3g = dict(), dict(), dict()  # d(ict)v(ector)
-        for k in data.keys():
-            v1g, v2g, v3g = [0]*len(vo1g), [0]*len(vo2g), [0]*len(vo3g)
-            for (i, word) in enumerate(self.vocab_1gram):
-                v1g[i] = dc1g[k].get(word, 0)
-            for (i, word) in enumerate(self.vocab_2gram):
-                v2g[i] = dc2g[k].get(word, 0)
-            for (i, word) in enumerate(self.vocab_3gram):
-                v3g[i] = dc3g[k].get(word, 0)
-            dv1g[k], dv2g[k], dv3g[k] = v1g, v2g, v3g
-        self.vectors_1gram = dv1g
-        self.vectors_2gram = dv2g
-        self.vectors_3gram = dv3g
-        # statistics
-        print('Vocabulary Size:',
-                '1-Gram[', len(self.vocab_1gram), ']',
-                '2-Gram[', len(self.vocab_2gram), ']',
-                '3-Gram[', len(self.vocab_3gram), ']')
-        for k in data.keys():
-            print(k)
-            print('\t1-Gram |',
-                'Sum[', np.sum(self.vectors_1gram[k]), ']',
-                'Max[', np.max(self.vectors_1gram[k]), ']',
-                'Mean[', np.mean(self.vectors_1gram[k]), ']')
-            print('\t2-Gram |',
-                'Sum[', np.sum(self.vectors_2gram[k]), ']',
-                'Max[', np.max(self.vectors_2gram[k]), ']',
-                'Mean[', np.mean(self.vectors_2gram[k]), ']')
-            print('\t3-Gram |',
-                'Sum[', np.sum(self.vectors_3gram[k]), ']',
-                'Max[', np.max(self.vectors_3gram[k]), ']',
-                'Mean[', np.mean(self.vectors_3gram[k]), ']')
+        bow = sparse.dok_matrix((len(data), len(vocab)), dtype=np.int)
+        v2j = {v: j for (j,v) in enumerate(self.vocab)}
+        for (i, label) in enumerate(self.labels):
+            for (k, v) in allwc[label].items():
+                bow[i, v2j[k]] = v
+        self.bow = bow
+        # training statistics
+        print('Labels:')
+        pprint.pprint(self.labels)
+        print('Vocabulary Size:', len(self.vocab), 'Sum:', sum(vocab.values()),
+                'Min:', min(vocab.values()), 'Max:', max(vocab.values()))
+        x, y = np.histogram(list(vocab.values()), bins=20)
+        ncumy = (y/y.sum()).cumsum()
+        print('Vocabulary Histogram:')
+        for i in range(len(x)):
+            print('\t', '%3d'%i, '%6d'%x[i], '%12.3f'%y[i], '%5.3f'%ncumy[i])
+        print('BoW Matrix | Shape:', bow.shape, 'Sum:', bow.sum(),
+                'Nonzero:', bow.nonzero()[0].size,
+                'Density:', bow.nonzero()[0].size / np.prod(bow.shape))
 
     def readTokens(self, path: str) -> List:
         '''
@@ -248,12 +224,12 @@ if __name__ == '__main__':
     ag = argparse.ArgumentParser()
     ag.add_argument('--train', type=str, default='',
             help='Train the model from the given directory')
-    ag.add_argument('--savepath', type=str, default='model.json',
-            help='Where to store the trained model (json)')
+    ag.add_argument('--savepath', type=str, default='model',
+            help='Where to store the trained model (json,npz)')
     ag.add_argument('--predict', type=str, default='',
             help='Try to classify the given file')
-    ag.add_argument('--model', type=str, default='model.json',
-            help='Location of pre-trained model (json)')
+    ag.add_argument('--model', type=str, default='model',
+            help='Location of pre-trained model (json,npz)')
     ag.add_argument('--topk', type=int, default=1,
             help='Print top-K similar results')
     ag.add_argument('--reject', type=float, default=0.8,
@@ -266,7 +242,7 @@ if __name__ == '__main__':
     if ag.train:
         model = Model()
         model.train_datadir(ag.train)
-        model.save(ag.savepath, verbose=ag.verbose)
+        model.save(ag.savepath)
     if ag.predict:
         model = Model()
         if not os.path.exists(ag.model):
