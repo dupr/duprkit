@@ -1,25 +1,27 @@
 #!/usr/bin/python3
-# flinkV: duprkit N-gram bag-of-words vector cosine similarity utility
+# flinkV: N-gram bag-of-words vector cosine similarity utility
 # Copyright (C) 2019 M. Zhou <lumin@debian.org>
 # License: MIT/Expat
 from typing import *
 import argparse, re, os, sys, json, glob, math, random, pprint
 from collections import Counter, defaultdict
 import numpy as np
+from scipy import sparse
+import nltk
 '''
-Licensecheck-NG
-===============
+flinkV implements a (toy) text classifier with the k-NN model (k=1), using
+N-gram bag-of-words representation vectors as text representation, and cosine
+similarity as the metric.
 
-Currently a (toy) license classifier based on k-NN. k-NN is a very simple
-machine learning algorithm. In this implementation, we use n-gram bag-of-words
-vectors to represent text, and measure text similarity by cosine distance.
-The implimentation is pure python and doesn't use anything outside the python
-standard library.
+Keywords: k-NN (machine learning), Bag-of-Words (computational linguistics),
+          N-gram (computational linguistics), vector space (linear algebra)
 
-Many details could be further improved.
-Open an issue on the salsa repo for anything you want to say.
+#### Problem Formulation
 
-Key words: k-NN, Bag-of-Words, n-Gram, Machine Learning, Computational Linguistics
+```latex
+Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$, we want to classify
+the sequence and produce a corresponding output $c$.
+```
 
 ## Known problems
 
@@ -31,44 +33,14 @@ such as the one on the python script itself `:-(`.
 
 3. we need choose a threshold under which the program rejects to classify.
 
-## Dependency
-
-Just `pypy3`. The software is written in pure python and does not use anything
-outside the standard library. At this stage we just try to let it work
-correctly. Speed optimization? Not today.
-
-## Automatic Training and Assessment on the training set
-
-```
-make train
-make validate  # testing on training dataset generates a confusion matrix
-```
-
-It takes about 1 seconds to train. Very fast.
-
 ## Manual training and prediction
 
-Training:
-
-```
-./licensecheck-ng.py --train data
-```
-
-It will write the trained model to `model.pkl`.
-
-Predict:
-
-```
-./licensecheck-ng.py --predict <MY_FILE>
-```
-
-It requires `./model.pkl` to be present.
+./licensecheck-ng.py --train datadir/
+./licensecheck-ng.py --predict my_file
 
 ## Comparison to related works
 
 https://wiki.debian.org/CopyrightReviewTools
-
-Well, can I beat all of them? I have no answer currently.
 
 * licensecheck
 * scan-copyrights
@@ -76,9 +48,6 @@ Well, can I beat all of them? I have no answer currently.
 * licensecheck2dep5
 * license-reconcile
 * debmake
-
-Many thanks to Osamu Aoki who provided many training data in debmake's source.
-
 * decopy
 * license
 * check-all-the-things
@@ -95,57 +64,9 @@ Many thanks to Osamu Aoki who provided many training data in debmake's source.
 * fossology
 * OSLCv3
 * https://github.com/nexB/scancode-toolkit
-
-The core algorithm is similar to what scancode-toolkit called "match set":
-https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/match_set.py
-
-## FAQ
-
-1. it doesn't recognize XXX license.
-
-Training data is simply a bunch of plaintext licenses. Copy the license
-content to data/XXX and train the model. Then the model will recognize
-the XXX license.
-
-2. it's accuracy is low on some special cases.
-
-Currently the result is produced by the pure algorithm, and there is
-no any engineering tweaks. Accuracy in special cases could be further
-improved with those tweaks.
-
-3. I want to compare xxx text files (or code) instead of license texts.
-
-Train with your custom text and predict any plain text with the model.
-
-4. why do you try writing such a tool?
-
-Firstly just for fun.
-Secondly as a part of the DUPR toolkit (https://github.com/dupr/duprkit)
+  The core algorithm is similar to what scancode-toolkit called "match set":
+  https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/match_set.py
 '''
-
-'''latex
-\section{Informal Problem/Solution Formulation}
-
-Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$ whose license type
-is unknown. We want to identify the license type $c$ from this sequence.
-We solve this problem with k-NN ($k=1$) based on $n$-gram bag-of-words text
-representations. Specifically, we use unigram, bigram and trigram.
-
-Training: Given a set of $N$ known licenses $D=\{(C_i,T_i)\}_N, 1<=i<=N$
-where $C_i$ is the unique name of the license, and $t$ is the token sequence
-$ T_i = [t_1, t_2, \ldots, t_M] $. We train a k-NN (k=1) with the 1- and
-2-gram bag-of-words representations from dataset $D$.
-
-Predict: Given an unseen token sequence $T_x = [t_1, t_2, \ldots, t_M]$
-where unseen tokens were already filtered out, we classify the sequence
-$T_x$ by the similarity score $S$. Specifically, we denote the vector
-representations of two sequences to be compared with $v_i$ and $v_j$,
-then the similarity score $S$ is defined as:
-$$ S = 0.5*cos(v_{i,1gram}, v_{j,1gram}) + 0.5*cos(v_{i,2gram}, v_{j,2gram}) $$
-The score $S$ will fall in the range $[0,1]$. And the higher the score is,
-the more similar the two sequences are.
-'''
-
 
 class Model(object):
     '''
@@ -153,55 +74,30 @@ class Model(object):
     compared with k-NN (k=1) with cosine distance as the metric.
     '''
     def __init__(self):
-        # n-gram vocab lists. ordered lists of (strings, or list of strings).
-        self.vocab_1gram = list()
-        self.vocab_2gram = list()
-        self.vocab_3gram = list()
-        # bag-of-words vectors for licenses. maps a license-name to a vector.
-        self.vectors_1gram = dict()
-        self.vectors_2gram = dict()
-        self.vectors_3gram = dict()
+        # Ordered vocab list of every-grams.
+        # exampe: [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
+        self.vocab = list()
+        # labels, len(labels)==C . Each label corresponds to a row of bow matrix.
+        self.labels = list()
+        # matrix formed by every-grams bag-of-words vectors. matrix.shape[0]==C
+        self.bow = sparse.dok_matrix((1,1), dtype=np.int)
 
-    def save(self, path: str, verbose: bool = False):
+    def save(self, name: str):
         '''
-        save the model to <path>
+        save the model to <name>.json and <name>.npz
         '''
-        learned = dict()
-        if verbose:
-            print('Random 1-Gram samples')
-            pprint.pprint(random.sample(self.vocab_1gram, 10))
-            print('Random 2-Gram samples')
-            pprint.pprint(random.sample(self.vocab_2gram, 10))
-            print('Random 3-Gram samples')
-            pprint.pprint(random.sample(self.vocab_3gram, 10))
-        learned['vocab_1gram'] = self.vocab_1gram
-        learned['vocab_2gram'] = self.vocab_2gram
-        learned['vocab_3gram'] = self.vocab_3gram
-        learned['vectors_1gram'] = self.vectors_1gram
-        learned['vectors_2gram'] = self.vectors_2gram
-        learned['vectors_3gram'] = self.vectors_3gram
-        with open(path, 'wt') as f:
-            json.dump(learned, f, indent=2)
+        with open(name + '.json', 'wt') as f:
+            json.dump({'vocab': self.vocab, 'labels': self.labels}, f, indent=2)
+        sparse.save_npz(name + '.npz', self.bow)
 
-    def load(self, path: str, verbose: bool = False):
+    def load(self, path: str):
         '''
-        load the model from <path>
+        load the model from <path>.json and <path>.npz
         '''
-        with open(path, 'rt') as f:
+        with open(path + '.json', 'rt') as f:
             learned = json.load(f)
-        self.vocab_1gram = learned['vocab_1gram']
-        self.vocab_2gram = list(tuple(x) for x in learned['vocab_2gram'])
-        self.vocab_3gram = list(tuple(x) for x in learned['vocab_3gram'])
-        self.vectors_1gram = learned['vectors_1gram']
-        self.vectors_2gram = learned['vectors_2gram']
-        self.vectors_3gram = learned['vectors_3gram']
-        if verbose:
-            print('Random 1-Gram samples')
-            pprint.pprint(random.sample(self.vocab_1gram, 10))
-            print('Random 2-Gram samples')
-            pprint.pprint(random.sample(self.vocab_2gram, 10))
-            print('Random 3-Gram samples')
-            pprint.pprint(random.sample(self.vocab_3gram, 10))
+        self.vocab = list(tuple(x) for x in learned['vocab'])
+        self.labels = learned['labels']
 
     def train(self, data: Dict):
         '''
@@ -269,7 +165,9 @@ class Model(object):
     def readTokens(self, path: str) -> List:
         '''
         read a text file and turn it into a token sequence.
-        the tokenization could be improved.
+        the tokenization could be improved. NLTK's tokenizer requires
+        pre-trained model. blingfire looks like a good candidate but
+        that project is still in the early stage.
         '''
         with open(path, 'rt') as f:
             text = re.sub('\W', ' ', f.read()).lower()
@@ -289,20 +187,6 @@ class Model(object):
         print()
         print('Training model ...')
         self.train(data)
-
-    def XcosSim(self, vecA: Counter, vecB: Counter) -> float:
-        '''
-        cosine similarity
-        '''
-        keys = set(vecA.keys()).union(set(vecB.keys()))
-        denomA = math.sqrt(sum(x**2 for x in vecA.values()))
-        denomB = math.sqrt(sum(x**2 for x in vecB.values()))
-        vA, vB = [], []
-        for k in keys:
-            vA.append(vecA.get(k, 0) / float(denomA))
-            vB.append(vecB.get(k, 0) / float(denomB))
-        dot = [vA[i]*vB[i] for i in range(len(vA))]
-        return sum(dot)
 
     def predict(self, path: str, topK: int = 1, reject: float = 0.8):
         '''
@@ -338,7 +222,14 @@ class Model(object):
         t2g = t2g / np.sqrt(np.power(t2g, 2).sum(1).reshape(t2g.shape[0], 1))
         t3g = np.vstack([self.vectors_3gram[k] for k in licenses])
         t3g = t3g / np.sqrt(np.power(t3g, 2).sum(1).reshape(t3g.shape[0], 1))
+        # they are actually sparse matrices
+        #print(t1g.nonzero()[0].size / t1g.size)
+        #print(t2g.nonzero()[0].size / t2g.size)
+        #print(t3g.nonzero()[0].size / t3g.size)
         # let's aggregate and compare
+        t1g = sparse.dok_matrix(t1g)
+        t2g = sparse.dok_matrix(t2g)
+        t3g = sparse.dok_matrix(t3g)
         scores1g = t1g @ v1g
         scores2g = t2g @ v2g
         scores3g = t3g @ v3g
