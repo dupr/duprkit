@@ -207,6 +207,8 @@ if __name__ == '__main__':
     ag.add_argument('--reject', type=float, default=0.8,
             help='Threshold under which the model rejects to classify')
     ag.add_argument('--verbose', action='store_true')
+    ag.add_argument('-L', '--labels', action='store_true',
+            help='List known labels')
     ag.add_argument('target', type=str, default='', nargs='?',
             help='Try to predict label of the given file')
     ag = ag.parse_args()
@@ -215,9 +217,12 @@ if __name__ == '__main__':
         model = Model()
         model.train_datadir(ag.train)
         model.save(ag.savename)
-    if ag.target:
+    if ag.target or ag.labels:
         model = Model()
         if not os.path.exists(ag.model + '.json'):
             ag.model = '/usr/share/doc/duprkit/examples/license-cls-knn'
         model.load(ag.model)
-        model.predict(ag.target, topK=ag.topk, reject=ag.reject)
+        if ag.labels:
+            pprint.pprint(model.labels)
+        else:
+            model.predict(ag.target, topK=ag.topk, reject=ag.reject)
