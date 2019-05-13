@@ -155,7 +155,7 @@ def main_gen_debian_rules(argv):
         if meta[override]:
             for line in meta[override].strip().split('\n'):
                 f.write(f'\t{line}\n')
-        print(f'{_C162}flinkH:{_c} {path} | wrote {override}')
+        print(f'{_C162}flinkH:{_c} {path} | {override}')
     f.close()
     os.chmod(path, 0o755)
 

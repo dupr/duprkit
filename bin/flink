@@ -68,12 +68,11 @@ sub flink_split (Str $PATH)
 {
     $PATH.IO.f || die "Non-existent file [$PATH]!" ;
     $PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
-    print "{$_C162}→ Splitting {$_C36} $PATH {$_C162}into";
-    say " {$_C36}.yaml {$_C162}and {$_C36}.hft {$_C162}...{$_c}";
 
     my $path_yml = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
     my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
     my $path_json = $PATH.IO.basename.subst(/\.rcp$/, '.json');
+    my $path_sh = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
     my $fp_yml := open :w, $path_yml;
     my $fp_hft := open :w, $path_hft;
     my $fp = $fp_yml;
@@ -82,16 +81,16 @@ sub flink_split (Str $PATH)
         $fp.say: $_;
     }
     close $fp_yml; close $fp_hft;
-    say "{$_C162}Replacing placeholders in YAML file...{$_c}";
+    say "{$_C162}flink-split:{$_c} [{$_C36}{$PATH}{$_c}] $path_yml";
+    say "{$_C162}flink-split:{$_c} [{$_C36}{$PATH}{$_c}] $path_hft";
     run $FLINKH, 'subst', '--yaml', $path_yml, $path_yml;
-    say "{$_C162}Replacing placeholders in HFT file...{$_c}";
     run $FLINKH, 'subst', '--yaml', $path_yml, $path_hft;
-    say "{$_C162}Dumping YAML content into JSON file...{$_c}";
     run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
-    say "{$_C162}Creating pipeline shell script...{$_c}";
+    say "{$_C162}flink-split:{$_c} [{$_C36}{$path_yml}{$_c}] $path_json";
     run $FLINKH, 'pipeline_sh', '--yaml', $path_yml;
-    say 'Dumping YAML content:';
-    run $FLINKH, 'dumpyaml', $path_yml;
+    say "{$_C162}flink-split:{$_c} [{$_C36}{$path_yml}{$_c}] $path_sh";
+	#say 'Dumping YAML content:';
+    #run $FLINKH, 'dumpyaml', $path_yml;
 }
 
 sub flink_cache (Str $PKG, Str $URL)
@@ -114,7 +113,7 @@ sub flink_unfold (Str $PATH)
 {
     flink_split $PATH;
     my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
-    say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
+    say "{$_C162}flink-unfold:{$_c} executing [{$_C36}{$shell_file}{$_c}]";
     run $SH, $shell_file;
 }
 
