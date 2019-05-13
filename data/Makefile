@@ -1,3 +1,3 @@
-trainingset:
-	mkdir -p trainingset
-	cp common-licenses/* trainingset
+training:
+	mkdir -p training
+	cp common-licenses/* extra/* training

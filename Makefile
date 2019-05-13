@@ -24,11 +24,12 @@ install-vim:
 	install -Dm0644 vim/ftdetect/hft.vim $(DESTDIR)/$(VIM)/addons/ftdetect/hft.vim
 	install -Dm0644 vim/hft-rcp.yaml $(DESTDIR)/$(VIM)/registry/hft-rcp.yaml
 
-install-pretrained: license-cls-knn.json
+install-pretrained: train
 	install -Dm0644 license-cls-knn.json $(DESTDIR)/$(EXAMPLEDIR)/license-cls-knn.json
 
-license-cls-knn.json:
-	./bin/flinkV --train ./data/common-licenses --savepath license-cls-knn.json
+train:
+	$(MAKE) -Cdata training
+	./bin/flinkV --train data/training --savename license-cls-knn
 
 json:
 	fdfind -e rcp -exec flink s
