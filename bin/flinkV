@@ -198,7 +198,7 @@ if __name__ == '__main__':
     ag = argparse.ArgumentParser()
     ag.add_argument('--train', type=str, default='',
             help='Train the model from the given directory')
-    ag.add_argument('--savepath', type=str, default='model',
+    ag.add_argument('--savename', type=str, default='model',
             help='Where to store the trained model (json,npz)')
     ag.add_argument('--predict', type=str, default='',
             help='Try to classify the given file')
@@ -216,7 +216,7 @@ if __name__ == '__main__':
     if ag.train:
         model = Model()
         model.train_datadir(ag.train)
-        model.save(ag.savepath)
+        model.save(ag.savename)
     if ag.predict:
         model = Model()
         if not os.path.exists(ag.model + '.json'):
