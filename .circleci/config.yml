@@ -15,6 +15,7 @@ jobs:
               apt-get upgrade -y
               apt-get install eatmydata -y
               eatmydata -- apt-get install debhelper python3 git python3-chardet perl6 python3-yaml -y
+              eatmydata -- apt-get install python3-numpy python3-scipy python3-nltk -y
       - run:
           name: make test
           command: |
