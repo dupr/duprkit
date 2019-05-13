@@ -31,7 +31,7 @@ def main_subst(argv):
     ag.add_argument('target', type=str, help='target file')
     ag = ag.parse_args(argv)
     yml = yaml.load(open(ag.yaml, 'r').read())
-    print(f'{_C162}flinkH-subst:{_c}', f'[{ag.yaml}]', ag.target)
+    print(f'{_C162}flinkH-subst:{_c}', f'{_C36}[{ag.yaml}]{_c}', ag.target)
     lines = open(ag.target, 'r').readlines()
     r_stub = re.compile('@[-\w\_]*?@')
     updated_lines = []
