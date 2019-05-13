@@ -5,6 +5,13 @@ import argparse, re, sys, os, json, time, getpass, socket
 import yaml, pprint
 
 
+_C33  = "\x1b[1;33m"
+_C35  = "\x1b[1;35m"
+_C36  = "\x1b[1;36m"
+_C162 = "\x1b[1;38;5;162m"
+_c    = "\x1b[0;m"
+
+
 def main_dumpyaml(argv):
     ag = argparse.ArgumentParser()
     ag.add_argument('yaml', type=str, help='yaml file')
@@ -24,6 +31,7 @@ def main_subst(argv):
     ag.add_argument('target', type=str, help='target file')
     ag = ag.parse_args(argv)
     yml = yaml.load(open(ag.yaml, 'r').read())
+    print(f'{_C162}flinkH-subst:{_c}', f'[{ag.yaml}]', ag.target)
     lines = open(ag.target, 'r').readlines()
     r_stub = re.compile('@[-\w\_]*?@')
     updated_lines = []
@@ -63,10 +71,10 @@ def main_gen_debian_source_format(argv):
     f = open(path, 'w')
     if 'Revision' in meta.keys():
         f.write('3.0 (quilt)\n')
-        print(f'flinkH: {path} | 3.0 (quilt)')
+        print(f'{_C162}flinkH:{_c} {path} | 3.0 (quilt)')
     else:
         f.write('3.0 (native)\n')
-        print(f'flinkH: {path} | 3.0 (native)')
+        print(f'{_C162}flinkH:{_c} {path} | 3.0 (native)')
     f.close()
 
 
@@ -105,7 +113,7 @@ def main_gen_debian_changelog(argv):
     f.write('\n')
     f.write(f' -- {maintainer}  {stamp}')
     f.close()
-    print(f'flinkH: {path} | {maintainer} @ {stamp}')
+    print(f'{_C162}flinkH:{_c} {path} | {maintainer} | {stamp}')
 
 
 def main_gen_debian_rules(argv):
@@ -138,14 +146,16 @@ def main_gen_debian_rules(argv):
         plugins = ','.join(plugins.replace(',',' ').split())
         f.write(' --with ' + plugins)
     f.write('\n')
-    print(f'flinkH: {path} | -S{buildsystem} --with {plugins}')
+    print(f'{_C162}flinkH:{_c} {path} |',
+        f'-S{buildsystem}' if (buildsystem is not None) else '',
+        f'--with {plugins}' if (plugins is not None) else '')
     for override in (x for x in meta.keys() if x.startswith('override_')):
         f.write('\n')
         f.write(f'{override}:\n')
         if meta[override]:
             for line in meta[override].strip().split('\n'):
                 f.write(f'\t{line}\n')
-        print(f'flinkH: {path} | wrote {override}')
+        print(f'{_C162}flinkH:{_c} {path} | wrote {override}')
     f.close()
     os.chmod(path, 0o755)
 
@@ -171,7 +181,7 @@ def main_gen_debian_copyright(argv):
     f = open(path, 'w')
     f.write(meta['License'] + '\n')
     f.close()
-    print(f'flinkH: {path} | {meta["License"]}')
+    print(f'{_C162}flinkH:{_c} {path} | {meta["License"]}')
 
 
 def main_gen_debian_control(argv):
@@ -247,7 +257,7 @@ def main_gen_debian_control(argv):
         f.write('\n')
         f.write(f'Description: {meta.get("Description")}\n')
         f.write(f' {meta.get("Description")}\n')
-        print(f'flinkH: {path} | {meta.get("Source")}')
+        print(f'{_C162}flinkH:{_c} {path} | {meta.get("Source")}')
     else:
         # we follow the manual definition
         for pkg, attrs in meta.get('Recipe-Binaries', {}).items():
@@ -268,7 +278,7 @@ def main_gen_debian_control(argv):
             else:
                 f.write(f'Description: {attrs.get("Description")}\n')
             f.write(f' {meta.get("Description")}\n')
-            print(f'flinkH: {path} | {pkg}')
+            print(f'{_C162}flinkH:{_c} {path} | {pkg}')
         # create other control files
         for pkg, attrs in meta.get('Recipe-Binaries', {}).items():
             attrs = {} if (attrs is None) else attrs
@@ -278,7 +288,7 @@ def main_gen_debian_control(argv):
                 con = open(conpath, 'w')
                 con.write(attrs[k])
                 con.close()
-                print(f'flinkH: {path} | {pkg}.{k}')
+                print(f'{_C162}flinkH:{_c} {conpath}')
     f.close()
 
 
