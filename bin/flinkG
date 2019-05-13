@@ -91,17 +91,18 @@ sub MAIN ()
     say 'Recipe-Binaries:';
     # what can be installed in the main package?
     say ' ' x 4, '.'.IO.absolute.IO.basename, ':';
-    if 'bin'.IO.d {
+    if 'bin'.IO.d || 'README.md'.IO.f {
         say ' ' x 8, 'install: |';
         say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
+		say ' ' x 8, 'docs: |';
+		say(' ' x 12, 'README.md') if 'README.md'.IO.f;
     }
 	# what can be installed in the doc package?
-    if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f ||
+    if 'doc'.IO.d || 'docs'.IO.d ||
 	   'example'.IO.d || 'examples'.IO.d {
         say ' ' x 4, '.'.IO.absolute.IO.basename, '-doc:';
-		if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
+		if 'doc'.IO.d || 'docs'.IO.d {
 			say ' ' x 8, 'docs: |';
-			say(' ' x 12, 'README.md') if 'README.md'.IO.f;
 			say(' ' x 12, 'doc/*') if 'doc'.IO.d;
 			say(' ' x 12, 'docs/*') if 'docs'.IO.d;
 		}
