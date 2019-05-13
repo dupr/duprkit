@@ -30,6 +30,9 @@ install-pretrained: license-cls-knn.json
 license-cls-knn.json:
 	./bin/flinkV --train ./data/common-licenses --savepath license-cls-knn.json
 
+json:
+	fdfind -e rcp -exec flink s
+
 test:
 	$(MAKE) -Ctests
 
