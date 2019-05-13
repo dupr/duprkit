@@ -13,7 +13,7 @@ syn case match
 syntax region rcpFields matchgroup=rcpFieldsGroup start="^\%(Source\|Version\|Description\|Source-URL\|Section\|Homepage\|Revision\|Maintainer\|License\|Standards-Version\|Build-Depends\|Build-Depends-Indep\|Depends\|Debhelper-Compat\|Debhelper-Buildsystem\|Debhelper-Plugins\|Patches\|Uscan\|Recipe-Prep-Source\|Recipe-Binaries\)" end=':' oneline
 highlight rcpFieldsGroup term=bold ctermfg=yellow
 
-syntax region rcpOverrides matchgroup=rcpOverridesGroup start="^override_dh_\%(auto_configure\|auto_test\|auto_install\|strip\|dwz\)" end=':' oneline
+syntax region rcpOverrides matchgroup=rcpOverridesGroup start="^override_dh_\%(auto_clean\|auto_configure\|auto_build\|auto_test\|auto_install\|strip\|dwz\)" end=':' oneline
 highlight rcpOverridesGroup term=bold ctermfg=green
 
 syntax region rcpControlFields matchgroup=rcpControlFieldsGroup start="\%(Architecture\|Multi-Arch\|Depends\|Pre-Depends\|Provides\|Conflicts\|Replaces\|Recommends\|Suggests\)" end=':' oneline
