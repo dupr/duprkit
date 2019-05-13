@@ -251,6 +251,7 @@ def main_gen_debian_control(argv):
     else:
         # we follow the manual definition
         for pkg, attrs in meta.get('Recipe-Binaries', {}).items():
+            attrs = {} if (attrs is None) else attrs
             f.write('\n')
             f.write(f'Package: {pkg}\n')
             # we first make sure necessary fields are written
@@ -270,6 +271,7 @@ def main_gen_debian_control(argv):
             print(f'flinkH: {path} | {pkg}')
         # create other control files
         for pkg, attrs in meta.get('Recipe-Binaries', {}).items():
+            attrs = {} if (attrs is None) else attrs
             for k in (x for x in attrs.keys() if x[0].islower()):
                 conpath = f'./debian/{pkg}.{k}' if (ag.dest is None) else os.path.join(
                     ag.dest, f'debian/{pkg}.{k}')
