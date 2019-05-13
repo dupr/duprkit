@@ -111,7 +111,7 @@ class Model(object):
         vocab, allwc = Counter(), dict()
         for label, sequence in data.items():
             wc = Counter()
-            for ngram in nltk.everygrams(sequence, max_len=3):
+            for ngram in nltk.everygrams(sequence, min_len=2, max_len=3):
                 vocab.update((ngram,))
                 wc.update((ngram,))
             allwc[label] = wc
@@ -133,7 +133,7 @@ class Model(object):
         ncumy = (y/y.sum()).cumsum()
         print('Vocabulary Histogram:')
         for i in range(len(x)):
-            print('\t', '%3d'%i, '%6d'%x[i], '%12.3f'%y[i], '%5.3f'%ncumy[i])
+            print('', '%3d'%i, '%6d'%x[i], '%12.3f'%y[i], '%5.3f'%ncumy[i])
         print('BoW Matrix | Shape:', bow.shape, 'Sum:', bow.sum(),
                 'Nonzero:', bow.nonzero()[0].size,
                 'Density:', bow.nonzero()[0].size / np.prod(bow.shape))
@@ -175,7 +175,7 @@ class Model(object):
         tokens = self.readTokens(path)
         v2j = {v: j for (j,v) in enumerate(self.vocab)}
         wc = Counter()
-        for ngram in nltk.everygrams(tokens, max_len=3):
+        for ngram in nltk.everygrams(tokens, min_len=2, max_len=3):
             if ngram in v2j:
                 wc.update((ngram,))
         vec = sparse.dok_matrix((len(v2j), 1))
@@ -187,11 +187,11 @@ class Model(object):
         sims = (scores * 100).astype(np.int)
         # do we reject?
         if scores.max() < reject:
-            print(f'Unknown (Rejected; Max Similarity {sims.max()}%)')
+            print(f'{path}: Unknown (Rejected)')
         else:
             # report topK results
             for i in scores.argsort()[::-1][:topK]:
-                print(self.labels[i], f'(Similarity: {sims[i]}%)')
+                print(f'{path}:', self.labels[i], f'(Similarity: {sims[i]}%)')
 
 
 if __name__ == '__main__':
