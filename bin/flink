@@ -43,294 +43,294 @@ https://github.com/dupr/DefaultTricks
 EOH
 
 sub flink_fetch () {
-	# check config file
-	if not $CONFIG.IO.f {
-		$CONFIG.IO.dirname.IO.mkdir;
-		$CONFIG.IO.spurt($COLLECTIONS);
-	}
-	chdir $CACHE;
-	for 'config'.IO.lines {
-		my $collname = $_.IO.basename;
-		if $collname.IO.d {
-			say "{$_C162}→ Pulling {$_C36}{$_}{$_C162} ...{$_c}";
-			chdir $collname;
-			run $GIT, 'pull';
-			chdir '..';
-		} else {
-			say "{$_C162}→ Cloning {$_C36}{$_}{$_C162} ...{$_c}";
-			run $GIT, 'clone', $_, $collname;
-		}
-	}
+    # check config file
+    if not $CONFIG.IO.f {
+        $CONFIG.IO.dirname.IO.mkdir;
+        $CONFIG.IO.spurt($COLLECTIONS);
+    }
+    chdir $CACHE;
+    for 'config'.IO.lines {
+        my $collname = $_.IO.basename;
+        if $collname.IO.d {
+            say "{$_C162}→ Pulling {$_C36}{$_}{$_C162} ...{$_c}";
+            chdir $collname;
+            run $GIT, 'pull';
+            chdir '..';
+        } else {
+            say "{$_C162}→ Cloning {$_C36}{$_}{$_C162} ...{$_c}";
+            run $GIT, 'clone', $_, $collname;
+        }
+    }
 }
 
 sub flink_split (Str $PATH)
 {
-	$PATH.IO.f || die "Non-existent file [$PATH]!" ;
-	$PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
-	print "{$_C162}→ Splitting {$_C36} $PATH {$_C162}into";
+    $PATH.IO.f || die "Non-existent file [$PATH]!" ;
+    $PATH ~~ /.*.rcp$/ || die "Unsupported file $PATH !";
+    print "{$_C162}→ Splitting {$_C36} $PATH {$_C162}into";
     say " {$_C36}.yaml {$_C162}and {$_C36}.hft {$_C162}...{$_c}";
 
-	my $path_yml = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
-	my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
-	my $path_json = $PATH.IO.basename.subst(/\.rcp$/, '.json');
-	my $fp_yml := open :w, $path_yml;
-	my $fp_hft := open :w, $path_hft;
-	my $fp = $fp_yml;
-	for $PATH.IO.lines {
-		if m/^\^/ { $fp = $fp_hft; }
-		$fp.say: $_;
-	}
-	close $fp_yml; close $fp_hft;
-	say "{$_C162}Replacing placeholders in YAML file...{$_c}";
-	run $FLINKH, 'subst', '--yaml', $path_yml, $path_yml;
-	say "{$_C162}Replacing placeholders in HFT file...{$_c}";
-	run $FLINKH, 'subst', '--yaml', $path_yml, $path_hft;
-	say "{$_C162}Dumping YAML content into JSON file...{$_c}";
-	run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
-	say "{$_C162}Creating pipeline shell script...{$_c}";
-	run $FLINKH, 'pipeline_sh', '--yaml', $path_yml;
-	say 'Dumping YAML content:';
-	run $FLINKH, 'dumpyaml', $path_yml;
+    my $path_yml = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+    my $path_hft = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+    my $path_json = $PATH.IO.basename.subst(/\.rcp$/, '.json');
+    my $fp_yml := open :w, $path_yml;
+    my $fp_hft := open :w, $path_hft;
+    my $fp = $fp_yml;
+    for $PATH.IO.lines {
+        if m/^\^/ { $fp = $fp_hft; }
+        $fp.say: $_;
+    }
+    close $fp_yml; close $fp_hft;
+    say "{$_C162}Replacing placeholders in YAML file...{$_c}";
+    run $FLINKH, 'subst', '--yaml', $path_yml, $path_yml;
+    say "{$_C162}Replacing placeholders in HFT file...{$_c}";
+    run $FLINKH, 'subst', '--yaml', $path_yml, $path_hft;
+    say "{$_C162}Dumping YAML content into JSON file...{$_c}";
+    run $FLINKH, 'dumpyaml', $path_yml, '--output', $path_json;
+    say "{$_C162}Creating pipeline shell script...{$_c}";
+    run $FLINKH, 'pipeline_sh', '--yaml', $path_yml;
+    say 'Dumping YAML content:';
+    run $FLINKH, 'dumpyaml', $path_yml;
 }
 
 sub flink_cache (Str $PKG, Str $URL)
 {
-	my $cache = $CACHEDIR ~ '/' ~ $PKG;
-	$CACHEDIR.IO.mkdir if not $CACHEDIR.IO.d;
-	if not $cache.IO.r {
-		run 'wget', $URL, '-O', $cache;
-	}
-	run 'cp', '-v', $cache, $PKG;
+    my $cache = $CACHEDIR ~ '/' ~ $PKG;
+    $CACHEDIR.IO.mkdir if not $CACHEDIR.IO.d;
+    if not $cache.IO.r {
+        run 'wget', $URL, '-O', $cache;
+    }
+    run 'cp', '-v', $cache, $PKG;
 }
 
 sub flink_checksum (Str $FILE, Str $TYPE, Str $HASH)
 {
-	#FIXME
-	say "NotImplemented";
+    #FIXME
+    say "NotImplemented";
 }
 
 sub flink_unfold (Str $PATH)
 {
-	flink_split $PATH;
-	my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
-	say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
-	run $SH, $shell_file;
+    flink_split $PATH;
+    my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+    say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
+    run $SH, $shell_file;
 }
 
-sub flink_create (Str $NAME)
+sub flink_create (Str $NAME, Bool $STRIP = False)
 {
-	run 'cp','-v', $TEMPLATE, $NAME ~ '.rcp';
-}
-
-sub flink_minimal (Str $NAME)
-{
-	my $fp = open :w, $NAME ~ '.rcp';
-	for $TEMPLATE.IO.lines {
-		if !m/^\^\#/ && !m/^\s*\#/ || m/^\#\!/ {
-			$fp.say: $_;
-		} #else { .say }
-	}
+    if $STRIP {
+        run 'cp','-v', $TEMPLATE, $NAME ~ '.rcp';
+    } else {
+        my $fp = open :w, $NAME ~ '.rcp';
+        for $TEMPLATE.IO.lines {
+            if !m/^\^\#/ && !m/^\s*\#/ || m/^\#\!/ {
+                $fp.say: $_;
+            } #else { .say }
+        }
+        $fp.close;
+    }
 }
 
 sub flink_buildpackage (Str $PATH, Str $OPTS)
 {
-	flink_split $PATH;
-	my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
-	my $hft_file = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
-	my $yaml_file = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
-	my $json_file = $PATH.IO.basename.subst(/\.rcp$/, '.json');
-	# add something to the pipeline before execution
-	my $fp_shell = open :a, $shell_file;
-	$fp_shell.say: '# Automatically appended by FLINK';
-	$fp_shell.say: 'export PATH=/usr/lib/ccache:$PATH';
-	$fp_shell.say: 'cd $Source';
-	$fp_shell.say: "dpkg-buildpackage $OPTS";
-	$fp_shell.close;
-	# execute shell script now
-	say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
-	run $SH, $shell_file;
-	# cleanup files
-	$shell_file.IO.unlink;
-	$hft_file.IO.unlink;
-	$yaml_file.IO.unlink;
-	$json_file.IO.unlink;
+    flink_split $PATH;
+    my $shell_file = $PATH.IO.basename.subst(/\.rcp$/, '.sh');
+    my $hft_file = $PATH.IO.basename.subst(/\.rcp$/, '.hft');
+    my $yaml_file = $PATH.IO.basename.subst(/\.rcp$/, '.yaml');
+    my $json_file = $PATH.IO.basename.subst(/\.rcp$/, '.json');
+    # add something to the pipeline before execution
+    my $fp_shell = open :a, $shell_file;
+    $fp_shell.say: '# Automatically appended by FLINK';
+    $fp_shell.say: 'export PATH=/usr/lib/ccache:$PATH';
+    $fp_shell.say: 'cd $Source';
+    $fp_shell.say: "dpkg-buildpackage $OPTS";
+    $fp_shell.close;
+    # execute shell script now
+    say "{$_C162}→ Executing {$_C36}{$shell_file} {$_C162}...{$_c}";
+    run $SH, $shell_file;
+    # cleanup files
+    $shell_file.IO.unlink;
+    $hft_file.IO.unlink;
+    $yaml_file.IO.unlink;
+    $json_file.IO.unlink;
 }
 
 sub flink_guess () {
-	# detection
-	my $source = '.'.IO.absolute.IO.basename;
-	my $version = '0.0';
-	if '.git/config'.IO.f {
-		if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
-			$version ~= '~git.'~qx!git describe --tags 2>/dev/null!.chomp;
-		} else {
-			$version ~= '~git.master';
-		}
-	}
-	my $homepage = '';
-	if '.git/config'.IO.f {
-		$homepage = qx/git remote get-url origin/.chomp
-			.subst(':', '/').subst('git@', 'https://');
-	}
-	my $license = '';
-	if 'LICENSE'.IO.f || 'COPYING'.IO.f {
-		# FIXME use flinkV
-		if 'LICENSE'.IO.f {
-			my $tmp = 'LICENSE'.IO.slurp;
-			if $tmp ~~ /MIT/ {
-				$license = 'MIT';
-			}
-		} elsif 'COPYING'.IO.f {
-			my $tmp = 'LICENSE'.IO.slurp;
-			if $tmp ~~ /MIT/ {
-				$license = 'MIT';
-			}
-		}
-	}
-	# let's guess
-	say "Source: ", $source;
-	say "Section: ", 'utils';
-	say "Version: ", $version;
-	say "Description: ", $source;
-	say 'Homepage: ', $homepage;
-	if 'LICENSE'.IO.f || 'COPYING'.IO.f {
-		say 'License: ', $license;
-	} else {
-		# FIXME call autoscanner
-	}
-	# /usr/share/perl5/Debian/Debhelper/Buildsystem/
-	if "CMakeLists.txt".IO.f {
-		say "Debhelper-Buildsystem: ", "cmake";
-	} elsif "setup.py".IO.f {
-		# NOTE Don't ever use the deprecated python_distutils build system
-		say "Debhelper-Buildsystem: ", "pybuild";
-	} elsif "build.rs".IO.f || "Cargo.toml".IO.f {
-		say "Debhelper-Buildsystem: ", "cargo";
-	} elsif "go.mod".IO.f || "main.go".IO.f {
-		say "Debhelper-Buildsystem: ", "golang";
-	} elsif "build.xml".IO.f {
-		say "Debhelper-Buildsystem: ", "ant";
-	} elsif "meson.build".IO.f {
-		say "Debhelper-Buildsystem: ", "meson";
-	} elsif "build.ninja".IO.f {
-		say "Debhelper-Buildsystem: ", "ninja";
-	} elsif "Build.PL".IO.f {
-		say "Debhelper-Buildsystem: ", "perl_build";
-	} elsif "Makefile.PL".IO.f {
-		say "Debhelper-Buildsystem: ", "perl_makemaker";
-	} elsif "BUILD".IO.f || "WORKSPACE".IO.f {
-		say "Debhelper-Buildsystem: ", "bazel (Not Yet Supported)";
-	} elsif "configure".IO.f {
-		say "Debhelper-Buildsystem: ", "autoconf";
-	} elsif "Makefile".IO.f {
-		# XXX The most common one is last checked
-		say "Debhelper-Buildsystem: ", "makefile";
-	} else {
-		# Well, I don't know.
-	}
-	if '.git/config'.IO.f {
-		say 'Uscan: ', $homepage;
-	}
-	say '';
-	say 'Recipe-Binaries:';
+    # detection
+    my $source = '.'.IO.absolute.IO.basename;
+    my $version = '0.0';
+    if '.git/config'.IO.f {
+        if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
+            $version ~= '~git.'~qx!git describe --tags 2>/dev/null!.chomp;
+        } else {
+            $version ~= '~git.master';
+        }
+    }
+    my $homepage = '';
+    if '.git/config'.IO.f {
+        $homepage = qx/git remote get-url origin/.chomp
+            .subst(':', '/').subst('git@', 'https://');
+    }
+    my $license = '';
+    if 'LICENSE'.IO.f || 'COPYING'.IO.f {
+        # FIXME use flinkV
+        if 'LICENSE'.IO.f {
+            my $tmp = 'LICENSE'.IO.slurp;
+            if $tmp ~~ /MIT/ {
+                $license = 'MIT';
+            }
+        } elsif 'COPYING'.IO.f {
+            my $tmp = 'LICENSE'.IO.slurp;
+            if $tmp ~~ /MIT/ {
+                $license = 'MIT';
+            }
+        }
+    }
+    # let's guess
+    say "Source: ", $source;
+    say "Section: ", 'utils';
+    say "Version: ", $version;
+    say "Description: ", $source;
+    say 'Homepage: ', $homepage;
+    if 'LICENSE'.IO.f || 'COPYING'.IO.f {
+        say 'License: ', $license;
+    } else {
+        # FIXME call autoscanner
+    }
+    # /usr/share/perl5/Debian/Debhelper/Buildsystem/
+    if "CMakeLists.txt".IO.f {
+        say "Debhelper-Buildsystem: ", "cmake";
+    } elsif "setup.py".IO.f {
+        # NOTE Don't ever use the deprecated python_distutils build system
+        say "Debhelper-Buildsystem: ", "pybuild";
+    } elsif "build.rs".IO.f || "Cargo.toml".IO.f {
+        say "Debhelper-Buildsystem: ", "cargo";
+    } elsif "go.mod".IO.f || "main.go".IO.f {
+        say "Debhelper-Buildsystem: ", "golang";
+    } elsif "build.xml".IO.f {
+        say "Debhelper-Buildsystem: ", "ant";
+    } elsif "meson.build".IO.f {
+        say "Debhelper-Buildsystem: ", "meson";
+    } elsif "build.ninja".IO.f {
+        say "Debhelper-Buildsystem: ", "ninja";
+    } elsif "Build.PL".IO.f {
+        say "Debhelper-Buildsystem: ", "perl_build";
+    } elsif "Makefile.PL".IO.f {
+        say "Debhelper-Buildsystem: ", "perl_makemaker";
+    } elsif "BUILD".IO.f || "WORKSPACE".IO.f {
+        say "Debhelper-Buildsystem: ", "bazel (Not Yet Supported)";
+    } elsif "configure".IO.f {
+        say "Debhelper-Buildsystem: ", "autoconf";
+    } elsif "Makefile".IO.f {
+        # XXX The most common one is last checked
+        say "Debhelper-Buildsystem: ", "makefile";
+    } else {
+        # Well, I don't know.
+    }
+    if '.git/config'.IO.f {
+        say 'Uscan: ', $homepage;
+    }
+    say '';
+    say 'Recipe-Binaries:';
     say ' ' x 4, '.'.IO.absolute.IO.basename, ':';
-	if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
-		say ' ' x 8, 'docs: |';
-		say(' ' x 12, 'README.md') if 'README.md'.IO.f;
-		say(' ' x 12, 'doc/*') if 'doc'.IO.d;
-		say(' ' x 12, 'docs/*') if 'docs'.IO.d;
-	}
-	if 'example'.IO.d || 'examples'.IO.d {
-		say ' ' x 8, 'examples: |';
-		say(' ' x 12, 'example/*') if 'example'.IO.d;
-		say(' ' x 12, 'examples/*') if 'examples'.IO.d;
-	}
-	if 'bin'.IO.d {
-		say ' ' x 8, 'install: |';
-		say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
-	}
-	if qx/find . -maxdepth 2 -type d -name include/.chomp.chars > 0 {
-		say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '0', ':';
-		say ' ' x 8, 'install: |';
-		say ' ' x 12, 'usr/lib/*.so.*';
-		say ' ' x 12, 'usr/lib/*/*.so.*';
-		say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '-dev', ':';
-		say ' ' x 8, 'install: |';
-		say ' ' x 12, 'usr/lib/*.so';
-		say ' ' x 12, 'usr/lib/*.a';
-		say ' ' x 12, 'usr/lib/*/*.so';
-		say ' ' x 12, 'usr/lib/*/*.a';
-		say ' ' x 12, 'usr/include';
-	}
-	say '';
-	if 'CMakeLists.txt'.IO.f {
-		say 'override_dh_auto_configure: |';
-		say ' ' x 4, 'dh_auto_configure -- \\';
-		say ' ' x 8, '-DCMAKE_BUILD_TYPE=Release';
-	}
+    if 'doc'.IO.d || 'docs'.IO.d || 'README.md'.IO.f {
+        say ' ' x 8, 'docs: |';
+        say(' ' x 12, 'README.md') if 'README.md'.IO.f;
+        say(' ' x 12, 'doc/*') if 'doc'.IO.d;
+        say(' ' x 12, 'docs/*') if 'docs'.IO.d;
+    }
+    if 'example'.IO.d || 'examples'.IO.d {
+        say ' ' x 8, 'examples: |';
+        say(' ' x 12, 'example/*') if 'example'.IO.d;
+        say(' ' x 12, 'examples/*') if 'examples'.IO.d;
+    }
+    if 'bin'.IO.d {
+        say ' ' x 8, 'install: |';
+        say(' ' x 12, 'bin/* usr/bin/') if 'bin'.IO.d;
+    }
+    if qx/find . -maxdepth 2 -type d -name include/.chomp.chars > 0 {
+        say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '0', ':';
+        say ' ' x 8, 'install: |';
+        say ' ' x 12, 'usr/lib/*.so.*';
+        say ' ' x 12, 'usr/lib/*/*.so.*';
+        say ' ' x 4, 'lib'~'.'.IO.absolute.IO.basename ~ '-dev', ':';
+        say ' ' x 8, 'install: |';
+        say ' ' x 12, 'usr/lib/*.so';
+        say ' ' x 12, 'usr/lib/*.a';
+        say ' ' x 12, 'usr/lib/*/*.so';
+        say ' ' x 12, 'usr/lib/*/*.a';
+        say ' ' x 12, 'usr/include';
+    }
+    say '';
+    if 'CMakeLists.txt'.IO.f {
+        say 'override_dh_auto_configure: |';
+        say ' ' x 4, 'dh_auto_configure -- \\';
+        say ' ' x 8, '-DCMAKE_BUILD_TYPE=Release';
+    }
 }
 
 sub flink_boldguess () {
-	shell 'flink guess | tee flinkBoldGuess.rcp';
-	shell 'flinkH gen_debian -y flinkBoldGuess.rcp -d .';
-	'flinkBoldGuess.rcp'.IO.unlink;
+    shell 'flink guess | tee flinkBoldGuess.rcp';
+    shell 'flinkH gen_debian -y flinkBoldGuess.rcp -d .';
+    'flinkBoldGuess.rcp'.IO.unlink;
 }
 
 sub flink_reckless () {
-	flink_boldguess;
-	shell 'dpkg-buildpackage -nc -us -uc;';
+    flink_boldguess;
+    shell 'dpkg-buildpackage -nc -us -uc;';
 }
 
 sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
 {
-	given $ACTION {
-		when 'f' | 'fetch' {
-			flink_fetch;
-		}
-		when 'l' | 'ls' | 'list' {
-			if $TARGET.chars {
-				run $COLLECTOR, '-s', $TARGET, $DUPR_DEFCOLL;
-			} else {
-				run $COLLECTOR, $DUPR_DEFCOLL;
-			}
-		}
-		when 's' | 'split' {
-			flink_split $TARGET;
-		}
-		when 'cache' {
-			flink_cache $TARGET, $ARGV3;
-		}
-		when 'checksum' {
-			flink_checksum $TARGET, $ARGV3, $ARGV4;
-		}
-		when 'u' | 'unfold' {
-			flink_unfold $TARGET;
-		}
-		when 'c' | 'create' {
-			flink_create $TARGET;
-		}
-		when 'm' | 'minimal' {
-			flink_minimal $TARGET;
-		}
-		when 'dsc' {
-			flink_buildpackage $TARGET, '-nc -us -uc -S';
-		}
-		when 'deb' {
-			flink_buildpackage $TARGET, '-nc -us -uc';
-		}
-		when 'g' | 'guess' {
-			flink_guess;
-		}
-		when 'bg' | 'boldguess' {
-			flink_boldguess;
-		}
-		when 'reckless' {
-			flink_reckless;
-		}
-		default {
-			die "Unknown action???"
-		}
-	}
+    given $ACTION {
+        when 'f' | 'fetch' {
+            flink_fetch;
+        }
+        when 'l' | 'ls' | 'list' | 'Ss' {
+            if $TARGET.chars {
+                run $COLLECTOR, '-s', $TARGET, $DUPR_DEFCOLL;
+            } else {
+                run $COLLECTOR, $DUPR_DEFCOLL;
+            }
+        }
+        when 's' | 'split' {
+            flink_split $TARGET;
+        }
+        when 'cache' {
+            flink_cache $TARGET, $ARGV3;
+        }
+        when 'checksum' {
+            flink_checksum $TARGET, $ARGV3, $ARGV4;
+        }
+        when 'u' | 'unfold' {
+            flink_unfold $TARGET;
+        }
+        when 'c' {
+            flink_create $TARGET, True;
+        }
+        when 'create' {
+            flink_create $TARGET, False;
+        }
+        when 'dsc' {
+            flink_buildpackage $TARGET, '-nc -us -uc -S';
+        }
+        when 'deb' {
+            flink_buildpackage $TARGET, '-nc -us -uc';
+        }
+        when 'g' | 'guess' {
+            flink_guess;
+        }
+        when 'bg' | 'boldguess' {
+            flink_boldguess;
+        }
+        when 'reckless' {
+            flink_reckless;
+        }
+        default {
+            die "Unknown action???"
+        }
+    }
 }
 
 sub USAGE() {
@@ -340,16 +340,22 @@ Usage: {$*PROGRAM-NAME} action [args]
 
 Actions
    f|fetch                  Fetch the recipe collections defined in config
-   l|ls [keyword]           List/search packages in default collection
-   s|split <.rcp>           Split .rcp file into: .yaml, .hft, .json and .sh
+   l|ls|list|Ss [keyword]   List/search packages in default collection
+   s|split <.rcp>           Split .rcp file into auxiliary files,
                             with an extra placeholder processing step.
+                            (converts recipe -> YAML,HFT,JSON,SHELL)
    u|unfold <.rcp>          Unfold .rcp file into debianized source tree.
-   c|create <name>          Create talky template file: <name>.rcp
-   m|minimal <name>         Create minimal template: <name>.rcp
-   g|guess                  Guess recipe for the current source tree,
-                            or just print a minimal template
-   bg|boldguess             Guess and directly generate debian directory
-   reckless                 Bold guess and trigger dpkg-buildpackage
+                            (converts recipe -> debianized source tree)
+   c|create <name>          Create standard template file: <name>.rcp
+                            'create' produces a self-doc'ed one, while 'c' does not
+                            (converts nothing -> standard-recipe)
+   g|guess                  Guess recipe for the current working directory,
+                            or just print a minimal recipe template
+                            (converts nothing -> dynamic+minimal-recipe)
+   bg|boldguess             Guess and generate debian directory without doubt
+                            (converts nothing -> debian/ direcotry)
+   reckless                 Bold-guess and trigger dpkg-buildpackage
+                            (converts nothing -> .deb package)
    deb <.rcp>               Shortcut: Build .deb files from .rcp
    dsc <.rcp>               Shortcut: Build .dsc files from .rcp
 EOH
