@@ -213,6 +213,9 @@ sub MAIN (Str $ACTION, Str $TARGET = "", Str $ARGV3 = "", Str $ARGV4 = "")
         when 'reckless' {
             flink_reckless;
         }
+		when 'lscan' {
+			shell 'fdfind -t f -exec flinkV 2>/dev/null';
+		}
         default {
             die "Unknown action???"
         }
@@ -244,5 +247,6 @@ Actions
                             (converts nothing -> .deb package)
    deb <.rcp>               Shortcut: Build .deb files from .rcp
    dsc <.rcp>               Shortcut: Build .dsc files from .rcp
+   lscan                    Scan licenses recursively from CWD
 EOH
 }
