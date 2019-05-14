@@ -44,20 +44,120 @@ project](https://github.com/SIMDebian/SIMDebian)).
 * Packages with dirty hacks, more experimental than Debian/experimental,
 or targeted on testing the water.
 
-# Releated Projects
+# Projects Related to Packaging
 
-* [FPM](https://github.com/jordansissel/fpm)
+#### [FPM](https://github.com/jordansissel/fpm)
 
-* [checkinstall](http://checkinstall.izto.org/)
+#### [checkinstall](http://checkinstall.izto.org/)
 
-* [GameDataPackager](https://wiki.debian.org/Games/GameDataPackager)
+#### [GameDataPackager](https://wiki.debian.org/Games/GameDataPackager)
 
-* [EasyBuilders](https://github.com/easybuilders)
+#### [EasyBuilders](https://github.com/easybuilders)
 
-* [Spack](https://github.com/spack)
+#### [Spack](https://github.com/spack)
 
-* [Homebrew/LinuxBrew](https://github.com/Homebrew/brew)
+#### [Homebrew/LinuxBrew](https://github.com/Homebrew/brew)
 
-* [AUR/PKGBUILD]
+#### [AUR/PKGBUILD]
 
-* [Emerge/ebuild]
+#### [Emerge/ebuild]
+
+# Projects Related to Debian Packaging
+
+#### dh-make
+
+**Cons:**
+
+1. Upon debian directory initialization, dh-make requires the basename of
+the current working directory to be `<package>-<version>`, mandatorily.
+
+2. dh-make's predefined package classes (s: single binary,
+i: arch-independent, l: library) limited the flexibility of this tool.
+
+3. dh-make supports controling some details through CLI. However, it doesn't
+support many tweaks, and supporting too many tweaks through CLI would
+definitely blow up this tool and force users to learn the command line
+argument everytime before use.
+
+4. dh-make tweaks the source format to "native" through a command line argument.
+
+5. dh-make has a weird user interface in fully automated mode: `dh_make --email contact@example.com --copyright=bsd --file ../foo.tar.gz`.
+
+**Pros of duprkit:**
+
+1. `flink` doesn't force you to rename your current working directory. `flink
+guess` is able to find a version string via different clues, or fallback to
+use "0" if no clue was found.
+
+2. Recipe as an YAML file, resembles some mixture of control and rules, doesn't
+define any template. It tries to be as flexible as manually written debian/
+directory. `flink guess` is able to scan for various clues and propose
+different binary package layouts.
+
+3. Recipe, even if it's YAML instead of DEB822, has identical field names
+compared to `debian/control`. `flink` doesn't blow up the command line
+interface by allowing detail tweaks. One should just edit the recipe that
+`flink` will use.
+
+4. By default, if nothing is specified, `flink` will use the `native` source
+format to reduce the chance to encounter building trouble. When `Revision` or
+`Patches` field is defined in a recipe, `flink` will automatically regard the
+source as `quilt` format.
+
+5. duprkit has a better user interface compared to dh-make. `flink guess` will
+automatically generate a recipe according to clues from the current working
+directory. `flink boldguess` stacks upon `flink guess`, and will directly
+generate the `debian/` directory from the guessed recipe.
+
+#### debmake
+
+# Projects Related to flinkV (license detector)
+
+https://wiki.debian.org/CopyrightReviewTools
+
+#### licensecheck
+
+#### scan-copyrights
+
+#### cme
+
+#### licensecheck2dep5
+
+#### license-reconcile
+
+#### debmake
+
+#### decopy
+
+#### license
+
+#### check-all-the-things
+
+#### cargo-lichking
+
+#### python-debian
+
+#### license finder
+
+#### licensed
+
+#### ninka
+
+#### scancode
+
+#### dlt
+
+#### deb-pkg-tools
+
+#### jninka
+
+#### apache-rat
+
+#### fossology
+
+#### OSLCv3
+
+#### scancode-toolkit
+
+The core algorithm is similar to what scancode-toolkit called "match set":
+https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/match_set.py

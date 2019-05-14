@@ -9,6 +9,15 @@ import numpy as np
 from scipy import sparse
 import nltk
 '''
+#### Known problems
+
+This toy is still not properly assessed. people on IRC suggested me test
+it against chromium, fpc, lazarus, boost. Currently it works not quite well
+with very few-words license declarations,
+
+flinkV: N-gram bag-of-words vector cosine similarity utility
+============================================================
+
 flinkV implements a (toy) text classifier with the k-NN model (k=1), using
 N-gram bag-of-words representation vectors as text representation, and cosine
 similarity as the metric.
@@ -16,56 +25,21 @@ similarity as the metric.
 Keywords: k-NN (machine learning), Bag-of-Words (computational linguistics),
           N-gram (computational linguistics), vector space (linear algebra)
 
-#### Problem Formulation
+Problem Formulation
+-------------------
 
 ```latex
 Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$, we want to classify
 the sequence and produce a corresponding output $c$.
 ```
 
-## Known problems
+Manually Train and Predict
+--------------------------
 
-1. this toy is still not properly assessed. people on IRC suggested me test
-it against chromium, fpc, lazarus, boost
-
-2. currently it works not quite well with very short license declarations,
-such as the one on the python script itself `:-(`.
-
-3. we need choose a threshold under which the program rejects to classify.
-
-## Manual training and prediction
-
-./licensecheck-ng.py --train datadir/
-./licensecheck-ng.py --predict my_file
-
-## Comparison to related works
-
-https://wiki.debian.org/CopyrightReviewTools
-
-* licensecheck
-* scan-copyrights
-* cme
-* licensecheck2dep5
-* license-reconcile
-* debmake
-* decopy
-* license
-* check-all-the-things
-* cargo-lichking
-* python-debian
-* license finder
-* licensed
-* ninka
-* scancode
-* dlt
-* deb-pkg-tools
-* jninka
-* apache-rat
-* fossology
-* OSLCv3
-* https://github.com/nexB/scancode-toolkit
-  The core algorithm is similar to what scancode-toolkit called "match set":
-  https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/match_set.py
+```
+flinkV --train /usr/share/common-licenses/
+flinkV my-file-to-be-checked
+```
 '''
 
 class Model(object):
