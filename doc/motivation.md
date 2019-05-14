@@ -87,7 +87,8 @@ argument everytime before use.
 
 1. `flink` doesn't force you to rename your current working directory. `flink
 guess` is able to find a version string via different clues, or fallback to
-use "0" if no clue was found.
+use "0" if no clue was found. `flink guess` and `flink boldguess` can directly
+generate the files user wanted without asking anything from the user.
 
 2. Recipe as an YAML file, resembles some mixture of control and rules, doesn't
 define any template. It tries to be as flexible as manually written debian/
@@ -110,6 +111,12 @@ directory. `flink boldguess` stacks upon `flink guess`, and will directly
 generate the `debian/` directory from the guessed recipe.
 
 #### debmake
+
+#### dh-make-golang
+
+#### dh-make-perl
+
+#### dh-make-elpa
 
 # Projects Related to flinkV (license detector)
 
@@ -161,3 +168,7 @@ https://wiki.debian.org/CopyrightReviewTools
 
 The core algorithm is similar to what scancode-toolkit called "match set":
 https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/match_set.py
+
+# Projects Related to Workflow
+
+#### Git-buildpakcage
