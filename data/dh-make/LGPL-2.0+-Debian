@@ -1,16 +1,3 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: #PACKAGE#
-Source: <url://example.com>
-
-Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
-License: LGPL-2.0+
-
-Files: debian/*
-Copyright: #YEAR# #USERNAME# <#EMAIL#>
-License: LGPL-2.0+
-
 License: LGPL-2.0+
  This package is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -27,8 +14,3 @@ License: LGPL-2.0+
  .
  On Debian systems, the complete text of the GNU Lesser General
  Public License can be found in "/usr/share/common-licenses/LGPL-2".
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
-# Please avoid picking licenses with terms that are more restrictive than the
-# packaged work, as it may make Debian's contributions unacceptable upstream.
