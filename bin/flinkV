@@ -11,11 +11,11 @@ import nltk
 '''
 flinkV: N-gram bag-of-words vector cosine similarity utility
 ============================================================
-flinkV implements a (toy) text classifier with the k-NN model (k=1), using
-N-gram bag-of-words representation vectors as text representation, and cosine
-similarity as the metric. Given a sequence of tokens t=[t_1, t_2, ..., t_M],
-flinkV tries to classify it and produce the output. Keywords: k-Nearest
-Neighbor, Bag-of-Words, N-gram, Machine Learning, Computational Linguistics.
+flinkV is a k-NN (k=1) text classifier, using N-gram bag-of-words vectors
+as text representations, and cosine similarity as the similarity metric.
+Given a sequence of tokens t=[t_1, t_2, ..., t_M], flinkV tries to classify
+it and output a corresponding label. Keywords: k-Nearest Neighbor,
+Bag-of-Words, N-gram, Machine Learning, Computational Linguistics.
 
 Training: ``flinkV --train /usr/share/common-licenses/``
 Predicting: ``flinkV my-file-to-be-checked``
