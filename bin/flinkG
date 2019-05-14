@@ -11,49 +11,65 @@
 =end DESCRIPTION
 constant $__version__ = '0.1a';
 
-sub MAIN ()
-{
-    # detection
+sub guess_source () {
+	my $source = '.'.IO.absolute.IO.basename;
+	if $source ~~ /(.*)[\-||_]v?([\d||\.]+)$/ {
+		$source = $0.Str;
+	}
+	return $source;
+}
+
+sub guess_version () {
+	my $version = '0'; # the fallback when no clue is found
     my $source = '.'.IO.absolute.IO.basename;
-    my $version = '0';
-    if '.git/config'.IO.f {
+	# Is the current working directory in <package>-<version> pattern?
+	if $source ~~ /(.*)[\-||_]v?([\d||\.]+)$/ {
+		$version= $1.Str;
+	} elsif '.git/config'.IO.f { # is CWD a git workspace?
         if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
-            $version ~= '~git.'~qx!git describe --tags 2>/dev/null!.chomp;
+            $version = '0~git.'~qx!git describe --tags 2>/dev/null!.chomp;
         } else {
-            $version ~= '~git.master';
+            $version = '0~git.head';
         }
-    }
-    my $homepage = '';
+	}
+	return $version;
+}
+
+sub guess_homepage () {
+	my $homepage = '';
     if '.git/config'.IO.f {
         $homepage = qx/git remote get-url origin/.chomp
             .subst(':', '/').subst('git@', 'https://');
     }
-    my $license = '';
+	return $homepage;
+}
+
+sub guess_license () {
+	my $license = '';
     if 'LICENSE'.IO.f || 'COPYING'.IO.f {
-        # FIXME use flinkV
         if 'LICENSE'.IO.f {
-            my $tmp = 'LICENSE'.IO.slurp;
-            if $tmp ~~ /MIT/ {
-                $license = 'MIT';
-            }
+			$license = qx/flinkV LICENSE/.chomp;
         } elsif 'COPYING'.IO.f {
-            my $tmp = 'LICENSE'.IO.slurp;
-            if $tmp ~~ /MIT/ {
-                $license = 'MIT';
-            }
+			$license = qx/flinkV COPYING/.chomp;
         }
     }
+	return $license;
+}
+
+sub MAIN ()
+{
+    # detection
+    my $source = guess_source;
+    my $version = guess_version;
+    my $homepage = guess_homepage;
+    my $license = guess_license;
     # let's guess
     say "Source: ", $source;
     say "Section: ", 'utils';
     say "Version: ", $version;
     say "Description: ", $source;
     say 'Homepage: ', $homepage;
-    if 'LICENSE'.IO.f || 'COPYING'.IO.f {
-        say 'License: ', $license;
-    } else {
-        # FIXME call autoscanner
-    }
+	say 'License: ', $license if $license;
     # /usr/share/perl5/Debian/Debhelper/Buildsystem/
     if "CMakeLists.txt".IO.f {
         say "Debhelper-Buildsystem: ", "cmake";
