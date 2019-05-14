@@ -8,18 +8,20 @@ Vcs-Browser: https://github.com/dupr/duprkit
 Maintainer: Mo Zhou <cdluminate@gmail.com>
 Build-Depends: debhelper-compat (= 11),
                python3 <!nocheck>,
-               python3-chardet <!nocheck>
+               python3-chardet <!nocheck>,
+               python3-nltk,
+               python3-numpy,
+               python3-scipy,
+               python3-yaml,
+               rakudo
 
 Package: duprkit
 Architecture: all
-Depends: aria2,
-         build-essential,
+Depends: build-essential,
          ccache,
-         curl,
          debmake,
          devscripts,
          fd-find,
-         gawk,
          git,
          python3 (>= 3.6~),
          python3-all,
