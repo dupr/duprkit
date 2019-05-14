@@ -1,3 +1,5 @@
 training:
 	mkdir -p training
-	cp common-licenses/* extra/* training
+	cp -v common-licenses/* training/
+	cp -v opensource.org/* training/
+	cp -v scripts.sil.org/* training/
