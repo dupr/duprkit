@@ -83,7 +83,10 @@ argument everytime before use.
 
 5. dh-make has a weird user interface in fully automated mode: `dh_make --email contact@example.com --copyright=bsd --file ../foo.tar.gz`.
 
-**Pros of duprkit:**
+6. dh-make asks the user to specify license name, and it cannot detect that
+by itself.
+
+**duprkit:**
 
 1. `flink` doesn't force you to rename your current working directory. `flink
 guess` is able to find a version string via different clues, or fallback to
@@ -109,6 +112,10 @@ source as `quilt` format.
 automatically generate a recipe according to clues from the current working
 directory. `flink boldguess` stacks upon `flink guess`, and will directly
 generate the `debian/` directory from the guessed recipe.
+
+6. duprkit provides its own license detector `flinkV`. It is used by
+`flink guess` and `flink boldgess` when a `LICENSE` file or `COPYING` file
+presents in the current directory.
 
 #### debmake
 
