@@ -9,37 +9,26 @@ import numpy as np
 from scipy import sparse
 import nltk
 '''
-#### Known problems
-
-This toy is still not properly assessed. people on IRC suggested me test
-it against chromium, fpc, lazarus, boost. Currently it works not quite well
-with very few-words license declarations,
-
 flinkV: N-gram bag-of-words vector cosine similarity utility
 ============================================================
-
 flinkV implements a (toy) text classifier with the k-NN model (k=1), using
 N-gram bag-of-words representation vectors as text representation, and cosine
-similarity as the metric.
+similarity as the metric. Given a sequence of tokens t=[t_1, t_2, ..., t_M],
+flinkV tries to classify it and produce the output. Keywords: k-Nearest
+Neighbor, Bag-of-Words, N-gram, Machine Learning, Computational Linguistics.
 
-Keywords: k-NN (machine learning), Bag-of-Words (computational linguistics),
-          N-gram (computational linguistics), vector space (linear algebra)
+Training: ``flinkV --train /usr/share/common-licenses/``
+Predicting: ``flinkV my-file-to-be-checked``
 
-Problem Formulation
--------------------
+Known problems
+--------------
 
-```latex
-Given a sequence of tokens $t = [t_1, t_2, \ldots, t_M]$, we want to classify
-the sequence and produce a corresponding output $c$.
-```
-
-Manually Train and Predict
---------------------------
-
-```
-flinkV --train /usr/share/common-licenses/
-flinkV my-file-to-be-checked
-```
+1. This toy is still not properly assessed. people on IRC suggested me test
+   it against chromium, fpc, lazarus, boost.
+2. Currently it works not quite well with few-word license declarations.
+3. It's slow: Loading and converting dense matrix into sparse matrix;
+   Large sparse matrix - vector multiplication.
+4. It's pure: without enough enginerring, it may perform worse on noisy input.
 '''
 
 class Model(object):
@@ -200,3 +189,5 @@ if __name__ == '__main__':
             pprint.pprint(model.labels)
         else:
             model.predict(ag.target, topK=ag.topk, reject=ag.reject)
+    if not any([ag.train, ag.target, ag.labels]):
+        print('Run `flinkV -h` for usage information.')
