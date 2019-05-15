@@ -26,9 +26,16 @@ Known problems
 1. This toy is still not properly assessed. people on IRC suggested me test
    it against chromium, fpc, lazarus, boost.
 2. Currently it works not quite well with few-word license declarations.
-3. It's slow: Loading and converting dense matrix into sparse matrix;
-   Large sparse matrix - vector multiplication.
+3. It's slow: Fistly due to loading and converting dense matrix into sparse
+   matrix before predicting. Another performance issue is large sparse matrix
+   multiplication.
 4. It's pure: without enough enginerring, it may perform worse on noisy input.
+5. It's decision is based on similarity, computed from hand-crafted statistical
+   features of text. That means the model cannot capture the semantics,
+   especially when a tiny word inverses the semantics of the whole sentence.
+   For example, when a "not" is added to the sentence, it doesn't incur
+   much vector rotation and it merely affects the statistical feature slightly,
+   but the semantics of the sentence is fully inverted.
 '''
 
 class Model(object):

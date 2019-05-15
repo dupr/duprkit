@@ -11,11 +11,9 @@ packaging recipe, aiming at reducing the source tree debianization workload.
 A recipe can be directly translated into a `debian/` directory, and helper
 utilities are provided to directly build `.deb` or `.dsc` from a recipe file.
 
-More info about motivation, targeted software, and related projects can be found
-[HERE](./doc/motivation.md).
+[More info about motivation, targeted software, and related projects](./doc/motivation.md).
 
-Documentations such as usage instruction, examples and FAQ can be found
-[HERE](./doc/instructions.md).
+[Documentations such as usage instruction, examples and FAQ](./doc/instructions.md).
 
 # Highlights
 
