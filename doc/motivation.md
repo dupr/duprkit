@@ -86,6 +86,8 @@ argument everytime before use.
 6. dh-make asks the user to specify license name, and it cannot detect that
 by itself.
 
+7. dh-make doesn't well integrate with the git-buildpackage workflow.
+
 **duprkit:**
 
 1. `flink` doesn't force you to rename your current working directory. `flink
@@ -116,6 +118,9 @@ generate the `debian/` directory from the guessed recipe.
 6. duprkit provides its own license detector `flinkV`. It is used by
 `flink guess` and `flink boldgess` when a `LICENSE` file or `COPYING` file
 presents in the current directory.
+
+7. duprkit can well integrate with the git-buildpackage workflow.
+`flink boldguess` directly generates a debian directory.
 
 #### debmake
 
