@@ -55,7 +55,7 @@ input: file name and url
 output: file will be downloaded to cachedir. a copy will be created
 under current working directory.
 
-## Examples
+# Examples
 
 1. Default template, self-documented: https://github.com/dupr/duprkit/blob/master/examples/template.rcp
 
@@ -157,3 +157,7 @@ HFT is not mandatory. Please carefully read the documentations and templates.
 * Where can I submit my `.rcp` file?
 
 Submit a PR to a collection pointed by README. Or just setup your own collection.
+
+* git-buildpackage workflow integration?
+
+`flink g`, `flink bg`, `flinkH gen_debian`.
