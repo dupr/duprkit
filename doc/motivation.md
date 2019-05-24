@@ -44,7 +44,9 @@ very good at dealing with the following special cases:
 * Packages with dirty hacks, more experimental than Debian/experimental,
   or targeted on testing the water.
 
-# Projects (somehow) Related to Debian Packaging
+# Projects (somehow) Related to Automatic Debian Packaging
+
+https://wiki.debian.org/AutomaticPackagingTools
 
 #### dh-make
 
@@ -123,6 +125,9 @@ presents in the current directory.
 #### [Spack](https://github.com/spack)
 
 #### [Homebrew/LinuxBrew](https://github.com/Homebrew/brew)
+
+????? https://summerofcode.withgoogle.com/archive/2018/projects/5299432639692800/
+https://salsa.debian.org/aviau/gsoc-2018
 
 # Projects Related to flinkV (license detector)
 
