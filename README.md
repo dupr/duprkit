@@ -4,7 +4,8 @@ Debian User Recipe Toolkit (WIP)
 [![CircleCI](https://circleci.com/gh/dupr/duprkit.svg?style=svg)](https://circleci.com/gh/dupr/duprkit)
 
 **Everything on the master branch is broken due to the ongoing redesign.
-Use the latest release if you want try out the old design.**
+And unluckily the latest release is outdated. Please look forward to the
+next major release.**
 
 DUPR Toolkit (duprkit) provides a set of tools for creating and utilizing user
 packaging recipe, aiming at reducing the source tree debianization workload.
