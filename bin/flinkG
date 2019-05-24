@@ -8,6 +8,8 @@
   representation of Debian packaging files.
 
   Usage: flinkG
+
+  TODO: https://wiki.debian.org/AutomaticPackagingTools
 =end DESCRIPTION
 constant $__version__ = '0.1a';
 
