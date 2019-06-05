@@ -1,13 +1,9 @@
 #!/usr/bin/perl6
 =begin DESCRIPTION
-  flinkG: Debian User Recipe Guesser
+  flinkG: Debian User Recipe (HFT) Guesser
+  -- Guesses a recipe for the source tree under the current working directory.
   Copyright (C) 2019 M. Zhou <lumin@debian.org>
-  
-  flinkG is able to guess "how to cook the source tree under the current
-  working directory", treating Recipe/HFT as sort of intermediate
-  representation of Debian packaging files.
-
-  Usage: flinkG
+  License: MIT/Expat
 
   TODO: https://wiki.debian.org/AutomaticPackagingTools
 =end DESCRIPTION
@@ -28,13 +24,13 @@ sub guess_version () {
 	if $source ~~ /(.*)[\-||_]v?([\d||\.]+)$/ {
 		$version= $1.Str;
 	} elsif '.git/config'.IO.f { # is CWD a git workspace?
-        if qx!git describe --tags 2>/dev/null!.chomp.chars > 0 {
-            $version = '0~git.'~qx!git describe --tags 2>/dev/null!.chomp;
-        } else {
-            $version = '0~git.head';
-        }
+		$version = '0~git';
 	}
 	return $version;
+}
+
+sub guess_section () {
+	return "utils";
 }
 
 sub guess_homepage () {
@@ -58,7 +54,19 @@ sub guess_license () {
 	return $license;
 }
 
-sub MAIN ()
+sub MAIN (
+	Str :$rcp, #= write recipe
+	Bool :$split = False, #= generate multi-binary layout
+) {
+	my %recipe;
+	%recipe{q/Source/} = guess_source();
+	%recipe{q/Version/} = guess_version();
+	%recipe{q/Section/} = guess_section();
+
+	say %recipe;
+}
+
+sub MAIN_old ()
 {
     # detection
     my $source = guess_source;
