@@ -1,6 +1,0 @@
-include MANIFEST.in
-include manpages/*
-include test/*
-include test/src/Makefile
-include test/src/split
-include TODO

@@ -1,3 +1,0 @@
-#!/bin/sh
-# perl
-sed -n -e '/^abstract:/s/abstract: *//p' META.yml | sed -e "s/^'//" -e "s/'$//" -e 's/^"//' -e 's/"$//'

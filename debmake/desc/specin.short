@@ -1,3 +1,0 @@
-#!/bin/sh
-# spec file
-sed -n -e '/^Summary:/p/Summary: *//p' *.spec.in

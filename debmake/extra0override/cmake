@@ -1,7 +1,0 @@
-#override_dh_auto_configure:
-#	dh_auto_configure -- \
-#	      -DCMAKE_LIBRARY_ARCHITECTURE="$(DEB_TARGET_MULTIARCH)"
-###
-### You may need to patch CMakeLists.txt to set the library install path to be:
-###-install(TARGETS <sharedlibname> LIBRARY DESTINATION lib)
-###+install(TARGETS <sharedlibname> LIBRARY DESTINATION lib/${CMAKE_LIBRARY_ARCHITECTURE})

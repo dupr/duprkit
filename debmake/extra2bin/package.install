@@ -1,8 +1,0 @@
-# You must remove unused comment lines for the released package.
-### Candidates as below and see dh_install(1).
-###bin
-###etc
-###sbin
-###usr/bin
-###usr/sbin
-###usr/share/@BINPACKAGE@

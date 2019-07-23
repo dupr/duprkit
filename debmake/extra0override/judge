@@ -1,5 +1,0 @@
-### This is to speed up and avoid build failure for -j option
-### This should not be in debian/rules of the packaged source
-override_dh_auto_test:
-	: # do nothing
-

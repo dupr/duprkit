@@ -1,3 +1,0 @@
-# This is a dummy watch file.
-# debmake is quasi-native package and has no external upstream source.
-# It is *quasi* just because its package version uses the non-native format.

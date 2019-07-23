@@ -1,7 +1,0 @@
-# Vala work arounds:
-### Delayed export to honor DEB_CFLAGS_MAINT_APPEND, DEB_BUILD_MAINT_OPTIONS, etc 
-DPKG_EXPORT_BUILDFLAGS = 1
-include /usr/share/dpkg/buildflags.mk
-### Vala source requires this using CPPFLAGS, CFLAGS, LDFLAGS set above.
-export VALAFLAGS:=$(foreach w,$(CPPFLAGS) $(CFLAGS) $(LDFLAGS),-X $(w))
-

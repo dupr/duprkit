@@ -1,3 +1,0 @@
-#!/bin/sh
-# ruby
-sed -n -e '/gem.summary *=/s/gem.summary *= *//p' Rakefile | sed -e "s/^'//" -e "s/'$//" -e 's/^"//' -e 's/"$//'
