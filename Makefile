@@ -12,7 +12,6 @@ install: install-vim install-bin install-examples install-pretrained
 install-bin:
 	install -Dm0755 bin/hft $(DESTDIR)/$(BINDIR)/hft
 	install -Dm0755 bin/flinkH $(DESTDIR)/$(BINDIR)/flinkH
-	install -Dm0755 bin/flinkV $(DESTDIR)/$(BINDIR)/flinkV
 	install -Dm0755 bin/flinkG $(DESTDIR)/$(BINDIR)/flinkG
 	install -Dm0755 bin/flink $(DESTDIR)/$(BINDIR)/flink
 
@@ -27,10 +26,6 @@ install-vim:
 install-pretrained: train
 	install -Dm0644 license-cls-knn.json $(DESTDIR)/$(EXAMPLEDIR)/license-cls-knn.json
 	install -Dm0644 license-cls-knn.npz $(DESTDIR)/$(EXAMPLEDIR)/license-cls-knn.npz
-
-train:
-	$(MAKE) -Cdata training
-	./bin/flinkV --train data/training --savename license-cls-knn
 
 json:
 	fdfind -e rcp -exec flink s
